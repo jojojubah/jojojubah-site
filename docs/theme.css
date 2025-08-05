@@ -5,18 +5,30 @@ body {
 }
 
 /* Headings: animated hue gradient */
-@keyframes hue {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
+/* Animate between brand gradients */
+@keyframes brandGradient {
+  0% {
+    background: linear-gradient(90deg, #0a0a0a, #004aad);
+  }
+  33% {
+    background: linear-gradient(90deg, #004aad, #b0b0b0);
+  }
+  66% {
+    background: linear-gradient(90deg, #b0b0b0, #1f1f1f);
+  }
+  100% {
+    background: linear-gradient(90deg, #0a0a0a, #004aad);
+  }
 }
 
 h2 {
   font-size: 2rem;
-  background: linear-gradient(90deg, #00ffff, #007bff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: hue 8s infinite linear;
+  animation: brandGradient 8s infinite ease-in-out;
+  background-size: 200% 200%;
 }
+
 
 /* Divider blur between sections */
 section::after {
@@ -30,3 +42,4 @@ section::after {
   filter: blur(30px);
   z-index: -1;
 }
+
