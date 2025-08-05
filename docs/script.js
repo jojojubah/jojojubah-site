@@ -1,33 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
+  /* === Scroll-reveal === */
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if(entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+      const el = entry.target;
+      if (entry.isIntersecting) {
+        el.classList.add('visible');
+      } else {
+        el.classList.remove('visible');   // reverse when leaving view
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.25 });
 
-  document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+  document.querySelectorAll('.animate').forEach(el => observer.observe(el));
 
-  // Nav active link on scroll
-  const sections = document.querySelectorAll("section");
-  const navLinks = document.querySelectorAll("nav ul li a");
+  /* === Active nav link highlight === */
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('nav a');
 
-  window.addEventListener("scroll", () => {
-    let current = "";
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (scrollY >= sectionTop - 100) {
-        current = section.getAttribute("id");
-      }
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 120;   // offset for sticky nav
+      if (scrollY >= top) current = sec.getAttribute('id');
     });
 
     navLinks.forEach(link => {
-      link.classList.remove("active");
-      if (link.getAttribute("href") === "#" + current) {
-        link.classList.add("active");
-      }
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
     });
   });
 });
