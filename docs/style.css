@@ -1,0 +1,68 @@
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Base reset */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sticky header navigation */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 15px;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  transition: transform 0.3s, color 0.3s;
+}
+
+/* Section styling */
+section {
+  padding: 100px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+section .content {
+  max-width: 900px;
+  text-align: center;
+}
+
+/* Button styling */
+.btn {
+  padding: 10px 25px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* Footer */
+footer {
+  padding: 30px;
+  text-align: center;
+}
+
+.social-icons a {
+  margin: 0 15px;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
