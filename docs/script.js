@@ -29,4 +29,26 @@ document.addEventListener('DOMContentLoaded', ()=> {
   });
 
   setActive(sections[0].id);
+  /* ===== CHANGE HEADING GRADIENT ON SCROLL ===== */
+  const brandGradients = [
+    "linear-gradient(90deg, #0a0a0a, #004aad)",
+    "linear-gradient(90deg, #004aad, #b0b0b0)",
+    "linear-gradient(90deg, #1f1f1f, #004aad)",
+    "linear-gradient(90deg, #004aad, #808080)"
+  ];
+
+  const headingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const randomGradient = brandGradients[Math.floor(Math.random() * brandGradients.length)];
+        entry.target.style.background = randomGradient;
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll("h2").forEach(h => {
+    headingObserver.observe(h);
+  });
 });
+});
+
