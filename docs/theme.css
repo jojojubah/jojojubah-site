@@ -1,48 +1,54 @@
-/* Simple smooth background gradient */
+/* ===== Base Page Styling ===== */
 body {
   background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #09131e 100%);
   color: #e9f1ff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-/* Headings: animated hue gradient */
-/* Animate between brand gradients */
+/* ===== Animated Gradient for Headings ===== */
 @keyframes brandGradient {
   0% {
-    background: linear-gradient(90deg, #0a0a0a, #004aad);
-  }
-  33% {
     background: linear-gradient(90deg, #004aad, #b0b0b0);
   }
+  33% {
+    background: linear-gradient(90deg, #004aad, #ffffff);
+  }
   66% {
-    background: linear-gradient(90deg, #b0b0b0, #1f1f1f);
+    background: linear-gradient(90deg, #ffffff, #004aad);
   }
   100% {
-    background: linear-gradient(90deg, #0a0a0a, #004aad);
+    background: linear-gradient(90deg, #004aad, #b0b0b0);
   }
 }
 
 h2 {
   font-size: 2rem;
+  font-weight: bold;
 
-  /* Start with your base brand gradient */
-  background: linear-gradient(90deg, #004aad, #b0b0b0);
+  /* Gradient Text */
+  background: linear-gradient(90deg, #004aad, #ffffff);
   background-size: 200% 200%;
-  background-repeat: no-repeat;
+  animation: brandGradient 5s ease-in-out infinite;
 
-  /* Proper clipping for text */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text; /* Firefox */
-  color: transparent;
+  background-clip: text;
 
-  /* Smooth change when JS updates */
-  transition: background 1s ease-in-out;
+  /* Fallback color for browsers without background-clip */
+  color: #ffffff;
+
+  margin: 20px 0;
+  text-align: center;
 }
 
+/* ===== Section Divider Blur ===== */
+section {
+  position: relative;
+  padding: 40px;
+}
 
-
-
-/* Divider blur between sections */
 section::after {
   content: "";
   position: absolute;
@@ -55,5 +61,20 @@ section::after {
   z-index: -1;
 }
 
+/* ===== Links ===== */
+a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 
-
+/* ===== Paragraphs ===== */
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
