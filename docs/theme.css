@@ -23,11 +23,22 @@ body {
 
 h2 {
   font-size: 2rem;
+
+  /* Start with your base brand gradient */
   background: linear-gradient(90deg, #004aad, #b0b0b0);
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+
+  /* Proper clipping for text */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text; /* Firefox */
+  color: transparent;
+
+  /* Smooth change when JS updates */
   transition: background 1s ease-in-out;
 }
+
 
 
 
@@ -43,5 +54,6 @@ section::after {
   filter: blur(30px);
   z-index: -1;
 }
+
 
 
