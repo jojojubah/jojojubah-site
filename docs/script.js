@@ -50,5 +50,5 @@ document.addEventListener('DOMContentLoaded', ()=> {
     headingObserver.observe(h);
   });
 });
-});
+
 
