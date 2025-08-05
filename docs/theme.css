@@ -1,26 +1,32 @@
-/* subtle twinkling stars on gradient */
+/* Simple smooth background gradient */
 body {
-  background: linear-gradient(135deg, #0d1117 0%, #161b22 80%, #09131e 100%);
-  background-repeat: no-repeat;
-}
-@keyframes twinkle {
-  0%,100% {opacity:0.8;}
-  50% {opacity:1;}
-}
-body::before {
-  content:""; position:fixed; top:0; left:0;
-  width:100%;height:100%;pointer-events:none;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px) repeat 50% 50%;
-  background-size:20px 20px;
-  animation:twinkle 5s infinite;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #09131e 100%);
+  color: #e9f1ff;
 }
 
-/* headings gradient hue-shift */
-@keyframes hue {0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}
-h2 {font-size:2rem; background:linear-gradient(90deg,#00ffff,#007bff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:hue 8s infinite linear;}
+/* Headings: animated hue gradient */
+@keyframes hue {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
 
-/* divider blur between sections */
+h2 {
+  font-size: 2rem;
+  background: linear-gradient(90deg, #00ffff, #007bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hue 8s infinite linear;
+}
+
+/* Divider blur between sections */
 section::after {
-  content:""; position:absolute; bottom:-40px; left:0; width:100%; height:80px;
-  background:inherit; filter:blur(30px); z-index:-1;
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: inherit;
+  filter: blur(30px);
+  z-index: -1;
 }
