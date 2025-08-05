@@ -10,37 +10,39 @@ body {
 /* ===== Animated Gradient for Headings ===== */
 @keyframes brandGradient {
   0% {
-    background: linear-gradient(90deg, #004aad, #b0b0b0);
+    background-image: linear-gradient(90deg, #004aad, #b0b0b0);
   }
   33% {
-    background: linear-gradient(90deg, #004aad, #ffffff);
+    background-image: linear-gradient(90deg, #004aad, #ffffff);
   }
   66% {
-    background: linear-gradient(90deg, #ffffff, #004aad);
+    background-image: linear-gradient(90deg, #ffffff, #004aad);
   }
   100% {
-    background: linear-gradient(90deg, #004aad, #b0b0b0);
+    background-image: linear-gradient(90deg, #004aad, #b0b0b0);
   }
 }
 
 h2 {
   font-size: 2rem;
   font-weight: bold;
+  text-align: center;
 
-  /* Gradient Text */
-  background: linear-gradient(90deg, #004aad, #ffffff);
+  /* Gradient effect inside text */
+  background-image: linear-gradient(90deg, #004aad, #ffffff);
   background-size: 200% 200%;
   animation: brandGradient 5s ease-in-out infinite;
 
+  /* Clip gradient to text (for Chrome, Safari, Edge) */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  /* Clip gradient to text (for Firefox) */
   background-clip: text;
+  color: transparent;
 
-  /* Fallback color for browsers without background-clip */
+  /* Safari/iOS fallback: show solid text if clip fails */
   color: #ffffff;
-
-  margin: 20px 0;
-  text-align: center;
 }
 
 /* ===== Section Divider Blur ===== */
