@@ -1239,6 +1239,44 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
           }, 50);
         }, 1500);
       }
+      // Add cursor trail effect
+      let trail = [];
+      const trailLength = 20;
+
+      document.addEventListener('mousemove', function(e) {
+        trail.push({ x: e.clientX, y: e.clientY });
+        if (trail.length > trailLength) {
+          trail.shift();
+        }
+        
+        // Create or update trail elements
+        const existingTrails = document.querySelectorAll('.cursor-trail');
+        existingTrails.forEach(el => el.remove());
+        
+        trail.forEach((point, index) => {
+          const trailElement = document.createElement('div');
+          trailElement.className = 'cursor-trail';
+          trailElement.style.cssText = `
+            position: fixed;
+            left: ${point.x}px;
+            top: ${point.y}px;
+            width: ${4 - (index * 0.2)}px;
+            height: ${4 - (index * 0.2)}px;
+            background: rgba(59, 130, 246, ${0.5 - (index * 0.025)});
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease-out;
+          `;
+          document.body.appendChild(trailElement);
+          
+          setTimeout(() => {
+            if (trailElement.parentNode) {
+              trailElement.remove();
+            }
+          }, 100);
+        });
+      });
     });
   </script>
 </body>
