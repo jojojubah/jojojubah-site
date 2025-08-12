@@ -16,6 +16,31 @@
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
 </head>
 <body>
+  <body>
+  <!-- Cookie Consent Banner -->
+  <div id="cookieConsentBanner" style="display:none;">
+    <p>🍪 This site uses cookies for analytics to improve your experience.
+      <a href="#" id="learnMoreBtn">Learn more</a>
+    </p>
+    <div class="cookie-buttons">
+      <button id="acceptCookies" class="cookie-btn accept">Accept All Cookies</button>
+      <button id="declineCookies" class="cookie-btn decline">Decline</button>
+    </div>
+  </div>
+
+  <div class="background-gradient"></div>
+  <div class="particles" id="particles"></div>
+  <div class="scroll-indicator" id="scrollIndicator"></div>
+
+  {% include header.html %}
+  <main>
+    {{ content }}
+  </main>
+  {% include footer.html %}
+
+  <script src="{{ '/assets/main.js' | relative_url }}"></script>
+</body>
+
   <!-- Optional: any global elements you had near the top (cookie banner, bg, particles, etc.) -->
   <div class="background-gradient"></div>
   <div class="particles" id="particles"></div>
