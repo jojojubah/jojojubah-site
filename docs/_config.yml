@@ -1,0 +1,13 @@
+title: JojoJubah
+description: AI, Tech & YouTube Tutorials
+
+# Because you're publishing from /docs on a *project* repo:
+# If your site will be at https://<user>.github.io/<repo-name>:
+url: "https://<your-username>.github.io"
+baseurl: "/<your-repo-name>"
+
+# If instead this repo is your *user site* (https://<user>.github.io) set:
+# baseurl: ""     # (leave url as above)
+
+# Optional: Google Analytics used by assets/main.js
+google_analytics_id: "G-0ZM44HTK32"
