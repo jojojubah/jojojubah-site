@@ -1,101 +1,71 @@
-// GDPR Cookie Consent & Analytics Script - ADDED AT END (changed from <!--)
-  
-    // Cookie Consent & Analytics Management
-    (function() {
-      const MEASUREMENT_ID = 'G-0ZM44HTK32';
-      
-      // Show banner only if user hasn't made a choice
-      function showConsentBanner() {
-        const consent = localStorage.getItem('cookieConsent');
-        if (!consent) {
-          document.getElementById('cookieConsentBanner').style.display = 'block';
-        } else if (consent === 'accepted') {
-          enableGoogleAnalytics();
-        }
-      }
 
-      // Load Google Analytics when user accepts
-      function enableGoogleAnalytics() {
-        if (window.GA_LOADED) return; // Prevent double loading
-        window.GA_LOADED = true;
-        
-        // Load Google Analytics script
-        const gaScript = document.createElement('script');
-        gaScript.async = true;
-        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-        document.head.appendChild(gaScript);
+// Cookie Consent & Google Analytics Management
+(function() {
+  const MEASUREMENT_ID = 'G-0ZM44HTK32';
 
-        // Initialize Google Analytics
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID, {
-          anonymize_ip: true, // GDPR compliance
-          cookie_flags: 'secure;samesite=strict' // Enhanced security
-        });
-        
-        console.log('✅ Google Analytics enabled');
-      }
+  function enableGoogleAnalytics() {
+    if (window.GA_LOADED) return;
+    window.GA_LOADED = true;
 
-      // Handle Accept button
-      document.getElementById('acceptCookies').onclick = function() {
-        localStorage.setItem('cookieConsent', 'accepted');
-        document.getElementById('cookieConsentBanner').style.display = 'none';
-        enableGoogleAnalytics();
-      };
+    const gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(gaScript);
 
-      // Handle Decline button
-      document.getElementById('declineCookies').onclick = function() {
-        localStorage.setItem('cookieConsent', 'declined');
-        document.getElementById('cookieConsentBanner').style.display = 'none';
-        console.log('❌ Analytics declined by user');
-      };
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
 
-      // Initialize on page load
-      showConsentBanner();
-    })();
+    gtag('js', new Date());
+    gtag('config', MEASUREMENT_ID, {
+      anonymize_ip: true,
+      cookie_flags: 'secure;samesite=strict'
+    });
+  }
 
-    // Learn More Modal functionality
-function showLearnMoreModal() {
-  const modalHTML = `
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="learn-more-modal">
-        <button class="close-btn" id="closeModal">&times;</button>
-        <h3>🍪 Why Accept Cookies?</h3>
-        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
-          We use Google Analytics to understand which content you love most, so we can create better tutorials and projects for you! 🎯<br><br>
-          
-          ✅ Helps us improve your experience<br>
-          ✅ Shows us which tutorials are most helpful<br>
-          ✅ Completely anonymous - no personal data collected<br>
-          ✅ You can change your mind anytime<br><br>
-          
-          <strong style="color: var(--accent-primary);">Choose 'Accept' to help us make better content for creators like you!</strong>
-        </p>
-      </div>
-    </div>
-  `;
-  
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-  
-  // Close modal handlers
-  document.getElementById('closeModal').onclick = closeLearnMoreModal;
-  document.getElementById('modalOverlay').onclick = function(e) {
-    if (e.target === this) closeLearnMoreModal();
-  };
-}
+  function showConsentBanner() {
+    const banner = document.getElementById('cookieConsentBanner');
+    if (!banner) return; // No banner in DOM → exit safely
 
-function closeLearnMoreModal() {
-  const modal = document.getElementById('modalOverlay');
-  if (modal) modal.remove();
-}
+    const consent = localStorage.getItem('cookieConsent');
+    if (!consent) {
+      banner.style.display = 'block';
+    } else if (consent === 'accepted') {
+      enableGoogleAnalytics();
+    }
+  }
 
-// Add learn more click handler
-document.getElementById('learnMoreBtn').onclick = function(e) {
-  e.preventDefault();
-  showLearnMoreModal();
-};
+  const acceptBtn = document.getElementById('acceptCookies');
+  if (acceptBtn) {
+    acceptBtn.onclick = function() {
+      localStorage.setItem('cookieConsent', 'accepted');
+      const banner = document.getElementById('cookieConsentBanner');
+      if (banner) banner.style.display = 'none';
+      enableGoogleAnalytics();
+    };
+  }
+
+  const declineBtn = document.getElementById('declineCookies');
+  if (declineBtn) {
+    declineBtn.onclick = function() {
+      localStorage.setItem('cookieConsent', 'declined');
+      const banner = document.getElementById('cookieConsentBanner');
+      if (banner) banner.style.display = 'none';
+    };
+  }
+
+  const learnMore = document.getElementById('learnMoreBtn');
+  if (learnMore) {
+    learnMore.onclick = function(e) {
+      e.preventDefault();
+      showLearnMoreModal();
+    };
+  }
+
+  // Run banner check
+  showConsentBanner();
+})();
+
     // Enhanced JavaScript with modern animations and effects (EXISTING CODE CONTINUES)
     document.addEventListener('DOMContentLoaded', function() {
       // Elements
