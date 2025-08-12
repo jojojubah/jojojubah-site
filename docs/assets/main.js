@@ -1,5 +1,5 @@
 <!-- GDPR Cookie Consent & Analytics Script - ADDED AT END -->
-  <script>
+  
     // Cookie Consent & Analytics Management
     (function() {
       const MEASUREMENT_ID = 'G-0ZM44HTK32';
@@ -443,4 +443,4 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
         document.head.appendChild(mobileStyles);
       }
     });
-  </script>
+  
