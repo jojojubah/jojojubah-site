@@ -1,4 +1,4 @@
-<!-- GDPR Cookie Consent & Analytics Script - ADDED AT END -->
+// GDPR Cookie Consent & Analytics Script - ADDED AT END (changed from <!--)
   
     // Cookie Consent & Analytics Management
     (function() {
