@@ -1,9 +1,14 @@
+---
+layout: default
+title: Home
+---
 
 
   <!-- Main Content -->
-  <main>
+  
     <!-- Home Section -->
-    <section id="home">
+    
+  <section id="home">
       <div class="container">
         <div class="hero-content">
           <h1 class="hero-title">Welcome to <span class="gradient-text">JojoJubah</span></h1>
@@ -30,7 +35,8 @@
     </section>
 
     <!-- About Section -->
-    <section id="about">
+    
+  <section id="about">
       <div class="container">
         <h2 class="section-title fade-in">About JojoJubah</h2>
         <div class="about-content fade-in">
@@ -44,7 +50,8 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects">
+    
+  <section id="projects">
       <div class="container">
         <h2 class="section-title fade-in">Featured Projects</h2>
         <div class="projects-grid">
@@ -129,7 +136,8 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact">
+    
+  <section id="contact">
       <div class="container">
         <h2 class="section-title fade-in">Contact & Socials</h2>
         <div class="contact-content fade-in">
@@ -161,6 +169,6 @@
         </div>
       </div>
     </section>
-  </main>
+  
 
  
