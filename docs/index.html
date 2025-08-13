@@ -65,14 +65,15 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 1.5rem; /* was 1.5rem 2rem */
+      font-size: 0.9rem;       /* new: slightly smaller text */
       border-radius: 16px;
       box-shadow: 0 8px 40px rgba(59, 130, 246, 0.3);
       font-family: 'Inter', sans-serif;
       z-index: 10000;
       text-align: center;
       max-width: 90vw;
-      width: 500px;
+      width: 450px; /*was 500px */
       animation: slideUp 0.5s ease-out;
     }
 
@@ -662,13 +663,21 @@
       }
 
       #cookieConsentBanner {
-        width: 90vw;
+        width: 85vw;        /* was 90vw */
         left: 5vw;
         transform: none;
+        font-size: 0.85rem; /* smaller text */
+        padding: 1rem;      /* less padding */
       }
 
       .cookie-buttons {
         flex-direction: column;
+        gap: 0.5rem; /* tighter spacing between buttons */
+      }
+
+      .cookie-btn {
+        padding: 0.6rem 1rem; /* smaller buttons */
+        font-size: 0.85rem;    /* smaller text on buttons */
       }
     }
 
