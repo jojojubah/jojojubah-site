@@ -1738,8 +1738,11 @@ ${styleDump}
     </div>
   </nav>
 <!-- Matrix toggle bar UNDER the navbar -->
-<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;margin-top:96px;position:relative;z-index:3;">
-  <button id="matrixToggle" class="btn" style="padding:.4rem .7rem;font-size:.85rem;border-radius:10px;">Matrix: ON</button>
+<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:96px;position:relative;z-index:3;">
+  <span style="color:var(--text-secondary);font-size:.9rem;font-weight:500;">Matrix</span>
+  <div id="matrixToggle" style="position:relative;width:50px;height:28px;background:#374151;border-radius:14px;cursor:pointer;transition:all 0.3s ease;border:2px solid transparent;">
+    <div id="toggleSlider" style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:all 0.3s ease;box-shadow:0 2px 4px rgba(0,0,0,0.2);"></div>
+  </div>
 </div>
 
   <!-- PAGE CONTENT -->
@@ -1883,9 +1886,18 @@ window.addEventListener('resize', (() => {
     var toggleBtn = document.getElementById('matrixToggle');
 
     function updateToggleUI(){
-      if (!toggleBtn) return;
-      toggleBtn.textContent = 'Matrix: ' + (matrixOn ? 'ON' : 'OFF');
-    }
+  if (!toggleBtn || !document.getElementById('toggleSlider')) return;
+  const slider = document.getElementById('toggleSlider');
+  if (matrixOn) {
+    toggleBtn.style.background = 'var(--accent-primary)';
+    toggleBtn.style.borderColor = 'var(--accent-primary)';
+    slider.style.transform = 'translateX(22px)';
+  } else {
+    toggleBtn.style.background = '#374151';
+    toggleBtn.style.borderColor = 'transparent';
+    slider.style.transform = 'translateX(0)';
+  }
+}
     updateToggleUI();
 
     function startMatrix(){
@@ -1909,12 +1921,15 @@ window.addEventListener('resize', (() => {
     }
 
     if (toggleBtn) {
-      toggleBtn.addEventListener('click', function(){
-        matrixOn = !matrixOn;
-        if (matrixOn) startMatrix(); else stopMatrix();
-        updateToggleUI();
-      });
-    }
+  toggleBtn.addEventListener('click', function(){
+    matrixOn = !matrixOn;
+    if (matrixOn) startMatrix(); else stopMatrix();
+    updateToggleUI();
+  });
+  
+  // Initialize the toggle appearance
+  updateToggleUI();
+}
 
     // === Footer year ===
     var y=document.getElementById('secretYear'); if (y) y.textContent = new Date().getFullYear();
