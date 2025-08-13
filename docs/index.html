@@ -1698,6 +1698,9 @@ ${styleDump}
 }
 .site-avatar{ box-shadow: 0 0 20px rgba(34,197,94,0.3) !important; border-color: var(--accent-primary) !important; }
 .site-avatar:hover{ box-shadow: 0 0 30px rgba(34,197,94,0.5) !important; }
+#matrixToggleWrap{position:relative;z-index:3}
+@media (max-width:768px){#matrixToggleWrap{justify-content:center}}
+
 </style>
 </head>
 <body>
@@ -1722,7 +1725,7 @@ ${styleDump}
         </ul>
 
         <!-- simple top-right toggle -->
-        <div id="matrixToggle" class="btn" style="margin-left:auto">Matrix: ON</div>
+        
 
         <button class="mobile-menu-button" id="mobileMenuBtn">
           <div class="hamburger"></div>
@@ -1732,6 +1735,10 @@ ${styleDump}
       </div>
     </div>
   </nav>
+<!-- Matrix toggle bar UNDER the navbar -->
+<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;margin-top:8px;">
+  <button id="matrixToggle" class="btn" style="padding:.4rem .7rem;font-size:.85rem;border-radius:10px;">Matrix: ON</button>
+</div>
 
   <!-- PAGE CONTENT -->
   <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;padding-top:120px;">
