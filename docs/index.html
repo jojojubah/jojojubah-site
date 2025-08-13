@@ -663,12 +663,14 @@
       }
 
       #cookieConsentBanner {
-        width: 85vw;        /* was 90vw */
-        left: 5vw;
-        transform: none;
-        font-size: 0.85rem; /* smaller text */
-        padding: 1rem;      /* less padding */
+        width: min(85vw, 480px);
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        font-size: 0.85rem;
+        padding: 1rem;
       }
+
 
       .cookie-buttons {
         flex-direction: column;
