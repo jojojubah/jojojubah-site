@@ -1608,7 +1608,7 @@ function setPanelHeight(panel, open) {
     panel.style.maxHeight = 0;
   }
 }
-      function addBonusAccordion() {
+     function addBonusAccordion() {
   // don't add twice
   if (document.getElementById('acc-item-bonus')) return;
 
@@ -1659,7 +1659,7 @@ function setPanelHeight(panel, open) {
     setPanelHeight(panel, isOpen);
   });
 
-  // Open a brand-new page (no extra files) on click — Matrix background + green theme
+  // Open a brand-new page (no extra files) — Matrix bg + green theme + NAVBAR + FOOTER + TOGGLE
   const bonusLink = document.getElementById('bonusNewPage');
   if (bonusLink) {
     bonusLink.addEventListener('click', (e) => {
@@ -1676,16 +1676,18 @@ function setPanelHeight(panel, open) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Secret Page – JojoJubah</title>
-<link rel="icon" type="image/png" href="${favPng}">
-<link rel="shortcut icon" href="${favIco}" type="image/x-icon">
+<link rel="icon" type="image/png" href="\${favPng}">
+<link rel="shortcut icon" href="\${favIco}" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-${styleDump}
+\${styleDump}
 
 /* MATRIX CANVAS */
 .matrix-bg{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;background:transparent;}
 
-/* GREEN THEME OVERRIDES */
+/* "Matrix ON" green theme in a separable block we can toggle at runtime */
+</style>
+<style id="matrix-theme">
 :root{
   --accent-primary:#22c55e; /* emerald 500 */
   --accent-secondary:#16a34a; /* green 600 */
@@ -1694,7 +1696,6 @@ ${styleDump}
   --gradient-primary: linear-gradient(135deg,#22c55e 0%, #16a34a 50%, #84cc16 100%);
   --gradient-secondary: linear-gradient(135deg,#16a34a 0%, #22c55e 100%);
 }
-/* fix a few blue hard-codes on avatar glow */
 .site-avatar{ box-shadow: 0 0 20px rgba(34,197,94,0.3) !important; border-color: var(--accent-primary) !important; }
 .site-avatar:hover{ box-shadow: 0 0 30px rgba(34,197,94,0.5) !important; }
 </style>
@@ -1709,16 +1710,20 @@ ${styleDump}
     <div class="container">
       <div class="nav-container">
         <div class="logo-area">
-          <img src="${favPng}" alt="JojoJubah" class="site-avatar"/>
+          <img src="\${favPng}" alt="JojoJubah" class="site-avatar"/>
           <span class="logo-text">JojoJubah</span>
         </div>
         <ul class="nav-links">
-          <li><a href="${homeUrl}#home" class="nav-link">Home</a></li>
-          <li><a href="${homeUrl}#about" class="nav-link">About</a></li>
-          <li><a href="${homeUrl}#learn" class="nav-link">Learn</a></li>
-          <li><a href="${homeUrl}#projects" class="nav-link">Projects</a></li>
-          <li><a href="${homeUrl}#contact" class="nav-link">Contact</a></li>
+          <li><a href="\${homeUrl}#home" class="nav-link">Home</a></li>
+          <li><a href="\${homeUrl}#about" class="nav-link">About</a></li>
+          <li><a href="\${homeUrl}#learn" class="nav-link">Learn</a></li>
+          <li><a href="\${homeUrl}#projects" class="nav-link">Projects</a></li>
+          <li><a href="\${homeUrl}#contact" class="nav-link">Contact</a></li>
         </ul>
+
+        <!-- simple top-right toggle -->
+        <div id="matrixToggle" class="btn" style="margin-left:auto">Matrix: ON</div>
+
         <button class="mobile-menu-button" id="mobileMenuBtn">
           <div class="hamburger"></div>
           <div class="hamburger"></div>
@@ -1733,7 +1738,7 @@ ${styleDump}
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
       <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">🟩 Matrix Secret Page</h1>
       <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — now in full Matrix mode. Add notes, downloads, or embeds here.</p>
-      <a class="btn" href="${homeUrl}">Back to Home</a>
+      <a class="btn" href="\${homeUrl}">Back to Home</a>
     </div>
   </div>
 
@@ -1743,11 +1748,11 @@ ${styleDump}
       <div class="footer-content">
         <div class="footer-left"><span>© <span id="secretYear"></span> JojoJubah</span></div>
         <div class="footer-links">
-          <a href="${homeUrl}#home">Home</a>
-          <a href="${homeUrl}#about">About</a>
-          <a href="${homeUrl}#learn">Learn</a>
-          <a href="${homeUrl}#projects">Projects</a>
-          <a href="${homeUrl}#contact">Contact</a>
+          <a href="\${homeUrl}#home">Home</a>
+          <a href="\${homeUrl}#about">About</a>
+          <a href="\${homeUrl}#learn">Learn</a>
+          <a href="\${homeUrl}#projects">Projects</a>
+          <a href="\${homeUrl}#contact">Contact</a>
         </div>
       </div>
     </div>
@@ -1755,13 +1760,15 @@ ${styleDump}
 
   <script>
   (function(){
-    // === MATRIX BACKGROUND (based on your EasterEggs file) ===
-    // (we removed the 10s timeout so it runs continuously; we also keep resize logic)
+    // === MATRIX BACKGROUND (slowed down to match your file) ===
     var canvas = document.getElementById('matrix-canvas');
     var ctx = canvas.getContext('2d');
     var characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-    var drops = [];
-    var columns = 0;
+    var drops = [], columns = 0;
+
+    // speed controls (slower than RAF): ~12 fps + smaller step
+    var speedMs = 80;        // frame delay (lower=faster). 80ms ≈ 12.5fps
+    var rowStep = 16;        // pixel step per tick (lower=slower)
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -1769,11 +1776,10 @@ ${styleDump}
       columns = Math.floor(canvas.width / 20);
       drops = Array(columns).fill(0);
     }
-    resize();
-    window.addEventListener('resize', resize);
+    resize(); window.addEventListener('resize', resize);
 
     function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // trail fade
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = '#0f0';
@@ -1785,11 +1791,50 @@ ${styleDump}
         ctx.fillText(char, x * 20, y);
 
         if (y > canvas.height && Math.random() > 0.975) drops[x] = 0;
-        else drops[x] = y + 20;
+        else drops[x] = y + rowStep;
       }
-      requestAnimationFrame(draw);
     }
-    requestAnimationFrame(draw);
+
+    var intervalId = setInterval(draw, speedMs);
+
+    // === theme toggle ===
+    var matrixOn = true;
+    var themeEl = document.getElementById('matrix-theme');
+    var toggleBtn = document.getElementById('matrixToggle');
+
+    function updateToggleUI(){
+      if (!toggleBtn) return;
+      toggleBtn.textContent = 'Matrix: ' + (matrixOn ? 'ON' : 'OFF');
+    }
+    updateToggleUI();
+
+    function startMatrix(){
+      if (intervalId) return;
+      intervalId = setInterval(draw, speedMs);
+      canvas.style.display = '';
+      // add green theme
+      if (!document.getElementById('matrix-theme')) {
+        themeEl = document.createElement('style');
+        themeEl.id = 'matrix-theme';
+        themeEl.textContent = ":root{--accent-primary:#22c55e;--accent-secondary:#16a34a;--accent-tertiary:#84cc16;--card-border:rgba(34,197,94,0.25);--gradient-primary:linear-gradient(135deg,#22c55e 0%,#16a34a 50%,#84cc16 100%);--gradient-secondary:linear-gradient(135deg,#16a34a 0%,#22c55e 100%);} .site-avatar{box-shadow:0 0 20px rgba(34,197,94,0.3)!important;border-color:var(--accent-primary)!important;} .site-avatar:hover{box-shadow:0 0 30px rgba(34,197,94,0.5)!important;}";
+        document.head.appendChild(themeEl);
+      }
+    }
+    function stopMatrix(){
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      canvas.style.display = 'none';
+      // remove green theme
+      var el = document.getElementById('matrix-theme');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function(){
+        matrixOn = !matrixOn;
+        if (matrixOn) startMatrix(); else stopMatrix();
+        updateToggleUI();
+      });
+    }
 
     // === Footer year ===
     var y=document.getElementById('secretYear'); if (y) y.textContent = new Date().getFullYear();
@@ -1804,38 +1849,41 @@ ${styleDump}
       });
     }
 
-    // === Cursor trail (desktop) ===
+    // === Cursor trail (desktop) — color follows theme (blue when OFF, green when ON) ===
     var trail=[], trailLength=20;
     document.addEventListener('mousemove', function(e){
       trail.push({x:e.clientX,y:e.clientY});
       if(trail.length>trailLength) trail.shift();
       document.querySelectorAll('.cursor-trail').forEach(function(el){ el.remove(); });
+      var color = matrixOn ? '34,197,94' : '59,130,246'; // green : blue
       trail.forEach(function(point, idx){
         var dot=document.createElement('div');
         dot.className='cursor-trail';
-        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba(34,197,94,'+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
+        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba('+color+','+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
         document.body.appendChild(dot);
         setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
       });
     });
 
-    // === Touch trails + burst (mobile), tinted green ===
+    // === Touch trails + burst (mobile) — color follows theme ===
     function isMobile(){ return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
     var touchTrail=[];
     function createTouchTrail(x,y){
       touchTrail.push({x:x,y:y,timestamp:Date.now()});
       touchTrail = touchTrail.filter(function(pt){ return Date.now()-pt.timestamp < 800; });
       document.querySelectorAll('.touch-trail').forEach(function(el){ el.remove(); });
+      var color = matrixOn ? '6,182,212' /* teal-ish green glow */ : '6,182,212'; // keep same for subtlety
       touchTrail.forEach(function(pt,idx){
         var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
         var el=document.createElement('div');
         el.className='touch-trail';
-        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba(34,197,94,'+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
+        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba('+ (matrixOn? '34,197,94' : '6,182,212') +','+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
         document.body.appendChild(el);
       });
     }
     function createParticleBurst(x,y){
-      var colors=['#22c55e','#16a34a','#84cc16','#10b981'], count=6;
+      var colors = matrixOn ? ['#22c55e','#16a34a','#84cc16','#10b981'] : ['#3b82f6','#06b6d4','#8b5cf6','#10b981'];
+      var count=6;
       for(var i=0;i<count;i++){
         (function(i){
           var ang=(360/count)*i, vel=30+Math.random()*20, color=colors[Math.floor(Math.random()*colors.length)];
@@ -1865,6 +1913,7 @@ ${styleDump}
     });
   }
 }
+
 
 
 
