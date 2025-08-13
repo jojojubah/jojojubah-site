@@ -1659,33 +1659,108 @@ function setPanelHeight(panel, open) {
     setPanelHeight(panel, isOpen);
   });
 
-  // Open a brand-new page (no extra files) on click
+  // Open a brand-new page (no extra files) on click — match main style/effects
   const bonusLink = document.getElementById('bonusNewPage');
   if (bonusLink) {
     bonusLink.addEventListener('click', (e) => {
       e.preventDefault();
+
+      // clone your current CSS from <head><style>…</style>
+      const styleDump = (document.querySelector('head > style')?.innerHTML || '');
+
       const html = `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Secret Page – JojoJubah</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{--bg:#0a0f1c;--text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6}
-  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);display:grid;place-items:center;min-height:100vh;padding:2rem;text-align:center}
-  .wrap{max-width:720px}
-  h1{font-size:clamp(2rem,4vw,3rem);margin:0 0 .5rem}
-  p{color:var(--muted);line-height:1.6}
-  a.btn{display:inline-block;margin-top:1rem;padding:.75rem 1.25rem;border-radius:10px;text-decoration:none;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);color:white}
-</style>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>${styleDump}</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🎉 Secret Page</h1>
-    <p>You found the hidden page. Put whatever you want here—notes, downloads, or an embedded video.</p>
-    <a class="btn" href="${location.origin}${location.pathname}">Back to Home</a>
+  <!-- same background + particles so visuals match -->
+  <div class="background-gradient"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;">
+    <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
+      <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">🎉 Secret Page</h1>
+      <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page. Same look & feel, same effects. Put whatever you want here—notes, downloads, or an embedded video.</p>
+      <a class="btn" href="${location.origin + location.pathname}">Back to Home</a>
+    </div>
   </div>
+
+  <script>
+  (function(){
+    // === Floating particles (same feel) ===
+    var particlesContainer = document.getElementById('particles');
+    function createParticles(){
+      for (var i=0;i<50;i++){
+        var p=document.createElement('div');
+        p.className='particle';
+        p.style.left=(Math.random()*100)+'%';
+        p.style.animationDelay=(Math.random()*20)+'s';
+        p.style.animationDuration=((Math.random()*10+10)+'s');
+        particlesContainer.appendChild(p);
+      }
+    }
+
+    // === Cursor trail (desktop) ===
+    var trail=[], trailLength=20;
+    document.addEventListener('mousemove', function(e){
+      trail.push({x:e.clientX,y:e.clientY});
+      if(trail.length>trailLength) trail.shift();
+      document.querySelectorAll('.cursor-trail').forEach(function(el){ el.remove(); });
+      trail.forEach(function(point, idx){
+        var dot=document.createElement('div');
+        dot.className='cursor-trail';
+        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba(59,130,246,'+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
+        document.body.appendChild(dot);
+        setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
+      });
+    });
+
+    // === Touch trails + burst (mobile) ===
+    function isMobile(){ return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
+    var touchTrail=[];
+    function createTouchTrail(x,y){
+      touchTrail.push({x:x,y:y,timestamp:Date.now()});
+      touchTrail = touchTrail.filter(function(pt){ return Date.now()-pt.timestamp < 800; });
+      document.querySelectorAll('.touch-trail').forEach(function(el){ el.remove(); });
+      touchTrail.forEach(function(pt,idx){
+        var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
+        var el=document.createElement('div');
+        el.className='touch-trail';
+        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba(6,182,212,'+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
+        document.body.appendChild(el);
+      });
+    }
+    function createParticleBurst(x,y){
+      var colors=['#3b82f6','#06b6d4','#8b5cf6','#10b981'], count=6;
+      for(var i=0;i<count;i++){
+        (function(i){
+          var ang=(360/count)*i, vel=30+Math.random()*20, color=colors[Math.floor(Math.random()*colors.length)];
+          var el=document.createElement('div');
+          el.className='touch-particle';
+          el.style.cssText='position:fixed;left:'+(x-3)+'px;top:'+(y-3)+'px;width:6px;height:6px;background:'+color+';border-radius:50%;pointer-events:none;z-index:9997;animation:particleBurst'+i+' 0.8s ease-out forwards;';
+          var keyframes='@keyframes particleBurst'+i+'{0%{transform:translate(0,0) scale(1);opacity:1;}100%{transform:translate('+(Math.cos(ang*Math.PI/180)*vel)+'px,'+(Math.sin(ang*Math.PI/180)*vel)+'px) scale(0);opacity:0;}}';
+          if(!document.getElementById('pbkf-'+i)){ var s=document.createElement('style'); s.id='pbkf-'+i; s.textContent=keyframes; document.head.appendChild(s); }
+          document.body.appendChild(el);
+          setTimeout(function(){ if(el.parentNode) el.remove(); }, 800);
+        })(i);
+      }
+    }
+    if(isMobile()){
+      document.addEventListener('touchstart', function(e){ var t=e.touches[0]; createParticleBurst(t.clientX,t.clientY); });
+      document.addEventListener('touchmove', function(e){ var t=e.touches[0]; createTouchTrail(t.clientX,t.clientY); });
+      var mobileStyles=document.createElement('style'); mobileStyles.textContent='@media (max-width:768px){.cursor-trail{display:none!important;}}'; document.head.appendChild(mobileStyles);
+    }
+    window.addEventListener('load', function(){ createParticles(); });
+  })();
+  </scr` + `ipt>
 </body></html>`;
+
       const blob = new Blob([html], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank', 'noopener');
