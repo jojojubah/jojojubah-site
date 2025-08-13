@@ -810,7 +810,40 @@
 .acc-inner p {
   margin-bottom: 0.75rem;
 }
+/* Toast */
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: rgba(10, 15, 28, 0.98);
+  border: 1px solid var(--card-border);
+  color: var(--text-primary);
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 10002;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none; /* avoid blocking clicks */
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (max-width: 768px) {
+  .toast {
+    left: 50%;
+    right: auto;
+    bottom: 16px;
+    transform: translate(-50%, 12px);
+  }
+  .toast.show {
+    transform: translate(-50%, 0);
+  }
+}
 
+    
   </style>
 </head>
 <body>
@@ -1112,6 +1145,8 @@
       </div>
     </div>
   </footer>
+
+  <div id="learnToast" class="toast" role="status" aria-live="polite" aria-atomic="true">🎉 Level up! You opened all topics.</div>
 
   <!-- GDPR Cookie Consent & Analytics Script - ADDED AT END -->
   <script>
@@ -1557,8 +1592,14 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
         `;
         document.head.appendChild(mobileStyles);
       }
-      // Accordion: Learn section
+      // Accordion: Learn section + "all opened (at least once)" toast
 const accButtons = document.querySelectorAll('.acc-header');
+const totalAcc = accButtons.length;
+const toastEl = document.getElementById('learnToast');
+let toastShown = false;
+
+// track which topics have ever been opened
+const openedOnce = new Set();
 
 function setPanelHeight(panel, open) {
   if (open) {
@@ -1566,6 +1607,13 @@ function setPanelHeight(panel, open) {
   } else {
     panel.style.maxHeight = 0;
   }
+}
+
+function showToast() {
+  if (!toastEl || toastShown) return;
+  toastEl.classList.add('show');
+  toastShown = true;
+  setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
 
 accButtons.forEach(btn => {
@@ -1581,10 +1629,15 @@ accButtons.forEach(btn => {
     const isOpen = item.classList.toggle('open');
     btn.setAttribute('aria-expanded', String(isOpen));
     setPanelHeight(panel, isOpen);
-  });
 
-  // open via keyboard with Enter/Space is automatic for <button>
+    if (isOpen) {
+      // use the button's id to mark this topic as opened at least once
+      openedOnce.add(btn.id || btn.textContent.trim());
+      if (!toastShown && openedOnce.size === totalAcc) showToast();
+    }
+  });
 });
+
 
 // (Optional) open first item by default:
 // const first = document.querySelector('.acc-item');
