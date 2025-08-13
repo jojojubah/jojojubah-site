@@ -1659,7 +1659,7 @@ function setPanelHeight(panel, open) {
     setPanelHeight(panel, isOpen);
   });
 
-  // Open a brand-new page (no extra files) on click — match main style/effects + NAVBAR + FOOTER
+  // Open a brand-new page (no extra files) on click — Matrix background + green theme
   const bonusLink = document.getElementById('bonusNewPage');
   if (bonusLink) {
     bonusLink.addEventListener('click', (e) => {
@@ -1679,14 +1679,32 @@ function setPanelHeight(panel, open) {
 <link rel="icon" type="image/png" href="${favPng}">
 <link rel="shortcut icon" href="${favIco}" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>${styleDump}</style>
+<style>
+${styleDump}
+
+/* MATRIX CANVAS */
+.matrix-bg{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;background:transparent;}
+
+/* GREEN THEME OVERRIDES */
+:root{
+  --accent-primary:#22c55e; /* emerald 500 */
+  --accent-secondary:#16a34a; /* green 600 */
+  --accent-tertiary:#84cc16; /* lime 500 */
+  --card-border: rgba(34,197,94,0.25);
+  --gradient-primary: linear-gradient(135deg,#22c55e 0%, #16a34a 50%, #84cc16 100%);
+  --gradient-secondary: linear-gradient(135deg,#16a34a 0%, #22c55e 100%);
+}
+/* fix a few blue hard-codes on avatar glow */
+.site-avatar{ box-shadow: 0 0 20px rgba(34,197,94,0.3) !important; border-color: var(--accent-primary) !important; }
+.site-avatar:hover{ box-shadow: 0 0 30px rgba(34,197,94,0.5) !important; }
+</style>
 </head>
 <body>
-  <!-- Background + particles -->
+  <!-- Background gradient kept; covered by matrix canvas -->
   <div class="background-gradient"></div>
-  <div class="particles" id="particles"></div>
+  <canvas class="matrix-bg" id="matrix-canvas"></canvas>
 
-  <!-- NAVBAR (links point back to your main page sections) -->
+  <!-- NAVBAR -->
   <nav id="navbar">
     <div class="container">
       <div class="nav-container">
@@ -1710,22 +1728,20 @@ function setPanelHeight(panel, open) {
     </div>
   </nav>
 
-  <!-- Page content -->
+  <!-- PAGE CONTENT -->
   <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;padding-top:120px;">
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
-      <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">🎉 Secret Page</h1>
-      <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page. Same look & feel, same effects. Put whatever you want here—notes, downloads, or an embedded video.</p>
+      <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">🟩 Matrix Secret Page</h1>
+      <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — now in full Matrix mode. Add notes, downloads, or embeds here.</p>
       <a class="btn" href="${homeUrl}">Back to Home</a>
     </div>
   </div>
 
-  <!-- FOOTER (mirrors your main footer styles) -->
+  <!-- FOOTER -->
   <footer id="footer">
     <div class="container">
       <div class="footer-content">
-        <div class="footer-left">
-          <span>© <span id="secretYear"></span> JojoJubah</span>
-        </div>
+        <div class="footer-left"><span>© <span id="secretYear"></span> JojoJubah</span></div>
         <div class="footer-links">
           <a href="${homeUrl}#home">Home</a>
           <a href="${homeUrl}#about">About</a>
@@ -1739,24 +1755,46 @@ function setPanelHeight(panel, open) {
 
   <script>
   (function(){
-    // particles
-    var particlesContainer = document.getElementById('particles');
-    function createParticles(){
-      for (var i=0;i<50;i++){
-        var p=document.createElement('div');
-        p.className='particle';
-        p.style.left=(Math.random()*100)+'%';
-        p.style.animationDelay=(Math.random()*20)+'s';
-        p.style.animationDuration=((Math.random()*10+10)+'s');
-        particlesContainer.appendChild(p);
-      }
+    // === MATRIX BACKGROUND (based on your EasterEggs file) ===
+    // (we removed the 10s timeout so it runs continuously; we also keep resize logic)
+    var canvas = document.getElementById('matrix-canvas');
+    var ctx = canvas.getContext('2d');
+    var characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    var drops = [];
+    var columns = 0;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / 20);
+      drops = Array(columns).fill(0);
     }
+    resize();
+    window.addEventListener('resize', resize);
 
-    // set footer year
-    var y=document.getElementById('secretYear');
-    if (y) y.textContent = new Date().getFullYear();
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // mobile menu toggle
+      ctx.fillStyle = '#0f0';
+      ctx.font = '20px monospace';
+
+      for (var x = 0; x < drops.length; x++) {
+        var char = characters[Math.floor(Math.random() * characters.length)];
+        var y = drops[x];
+        ctx.fillText(char, x * 20, y);
+
+        if (y > canvas.height && Math.random() > 0.975) drops[x] = 0;
+        else drops[x] = y + 20;
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+
+    // === Footer year ===
+    var y=document.getElementById('secretYear'); if (y) y.textContent = new Date().getFullYear();
+
+    // === Mobile menu toggle ===
     var mobileMenuBtn = document.getElementById('mobileMenuBtn');
     var navLinksContainer = document.querySelector('.nav-links');
     if (mobileMenuBtn && navLinksContainer) {
@@ -1766,7 +1804,7 @@ function setPanelHeight(panel, open) {
       });
     }
 
-    // cursor trail (desktop)
+    // === Cursor trail (desktop) ===
     var trail=[], trailLength=20;
     document.addEventListener('mousemove', function(e){
       trail.push({x:e.clientX,y:e.clientY});
@@ -1775,13 +1813,13 @@ function setPanelHeight(panel, open) {
       trail.forEach(function(point, idx){
         var dot=document.createElement('div');
         dot.className='cursor-trail';
-        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba(59,130,246,'+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
+        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba(34,197,94,'+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
         document.body.appendChild(dot);
         setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
       });
     });
 
-    // touch trail + burst (mobile)
+    // === Touch trails + burst (mobile), tinted green ===
     function isMobile(){ return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
     var touchTrail=[];
     function createTouchTrail(x,y){
@@ -1792,12 +1830,12 @@ function setPanelHeight(panel, open) {
         var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
         var el=document.createElement('div');
         el.className='touch-trail';
-        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba(6,182,212,'+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
+        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba(34,197,94,'+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
         document.body.appendChild(el);
       });
     }
     function createParticleBurst(x,y){
-      var colors=['#3b82f6','#06b6d4','#8b5cf6','#10b981'], count=6;
+      var colors=['#22c55e','#16a34a','#84cc16','#10b981'], count=6;
       for(var i=0;i<count;i++){
         (function(i){
           var ang=(360/count)*i, vel=30+Math.random()*20, color=colors[Math.floor(Math.random()*colors.length)];
@@ -1816,8 +1854,6 @@ function setPanelHeight(panel, open) {
       document.addEventListener('touchmove', function(e){ var t=e.touches[0]; createTouchTrail(t.clientX,t.clientY); });
       var mobileStyles=document.createElement('style'); mobileStyles.textContent='@media (max-width:768px){.cursor-trail{display:none!important;}}'; document.head.appendChild(mobileStyles);
     }
-
-    window.addEventListener('load', function(){ createParticles(); });
   })();
   </scr` + `ipt>
 </body></html>`;
@@ -1829,6 +1865,7 @@ function setPanelHeight(panel, open) {
     });
   }
 }
+
 
 
 
