@@ -1659,7 +1659,7 @@ function setPanelHeight(panel, open) {
     setPanelHeight(panel, isOpen);
   });
 
-  // Open a brand-new page (no extra files) on click — match main style/effects + NAVBAR
+  // Open a brand-new page (no extra files) on click — match main style/effects + NAVBAR + FOOTER
   const bonusLink = document.getElementById('bonusNewPage');
   if (bonusLink) {
     bonusLink.addEventListener('click', (e) => {
@@ -1719,6 +1719,24 @@ function setPanelHeight(panel, open) {
     </div>
   </div>
 
+  <!-- FOOTER (mirrors your main footer styles) -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>© <span id="secretYear"></span> JojoJubah</span>
+        </div>
+        <div class="footer-links">
+          <a href="${homeUrl}#home">Home</a>
+          <a href="${homeUrl}#about">About</a>
+          <a href="${homeUrl}#learn">Learn</a>
+          <a href="${homeUrl}#projects">Projects</a>
+          <a href="${homeUrl}#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script>
   (function(){
     // particles
@@ -1733,6 +1751,10 @@ function setPanelHeight(panel, open) {
         particlesContainer.appendChild(p);
       }
     }
+
+    // set footer year
+    var y=document.getElementById('secretYear');
+    if (y) y.textContent = new Date().getFullYear();
 
     // mobile menu toggle
     var mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -1807,6 +1829,7 @@ function setPanelHeight(panel, open) {
     });
   }
 }
+
 
 
 
