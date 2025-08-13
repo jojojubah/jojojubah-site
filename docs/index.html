@@ -1608,10 +1608,62 @@ function setPanelHeight(panel, open) {
     panel.style.maxHeight = 0;
   }
 }
+      // Dynamically add a bonus accordion once the user levels up
+function addBonusAccordion() {
+  // don't add twice
+  if (document.getElementById('acc-item-bonus')) return;
+
+  const container = document.getElementById('learnAccordion');
+  if (!container) return;
+
+  container.insertAdjacentHTML('beforeend', `
+    <div class="acc-item" id="acc-item-bonus">
+      <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
+        <span>Hmm… What's this?</span>
+        <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
+        </svg>
+      </button>
+      <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
+        <div class="acc-inner">
+          <h3>Bonus tips & surprises</h3>
+          <p>Nice! You explored every topic. Here’s a hidden panel with extra goodies.</p>
+
+          <h4>Ideas to try next</h4>
+          <p>• Turn a prompt into a simple rubric and re-grade outputs.<br>
+             • Give an agent a budget & step cap (e.g., 5 steps, 2 tools).<br>
+             • Test an open model locally and note trade-offs.</p>
+
+          <p class="muted">Psst — this panel only appears after you open all topics 😉</p>
+        </div>
+      </div>
+    </div>
+  `);
+
+  // Wire up the new accordion item (collapsed by default)
+  const btn = document.getElementById('acc-button-bonus');
+  if (!btn) return;
+  const item = btn.closest('.acc-item');
+  const panel = item.querySelector('.acc-content');
+
+  item.classList.remove('open');
+  setPanelHeight(panel, false);
+  btn.setAttribute('aria-expanded', 'false');
+
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+    setPanelHeight(panel, isOpen);
+  });
+}
+
 
 function showToast() {
   if (!toastEl || toastShown) return;
   toastEl.classList.add('show');
+  // 👉 add the bonus accordion when the toast appears
+  addBonusAccordion();
+
   toastShown = true;
   setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
