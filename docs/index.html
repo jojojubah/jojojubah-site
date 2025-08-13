@@ -737,6 +737,71 @@
   background: rgba(0, 0, 0, 0.7);
   z-index: 10000;
 }
+  /* ===== Learn Accordion ===== */
+.accordion {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.acc-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: var(--transition);
+  margin-bottom: 1rem;
+}
+.acc-item:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+.acc-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-align: left;
+}
+.acc-header:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.acc-icon {
+  transition: transform 0.25s ease;
+  opacity: 0.9;
+}
+.acc-item.open .acc-icon {
+  transform: rotate(180deg);
+}
+.acc-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1px solid var(--card-border);
+}
+.acc-inner {
+  padding: 1.25rem 1.5rem 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.acc-inner h3, .acc-inner h4 {
+  color: var(--text-primary);
+  margin: 0.5rem 0 0.25rem;
+}
+.acc-inner p {
+  margin-bottom: 0.75rem;
+}
+
   </style>
 </head>
 <body>
@@ -769,6 +834,7 @@
         <ul class="nav-links">
           <li><a href="#home" class="nav-link active">Home</a></li>
           <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#learn" class="nav-link">Learn</a></li> <!-- new section -->
           <li><a href="#projects" class="nav-link">Projects</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
@@ -823,6 +889,81 @@
         </div>
       </div>
     </section>
+
+    <!-- Learn Section (Accordion) -->
+<section id="learn">
+  <div class="container">
+    <h2 class="section-title fade-in">Learn</h2>
+
+    <div class="accordion fade-in" id="learnAccordion">
+
+      <!-- Prompting -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-prompting" id="acc-button-prompting">
+          <span>Prompting</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-prompting" role="region" aria-labelledby="acc-button-prompting">
+          <div class="acc-inner">
+            <h3>What is Prompt Engineering?</h3>
+            <p>Prompt engineering is the craft of structuring inputs to get reliable outputs from AI models. It’s part instruction design, part debugging. Good prompts are clear, specific, and include examples.</p>
+
+            <h4>Follow-up prompting (why it works)</h4>
+            <p>LLMs refine answers when you add constraints or feedback. Ask the model to “improve this,” “explain your reasoning briefly,” or “compare options in a table.” Iteration > one-shot perfection.</p>
+
+            <h4>Few-shot examples (when to use)</h4>
+            <p>When your task has a pattern, show 1–3 short input→output examples. Keep style consistent and label clearly. This anchors the model and reduces randomness.</p>
+
+            <h4>Context windows & chunking</h4>
+            <p>Long inputs get truncated. Prioritize: brief instructions → constraints → examples → source snippets. If content is large, chunk it and summarize progressively.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agents -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-agents" id="acc-button-agents">
+          <span>Agents</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-agents" role="region" aria-labelledby="acc-button-agents">
+          <div class="acc-inner">
+            <h3>What is an AI Agent?</h3>
+            <p>An agent is an LLM that can plan steps and use tools (like a browser, code runner, or files) to reach a goal. Think: “goal → plan → act → observe → iterate.”</p>
+
+            <h4>Tools, memory, planning</h4>
+            <p>Tools extend capabilities (search, code, APIs). Short-term memory tracks the session. Long-term memory can store facts or preferences. Planners break big tasks into small executable steps.</p>
+
+            <h4>Risks & guardrails</h4>
+            <p>Agents can loop, hallucinate, or act out of scope. Use sandboxing, confirmation prompts for risky actions, strict tool schemas, and time/step limits.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Open-source -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-oss" id="acc-button-oss">
+          <span>Opensource</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-oss" role="region" aria-labelledby="acc-button-oss">
+          <div class="acc-inner">
+            <h3>What does “open-source LLM” mean?</h3>
+            <p>Weights + code are available under a license you can run locally. Great for privacy, customization, and cost control—trade-off: may need more setup/tuning.</p>
+
+            <h4>Popular local tools</h4>
+            <p><strong>Ollama</strong> (easy model pulls), <strong>LM Studio</strong> (GUI), <strong>Text-Gen WebUI</strong> (power user). Use GGUF quantized models for lower RAM.</p>
+
+            <h4>Running on modest hardware</h4>
+            <p>Start with 7B–8B models, use 4–8-bit quantization, prefer CPU-friendly backends, and keep context short. Cache prompts and chunk data for speed.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
     <!-- Projects Section -->
     <section id="projects">
@@ -1406,6 +1547,47 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
         `;
         document.head.appendChild(mobileStyles);
       }
+      // Accordion: Learn section
+const accButtons = document.querySelectorAll('.acc-header');
+
+function setPanelHeight(panel, open) {
+  if (open) {
+    panel.style.maxHeight = panel.scrollHeight + 'px';
+  } else {
+    panel.style.maxHeight = 0;
+  }
+}
+
+accButtons.forEach(btn => {
+  const item = btn.closest('.acc-item');
+  const panel = item.querySelector('.acc-content');
+
+  // start collapsed
+  item.classList.remove('open');
+  setPanelHeight(panel, false);
+  btn.setAttribute('aria-expanded', 'false');
+
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+    setPanelHeight(panel, isOpen);
+  });
+
+  // open via keyboard with Enter/Space is automatic for <button>
+});
+
+// (Optional) open first item by default:
+// const first = document.querySelector('.acc-item');
+// if (first) {
+//   first.classList.add('open');
+//   const firstBtn = first.querySelector('.acc-header');
+//   const firstPanel = first.querySelector('.acc-content');
+//   if (firstBtn && firstPanel) {
+//     firstBtn.setAttribute('aria-expanded','true');
+//     setPanelHeight(firstPanel, true);
+//   }
+// }
+
     });
   </script>
 </body>
