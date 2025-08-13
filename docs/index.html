@@ -1608,8 +1608,7 @@ function setPanelHeight(panel, open) {
     panel.style.maxHeight = 0;
   }
 }
-      // Dynamically add a bonus accordion once the user levels up
-function addBonusAccordion() {
+      function addBonusAccordion() {
   // don't add twice
   if (document.getElementById('acc-item-bonus')) return;
 
@@ -1626,8 +1625,8 @@ function addBonusAccordion() {
       </button>
       <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
         <div class="acc-inner">
-          <h3>Bonus Unlock!!</h3>
-          <p>Nice one! You explored every topic. Here’s a link to JubahLabs.</p>
+          <h3>Bonus tips & surprises</h3>
+          <p>Nice! You explored every topic. Here’s a hidden panel with extra goodies.</p>
 
           <h4>Ideas to try next</h4>
           <p>• Turn a prompt into a simple rubric and re-grade outputs.<br>
@@ -1635,6 +1634,10 @@ function addBonusAccordion() {
              • Test an open model locally and note trade-offs.</p>
 
           <p class="muted">Psst — this panel only appears after you open all topics 😉</p>
+
+          <div style="margin-top:1rem">
+            <a href="#" class="btn" id="bonusNewPage">Open secret page</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1655,7 +1658,42 @@ function addBonusAccordion() {
     btn.setAttribute('aria-expanded', String(isOpen));
     setPanelHeight(panel, isOpen);
   });
+
+  // Open a brand-new page (no extra files) on click
+  const bonusLink = document.getElementById('bonusNewPage');
+  if (bonusLink) {
+    bonusLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const html = `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Secret Page – JojoJubah</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f1c;--text:#f8fafc;--muted:#94a3b8;--accent:#3b82f6}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);display:grid;place-items:center;min-height:100vh;padding:2rem;text-align:center}
+  .wrap{max-width:720px}
+  h1{font-size:clamp(2rem,4vw,3rem);margin:0 0 .5rem}
+  p{color:var(--muted);line-height:1.6}
+  a.btn{display:inline-block;margin-top:1rem;padding:.75rem 1.25rem;border-radius:10px;text-decoration:none;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);color:white}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🎉 Secret Page</h1>
+    <p>You found the hidden page. Put whatever you want here—notes, downloads, or an embedded video.</p>
+    <a class="btn" href="${location.origin}${location.pathname}">Back to Home</a>
+  </div>
+</body></html>`;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank', 'noopener');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    });
+  }
 }
+
 
 
 function showToast() {
