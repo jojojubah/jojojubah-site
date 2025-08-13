@@ -1743,13 +1743,45 @@ ${styleDump}
 </div>
 
   <!-- PAGE CONTENT -->
-  <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;padding-top:120px;">
+<div class="container" style="min-height:100svh;padding:2rem;padding-top:120px;">
+  <!-- Main welcome card -->
+  <div style="display:grid;place-items:center;text-align:center;margin-bottom:3rem;">
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
       <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 Welcome to JubahLabs</h1>
       <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — this page is under construction. Feel free to check back later ;)</p>
       <a class="btn" href="${homeUrl}">Back to Home</a>
     </div>
   </div>
+
+  <!-- Additional cards grid -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto;">
+    
+    <!-- Card 1: Tools -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">AI Tools</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Custom AI tools and utilities for creators and developers.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+    <!-- Card 2: Tutorials -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">📚</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Exclusive Tutorials</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Advanced guides and step-by-step tutorials not available anywhere else.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+    <!-- Card 3: Community -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">👥</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Lab Community</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Connect with other creators and share your projects and experiments.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+  </div>
+</div>
 
   <!-- FOOTER -->
   <footer id="footer">
