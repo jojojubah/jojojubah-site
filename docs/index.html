@@ -844,7 +844,17 @@
     transform: translate(-50%, 0);
   }
 }
-
+/* Floating cursor trail animation */
+@keyframes float-up {
+  0% { 
+    transform: translateY(0) rotate(0deg); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(-200px) rotate(360deg); 
+    opacity: 0; 
+  }
+}
     
   </style>
 </head>
@@ -1944,20 +1954,25 @@ window.addEventListener('resize', (() => {
       });
     }
 
-    // === Cursor trail (desktop) — color follows theme (blue when OFF, green when ON) ===
-    var trail=[], trailLength=20;
-    document.addEventListener('mousemove', function(e){
-      trail.push({x:e.clientX,y:e.clientY});
-      if(trail.length>trailLength) trail.shift();
-      document.querySelectorAll('.cursor-trail').forEach(function(el){ el.remove(); });
-      var color = matrixOn ? '34,197,94' : '59,130,246'; // green : blue
-      trail.forEach(function(point, idx){
-        var dot=document.createElement('div');
-        dot.className='cursor-trail';
-        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba('+color+','+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
-        document.body.appendChild(dot);
-        setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
-      });
+    // === Cursor trail (desktop) - Easter Eggs style with matrix theme colors ===
+document.addEventListener('mousemove', function(e) {
+  // Create floating trail element
+  const trail = document.createElement('div');
+  trail.style.position = 'absolute';
+  trail.style.left = e.clientX + 'px';
+  trail.style.top = e.clientY + 'px';
+  trail.style.width = '6px';
+  trail.style.height = '6px';
+  trail.style.background = matrixOn ? '#22c55e' : '#3498db'; // green when matrix on, blue when off
+  trail.style.borderRadius = '50%';
+  trail.style.pointerEvents = 'none';
+  trail.style.position = 'fixed';
+  trail.style.zIndex = '9999';
+  trail.style.animation = 'float-up 1s ease-out forwards';
+  document.body.appendChild(trail);
+  
+  setTimeout(() => trail.remove(), 1000);
+});
     });
 
     // === Touch trails + burst (mobile) — color follows theme ===
@@ -1967,7 +1982,7 @@ window.addEventListener('resize', (() => {
       touchTrail.push({x:x,y:y,timestamp:Date.now()});
       touchTrail = touchTrail.filter(function(pt){ return Date.now()-pt.timestamp < 800; });
       document.querySelectorAll('.touch-trail').forEach(function(el){ el.remove(); });
-      var color = matrixOn ? '6,182,212' /* teal-ish green glow */ : '6,182,212'; // keep same for subtlety
+      var color = matrixOn ? '34,197,94' : '6,182,212'; // green when matrix on
       touchTrail.forEach(function(pt,idx){
         var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
         var el=document.createElement('div');
