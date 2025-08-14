@@ -328,24 +328,27 @@ document.addEventListener('DOMContentLoaded', () => {
   function moveMatrixBtn(){ const m = document.getElementById('matrixToggle'); if (m && !group.contains(m)) group.prepend(m); }
   moveMatrixBtn(); setTimeout(moveMatrixBtn, 0);
 
-  // --- Mobile hamburger (auto-injected; no HTML edits) ---
-  const nav = document.querySelector('nav .nav-container');
+  /* ==== Mobile Hamburger — open/close nav links ======================= */
+(function(){
+  const btn = document.getElementById('mobileMenuBtn') || document.querySelector('.mobile-menu-button');
   const links = document.querySelector('nav .nav-links');
-  if (nav && links){
-    let btn = document.querySelector('.mobile-menu-button');
-    if (!btn){
-      btn = document.createElement('button');
-      btn.className = 'mobile-menu-button';
-      btn.setAttribute('aria-label','Toggle menu');
-      btn.innerHTML = '<span class="hamburger"></span><span class="hamburger"></span><span class="hamburger"></span>';
-      nav.insertBefore(btn, links); // button before links
-    }
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('active');
-      links.classList.toggle('active');
+  if (!btn || !links) return;
+
+  // open/close on tap
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    links.classList.toggle('active');
+  });
+
+  // close menu after clicking a section link
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      links.classList.remove('active');
+      btn.classList.remove('active');
     });
-  }
+  });
 })();
+
 
 
 
