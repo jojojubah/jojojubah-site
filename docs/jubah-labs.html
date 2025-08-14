@@ -10,11 +10,9 @@
   <link rel="stylesheet" href="labs.css">
 </head>
 <body>
-  <!-- Background gradient from main theme is preserved by labs.css -->
   <div class="background-gradient"></div>
   <canvas class="matrix-bg" id="matrix-canvas" aria-hidden="true"></canvas>
 
-  <!-- Nav (same markup for consistency) -->
   <nav id="navbar">
     <div class="container">
       <div class="nav-container">
@@ -37,31 +35,26 @@
   </nav>
 
   <main>
-    <!-- Simple hero with theme toggle -->
     <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;">
       <div class="container">
         <h1 class="hero-title">Welcome to <span class="gradient-text">Jubah Labs</span></h1>
         <p class="hero-subtitle">Matrix mode demo + green theme</p>
-        <div id="matrixToggleWrap" style="margin-top:1.25rem;display:flex;gap:1rem;justify-content:center;">
-          <button class="btn" id="matrixToggle" type="button">Turn Matrix OFF</button>
-        </div>
+        <!-- (Matrix toggle is now always in the top-right .toggle-group) -->
       </div>
     </section>
 
-    <!-- Optional section for future experiments -->
     <section id="labs">
       <div class="container">
         <h2 class="section-title">Experiments</h2>
         <div class="about-content">
           <div class="about-text">
-            This page reuses your site styles & scripts. The green theme + Matrix background can be toggled.
+            This page reuses your site styles & scripts. The green theme + Matrix background can be toggled at the top-right.
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer (same structure) -->
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -80,7 +73,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="app.js" defer></script>
   <script src="labs.js" defer></script>
 </body>
