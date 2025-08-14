@@ -1,8 +1,6 @@
-/* Jubah Labs — Dark Neumorphism theme with Matrix green
-   Overrides global style.css only when #matrix-canvas exists */
+/* Jubah Labs — Dark Neumorphism theme with Matrix green */
 @import url("style.css");
 
-/* Matrix canvas stays behind */
 .matrix-bg{
   position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
 }
@@ -14,7 +12,7 @@ body:has(#matrix-canvas){
   --text: #e5e5e5;
   --text-dim: #b0b0b0;
   --text-muted: #8a8a8a;
-  --accent: #22c55e; /* green accent to align with Matrix */
+  --accent: #22c55e;
 
   --neu-light: rgba(255,255,255,.05);
   --neu-dark: rgba(0,0,0,.8);
@@ -28,18 +26,16 @@ body:has(#matrix-canvas){
   color: var(--text);
 }
 
-/* Header + Footer both dark */
-body:has(#matrix-canvas) nav{
-  background: rgba(13,13,13,.92);
-  border-bottom: 1px solid rgba(255,255,255,.05);
-  backdrop-filter: blur(8px);
-}
+/* Header + Footer unified */
+body:has(#matrix-canvas) nav,
 body:has(#matrix-canvas) footer{
   background: linear-gradient(145deg, #0d0d0d, #141414);
-  border-top: 1px solid rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.05);
+  border-width: 0 0 1px 0;
 }
+body:has(#matrix-canvas) footer{ border-width:1px 0 0 0; }
 
-/* Plates/cards dark */
+/* Plates/cards */
 body:has(#matrix-canvas) .neu-plate,
 body:has(#matrix-canvas) .about-text,
 body:has(#matrix-canvas) .project-card,
@@ -58,7 +54,7 @@ body:has(#matrix-canvas) .btn:hover{
   box-shadow: var(--neu-inset);
 }
 
-/* Section titles pop */
+/* Section titles */
 body:has(#matrix-canvas) .section-title{
   background: linear-gradient(90deg, #22c55e, #86efac);
   -webkit-background-clip:text;
@@ -67,14 +63,19 @@ body:has(#matrix-canvas) .section-title{
   opacity:.95;
 }
 
-/* Avatar styling */
+/* Avatar */
 body:has(#matrix-canvas) .site-avatar{
   border-color: rgba(255,255,255,.1);
   box-shadow: 6px 6px 14px rgba(0,0,0,.75),
               -6px -6px 14px rgba(255,255,255,.05);
 }
 
-/* Mobile nav surface */
+/* Cookie banner buttons → white text */
+body:has(#matrix-canvas) .cookie-btn{ color:#fff; }
+body:has(#matrix-canvas) .cookie-btn.accept{ color:#fff; }
+body:has(#matrix-canvas) .cookie-btn.decline{ color:#fff; }
+
+/* Mobile nav */
 @media (max-width:768px){
   body:has(#matrix-canvas) .nav-links{
     background: rgba(13,13,13,.95);
