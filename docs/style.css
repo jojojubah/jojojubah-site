@@ -440,6 +440,20 @@ body[data-theme="dark"] footer{
   nav .nav-links.active{ left:0; }
 }
 
+/* Accordion: force white text/icons in dark mode */
+body[data-theme="dark"] .acc-header{ color:#fff !important; }
+body[data-theme="dark"] .acc-inner{ color:#e5e5e5 !important; }
+body[data-theme="dark"] .acc-inner h3,
+body[data-theme="dark"] .acc-inner h4{ color:#fff !important; }
+
+/* SVG arrow inside header */
+body[data-theme="dark"] .acc-header .acc-icon,
+body[data-theme="dark"] .acc-header svg,
+body[data-theme="dark"] .acc-header svg path{
+  color:#fff !important;
+  fill:#fff !important;
+  stroke:none !important;
+}
 
 
 
