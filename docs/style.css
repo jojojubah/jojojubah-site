@@ -257,3 +257,64 @@ footer{
   .section-title{font-size: 2rem}
   #cookieConsentBanner{width:min(88vw,480px)}
 }
+/* === Dark Mode (site-wide) ===========================================
+   Applied when <body data-theme="dark"> is present. Mirrors Labs dark.
+   ------------------------------------------------------------------- */
+body[data-theme="dark"]{
+  /* tokens */
+  --bg: #0d0d0d;
+  --bg-2: #141414;
+  --text: #e5e5e5;
+  --text-dim: #b0b0b0;
+  --text-muted: #8a8a8a;
+  --accent: #22c55e; /* green accent to match Labs vibe */
+
+  --neu-light: rgba(255,255,255,.05);
+  --neu-dark: rgba(0,0,0,.8);
+  --neu-radius: 16px;
+  --neu-inset: inset 6px 6px 14px var(--neu-dark),
+               inset -6px -6px 14px var(--neu-light);
+  --neu-out:   10px 10px 22px rgba(0,0,0,.85),
+               -10px -10px 22px rgba(255,255,255,.04);
+
+  color: var(--text);
+  background: linear-gradient(145deg, var(--bg), var(--bg-2));
+}
+
+/* header & footer surfaces in dark */
+body[data-theme="dark"] nav,
+body[data-theme="dark"] footer{
+  background: linear-gradient(145deg, #0d0d0d, #141414);
+  border-color: rgba(255,255,255,.05);
+}
+
+/* plates/buttons/etc inherit the dark tokens automatically; ensure cookie text good */
+body[data-theme="dark"] .cookie-btn.accept{ color:#ffffff; }
+body[data-theme="dark"] .cookie-btn.decline{ color:#cccccc; }
+
+/* cookie Learn More modal title readable */
+body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
+
+/* --- Dark Mode Toggle button --- */
+#themeToggle{
+  position:fixed;
+  top:90px;              /* just beneath 80px navbar */
+  right:20px;
+  z-index:1000;
+  padding:.6rem 1rem;
+  border:0;
+  border-radius:12px;
+  font-weight:600;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--neu-out);
+  cursor:pointer;
+  transition: all .25s ease;
+}
+#themeToggle:hover{ box-shadow: var(--neu-inset); color: var(--accent); }
+
+/* keep tidy on mobile */
+@media (max-width:768px){
+  #themeToggle{ top:82px; right:12px; padding:.5rem .85rem; font-size:.9rem; }
+}
+
