@@ -339,4 +339,9 @@ body[data-theme="dark"] footer{
   border-color: rgba(255,255,255,.05) !important;
 }
 
+/* Mobile spacing tweak for the top-right toggle group */
+@media (max-width:768px){
+  .toggle-group{ top: 98px; }  /* was ~82px; this clears the navbar comfortably */
+}
+
 
