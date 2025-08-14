@@ -293,14 +293,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ? 'dark' : 'light';
 
   function applyTheme(mode){
-    if (mode === 'dark') {
-      body.setAttribute('data-theme','dark');
-    } else {
-      body.removeAttribute('data-theme');
-    }
-    localStorage.setItem(KEY, mode);
-    themeBtn.textContent = (mode === 'dark') ? 'Light Mode' : 'Dark Mode';
+  if (mode === 'dark') {
+    body.setAttribute('data-theme','dark');
+  } else {
+    body.removeAttribute('data-theme');
   }
+  localStorage.setItem(KEY, mode);
+  themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️';
+}
+
 
   // ensure wrapper group exists
   let group = document.querySelector('.toggle-group');
