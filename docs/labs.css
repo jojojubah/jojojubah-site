@@ -1,144 +1,47 @@
-/* Jubah Labs — Matrix-friendly page that respects the site theme (light/dark) */
+/* Jubah Labs — Matrix-friendly page */
+/* Inherit all components from main site */
 @import url("style.css");
 
-/* Canvas behind content */
-.matrix-bg{
-  position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
-}
+/* Matrix canvas sits behind content */
+.matrix-bg{ position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2 }
 
-/* Minimal page background (soft, no bright white blooms) */
+/* Softer page backdrop when Matrix is present (both themes) */
 body:has(#matrix-canvas) .background-gradient{
   background:
     radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,0.04) 0%, transparent 60%),
     linear-gradient(145deg, var(--bg), var(--bg-2));
 }
 
-/* ---------- Matrix color tokens (LIGHT default) ---------- */
-body:has(#matrix-canvas){
-  /* On light theme: fade toward white; digits = deep emerald */
-  --matrix-color: rgba(34, 197, 94, 0.90);   /* emerald 500-ish */
-  --matrix-glow:  rgba(34, 197, 94, 0.00);   /* no glow on light */
-  --matrix-fade:  rgba(255, 255, 255, 0.08); /* white-ish fade */
+/* -------- Matrix tokens (theme-aware via CSS vars) -------- */
+body:not([data-theme="dark"]):has(#matrix-canvas){
+  --matrix-color:#3b82f6;     /* blue digits on light mode */
+  --matrix-glow:rgba(0,0,0,0);/* no halo */
+  --matrix-fade:rgba(255,255,255,0.08);
 }
-
-/* ---------- Matrix color tokens (DARK theme) ---------- */
 body[data-theme="dark"]:has(#matrix-canvas){
-  /* On dark theme: classic neon green with soft glow; fade to black */
-  --matrix-color: #00ff41;
-  --matrix-glow:  rgba(0, 255, 65, 0.25);
-  --matrix-fade:  rgba(0, 0, 0, 0.07);
+  --matrix-color:#00ff41;     /* classic green digits */
+  --matrix-glow:rgba(0,255,65,0.06); /* tiny halo */
+  --matrix-fade:rgba(0,0,0,0.08);     /* longer trails, same as light */
 }
 
-/* Use the global tokens from style.css for components */
-body:has(#matrix-canvas) .neu-plate,
-body:has(#matrix-canvas) .about-text,
-body:has(#matrix-canvas) .project-card,
-body:has(#matrix-canvas) .contact-info,
-body:has(#matrix-canvas) #cookieConsentBanner,
-body:has(#matrix-canvas) .footer-links a,
-body:has(#matrix-canvas) .nav-link,
-body:has(#matrix-canvas) .btn{
-  background: var(--bg);
-  color: var(--text);
-  box-shadow: var(--neu-out);
-}
-body:has(#matrix-canvas) .nav-link:hover,
-body:has(#matrix-canvas) .footer-links a:hover,
-body:has(#matrix-canvas) .btn:hover{
-  box-shadow: var(--neu-inset);
-}
+/* Enforce pure black underlay in dark mode: no green wash at all */
+body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
+body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{ background:#000 !important }
 
-/* Title accent stays green on Labs */
+/* Reuse components with site tokens */
 body:has(#matrix-canvas) .section-title{
   background: linear-gradient(90deg, #22c55e, #86efac);
-  -webkit-background-clip:text; background-clip:text;
-  color: transparent; opacity:.95;
+  -webkit-background-clip:text;background-clip:text;color:transparent;opacity:.95;
 }
+body:has(#matrix-canvas) .site-avatar{ border-color:rgba(255,255,255,.1); box-shadow:6px 6px 14px rgba(0,0,0,.75), -6px -6px 14px rgba(255,255,255,.05) }
+body:has(#matrix-canvas) .learn-more-modal h3{ color:#fff }
 
-/* Avatar rim */
-body:has(#matrix-canvas) .site-avatar{
-  border-color: rgba(255,255,255,.1);
-  box-shadow: 6px 6px 14px rgba(0,0,0,.75), -6px -6px 14px rgba(255,255,255,.05);
-}
+/* Matrix toggle adopts the shared top-right styles from style.css */
+#matrixToggle{ all:unset; display:inline-block; padding:.5rem .75rem; border-radius:12px; font-weight:600; cursor:pointer;
+  background:var(--bg); color:var(--text); box-shadow:var(--neu-out); transition:all .25s ease }
+#matrixToggle:hover{ box-shadow:var(--neu-inset); color:var(--accent) }
 
-/* Cookie modal heading readability */
-body:has(#matrix-canvas) .learn-more-modal h3{ color:#ffffff; }
-
-/* Use the shared toggle-group styles from style.css; no fixed pos here */
-#matrixToggle{ all: unset; }
-#matrixToggle{
-  display:inline-block; padding:.5rem .75rem; border-radius:12px; font-weight:600; cursor:pointer;
-  background: var(--bg); color: var(--text); box-shadow: var(--neu-out); transition: all .25s ease;
-}
-#matrixToggle:hover{ box-shadow: var(--neu-inset); color: var(--accent); }
-
-/* Dark mobile menu background; light uses default */
-body[data-theme="dark"]:has(#matrix-canvas) .nav-links{
-  background: rgba(13,13,13,.95);
-}
-
-/* Mobile sizing for the Matrix button */
+/* Mobile size tweak */
 @media (max-width:768px){
-  #matrixToggle{ padding:.45rem .6rem; font-size:.9rem; }
+  #matrixToggle{ padding:.45rem .6rem; font-size:.9rem }
 }
-
-/* === Fix: Pure black Matrix background in DARK mode ================== */
-/* Put solid black directly under the canvas only on Labs + dark theme */
-body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg{
-  background:#000 !important;
-}
-
-/* Keep the trail fade truly black in dark mode (removes any tint) */
-body[data-theme="dark"]:has(#matrix-canvas){
-  --matrix-fade: rgba(0,0,0,0.14);
-  --matrix-glow: rgba(0,255,65,0.18); /* soft glow; lower if you want zero haze */
-}
-
-/* Ensure the page-wide gradient behind everything stays neutral (no green) */
-body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
-  background:#000 !important;
-}
-
-/* === Dark-mode Matrix: slightly longer trails, tiny glow, still pure black === */
-body[data-theme="dark"]:has(#matrix-canvas){
-  --matrix-glow: rgba(0,255,65,0.08);  /* tiny neon halo (was transparent) */
-  --matrix-fade: rgba(0,0,0,0.26);     /* softer fade (was 0.48) => longer trails */
-}
-
-/* keep the solid-black underlay so there’s no green tint */
-body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
-body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
-  background:#000 !important;
-}
-
-/* Matrix (DARK mode): match light-mode trail length + keep pure black bg */
-body[data-theme="dark"]:has(#matrix-canvas){
-  /* same fade strength as light mode (0.08) => longer trails */
-  --matrix-fade: rgba(0,0,0,0.08);
-  /* tiny halo only, keep it subtle */
-  --matrix-glow: rgba(0,255,65,0.06);
-}
-
-/* keep the underlay pure black so no green wash returns */
-body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
-body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
-  background:#000 !important;
-}
-
-/* Labs (DARK): match light-mode trail length + pure-black underlay */
-body[data-theme="dark"]:has(#matrix-canvas){
-  --matrix-fade: rgba(0,0,0,0.08);   /* same as light => longer trails */
-  --matrix-glow: rgba(0,255,65,0.06);/* tiny halo only */
-}
-body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
-body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
-  background:#000 !important;
-}
-
-/* Labs light mode: use blue matrix digits */
-body:not([data-theme="dark"]):has(#matrix-canvas){
-  --matrix-color: #3b82f6;            /* brand blue */
-  --matrix-glow:  rgba(0,0,0,0);      /* no glow on light */
-  --matrix-fade:  rgba(255,255,255,0.08); /* white-ish trail like before */
-}
-
