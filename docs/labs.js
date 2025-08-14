@@ -1,18 +1,32 @@
-// Jubah Labs — Classic Matrix rain (starts ON) + works with .toggle-group
+// Jubah Labs — Matrix rain (theme-aware: light vs dark) + toggle integration
 (function () {
   var canvas = document.getElementById('matrix-canvas');
   if (!canvas) return;
 
   var ctx = canvas.getContext('2d');
-  var MATRIX_COLOR = '#00ff41';
-  var BG_FADE      = 'rgba(0, 0, 0, 0.07)';
-  var characters   = 'アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-  var drops = [];
-  var rowStep = 16;
-  var speedMs = 75;
-  var intervalId = null;
-  var lastW = 0, lastH = 0;
+  // Palette from CSS variables (updates when theme changes)
+  var MATRIX_COLOR = '#00ff41';
+  var GLOW_COLOR   = 'rgba(0,255,65,0.25)';
+  var BG_FADE      = 'rgba(0,0,0,0.07)';
+  var useGlow = true;
+
+  function updatePalette(){
+    var cs = getComputedStyle(document.body);
+    MATRIX_COLOR = (cs.getPropertyValue('--matrix-color') || '#00ff41').trim();
+    GLOW_COLOR   = (cs.getPropertyValue('--matrix-glow')  || 'rgba(0,0,0,0)').trim();
+    BG_FADE      = (cs.getPropertyValue('--matrix-fade')  || 'rgba(0,0,0,0.07)').trim();
+    // glow only if non-transparent
+    useGlow = !/rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)|transparent/i.test(GLOW_COLOR) && !/^\s*$/.test(GLOW_COLOR);
+  }
+  updatePalette();
+
+  // Watch for theme changes (data-theme attribute)
+  new MutationObserver(updatePalette).observe(document.body, { attributes:true, attributeFilter:['data-theme'] });
+
+  // Matrix engine
+  var characters = 'アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var drops = [], rowStep = 16, speedMs = 75, intervalId = null, lastW = 0, lastH = 0;
 
   function resize(keep) {
     var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -46,8 +60,15 @@
   })());
 
   function draw() {
+    // trail fade (white-ish on light, black-ish on dark)
     ctx.fillStyle = BG_FADE;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // optional glow on dark
+    ctx.shadowColor = GLOW_COLOR;
+    ctx.shadowBlur = useGlow ? 8 : 0;
+
+    // glyphs
     ctx.fillStyle = MATRIX_COLOR;
     ctx.font = '20px monospace';
 
@@ -61,31 +82,27 @@
     }
   }
 
-  // Start/stop helpers
+  // Start/stop
   function start(){ if (!intervalId) intervalId = setInterval(draw, speedMs); canvas.style.display=''; }
   function stop(){ if (intervalId){ clearInterval(intervalId); intervalId=null; } ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
 
   // Start ON by default
   start();
 
-  // Hook up the toggle button and move it into the .toggle-group
+  // Ensure toggle exists + move into .toggle-group
   var btn = document.getElementById('matrixToggle');
   if (!btn) {
     btn = document.createElement('button');
     btn.id = 'matrixToggle';
-    btn.textContent = 'Turn Matrix Off';
   }
   var group = document.querySelector('.toggle-group');
   if (group && !group.contains(btn)) group.appendChild(btn); else if (!btn.isConnected) document.body.appendChild(btn);
 
-  // Label + click
-function setLabel(){
-  btn.textContent = intervalId ? '🟢 Matrix' : '⚫ Matrix';
-}
-setLabel();
-btn.addEventListener('click', function(){
-  if (intervalId) stop(); else start();
+  // Labels (compact)
+  function setLabel(){ btn.textContent = intervalId ? '🟢 Matrix' : '⚫ Matrix'; }
   setLabel();
-});
-
+  btn.addEventListener('click', function(){
+    if (intervalId) stop(); else start();
+    setLabel();
+  });
 })();
