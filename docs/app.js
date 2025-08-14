@@ -284,12 +284,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
   
-  /* ==== Dark Mode Toggle (robust) ===================================== */
+  /* ==== Dark Mode (page-specific default) + Toggle + Mobile Hamburger === */
 (function(){
   const body = document.body;
-  const KEY = 'site-theme';
 
-  // Ensure the toggle group exists (top-right under navbar)
+  // --- Page-specific DEFAULT on every load (ignores saved state) ---
+  // Home (no #matrix-canvas) => light; Labs (has #matrix-canvas) => dark
+  const isLabs = !!document.getElementById('matrix-canvas');
+  const initial = isLabs ? 'dark' : 'light';
+
+  // Ensure the top-right toggle group exists
   let group = document.querySelector('.toggle-group');
   if (!group){
     group = document.createElement('div');
@@ -297,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(group);
   }
 
-  // Create or get the theme button
+  // Create/get the theme button
   let themeBtn = document.getElementById('themeToggle');
   if (!themeBtn){
     themeBtn = document.createElement('button');
@@ -305,40 +309,44 @@ document.addEventListener('DOMContentLoaded', () => {
     group.appendChild(themeBtn);
   }
 
-  // Helpers
-  function setIcon(mode){
-    themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️';
-  }
+  function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
   function applyTheme(mode){
     if (mode === 'dark') body.setAttribute('data-theme','dark');
     else body.removeAttribute('data-theme');
-    localStorage.setItem(KEY, mode);
     setIcon(mode);
   }
 
-  // Decide initial mode
-  const saved = localStorage.getItem(KEY);
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initial = (saved === 'dark' || (saved === null && prefersDark)) ? 'dark' : 'light';
-
-  // Apply immediately
+  // Apply default every load, then let user toggle
   applyTheme(initial);
 
-  // Click to toggle
   themeBtn.addEventListener('click', () => {
     const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     applyTheme(next);
   });
 
-  // If Matrix toggle exists (on Labs), move it into the group; if it’s injected later, catch it too.
-  function moveMatrixBtnIfPresent(){
-    const m = document.getElementById('matrixToggle');
-    if (m && !group.contains(m)) group.appendChild(m);
+  // If Matrix toggle appears later (Labs), pull it into the group so it sits left of themeBtn
+  function moveMatrixBtn(){ const m = document.getElementById('matrixToggle'); if (m && !group.contains(m)) group.prepend(m); }
+  moveMatrixBtn(); setTimeout(moveMatrixBtn, 0);
+
+  // --- Mobile hamburger (auto-injected; no HTML edits) ---
+  const nav = document.querySelector('nav .nav-container');
+  const links = document.querySelector('nav .nav-links');
+  if (nav && links){
+    let btn = document.querySelector('.mobile-menu-button');
+    if (!btn){
+      btn = document.createElement('button');
+      btn.className = 'mobile-menu-button';
+      btn.setAttribute('aria-label','Toggle menu');
+      btn.innerHTML = '<span class="hamburger"></span><span class="hamburger"></span><span class="hamburger"></span>';
+      nav.insertBefore(btn, links); // button before links
+    }
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      links.classList.toggle('active');
+    });
   }
-  moveMatrixBtnIfPresent();
-  // Try again on the next tick in case labs.js added it after us
-  setTimeout(moveMatrixBtnIfPresent, 0);
 })();
+
 
 
 
