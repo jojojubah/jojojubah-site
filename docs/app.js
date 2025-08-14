@@ -1,6 +1,6 @@
-/* app.js — shared site logic (no Matrix) */
+/* app.js — shared site logic */
 
-// --- Cookie Consent + Google Analytics (runs on every page) ---
+/* ================= Cookie Consent + Google Analytics ================== */
 (function cookieConsent(){
   const MEASUREMENT_ID = 'G-0ZM44HTK32';
 
@@ -23,26 +23,23 @@
   function enableGoogleAnalytics() {
     if (window.GA_LOADED) return;
     window.GA_LOADED = true;
-    const ga = document.createElement('script');
-    ga.async = true;
-    ga.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-    document.head.appendChild(ga);
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(s);
 
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     window.gtag = gtag;
     gtag('js', new Date());
-    gtag('config', MEASUREMENT_ID, {
-      anonymize_ip: true,
-      cookie_flags: 'secure;samesite=strict'
-    });
+    gtag('config', MEASUREMENT_ID, { anonymize_ip: true, cookie_flags: 'secure;samesite=strict' });
   }
 
   function showConsentBanner() {
     ensureBanner();
     const consent = localStorage.getItem('cookieConsent');
     const banner = document.getElementById('cookieConsentBanner');
-    if (!consent) { banner.style.display = 'block'; }
+    if (!consent) banner.style.display = 'block';
     else if (consent === 'accepted') enableGoogleAnalytics();
   }
 
@@ -54,17 +51,16 @@
 
     accept && (accept.onclick = function(){
       localStorage.setItem('cookieConsent','accepted');
-      if (banner) banner.style.display = 'none';
+      banner && (banner.style.display = 'none');
       enableGoogleAnalytics();
     });
 
     decline && (decline.onclick = function(){
       localStorage.setItem('cookieConsent','declined');
-      if (banner) banner.style.display = 'none';
+      banner && (banner.style.display = 'none');
       console.log('❌ Analytics declined by user');
     });
 
-    // Simple Learn More modal (only if the link exists on this page)
     learnMore && (learnMore.onclick = function(e){
       e.preventDefault();
       const modal = document.createElement('div');
@@ -74,7 +70,7 @@
         <div class="learn-more-modal">
           <button class="close-btn" id="closeModal">&times;</button>
           <h3>🍪 Why Accept Cookies?</h3>
-          <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+          <p style="color: var(--text-dim); line-height: 1.6; margin-bottom: 1.5rem;">
             We use Google Analytics to understand which content you love most, so we can create better tutorials and projects for you! 🎯<br><br>
             ✅ Helps improve your experience<br>
             ✅ Shows which tutorials are most helpful<br>
@@ -89,16 +85,13 @@
     });
   }
 
-  // init immediately (safe even before DOMContentLoaded)
-  showConsentBanner();
-  // defer wiring until DOM is ready, so banner nodes are present
+  showConsentBanner();                               // safe before DOM ready
   document.addEventListener('DOMContentLoaded', hookBannerButtons);
 })();
 
-
-// --- Main site interactions (guarded so they don’t error on Labs page) ---
+/* ========================= Main Site Interactions ===================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // Sticky navbar + active section highlight
+  // Sticky navbar, scroll progress, fade-ins, active link
   const navbar = document.getElementById('navbar');
   const scrollIndicator = document.getElementById('scrollIndicator');
   const navLinks = document.querySelectorAll('.nav-link');
@@ -106,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onScroll() {
     const y = window.scrollY || window.pageYOffset;
-    if (navbar) navbar.classList.toggle('scrolled', y > 20);
+
+    navbar && navbar.classList.toggle('scrolled', y > 20);
 
     if (scrollIndicator) {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
@@ -120,87 +114,89 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active link
+    // active nav link
     let current = '';
-    sections.forEach(sec => {
-      const top = sec.offsetTop - 120;
-      if (y >= top) current = sec.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+    sections.forEach(sec => { if (y >= sec.offsetTop - 120) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  onScroll(); // run once so sections are visible even before scrolling
 
-  // Mobile menu
+  // Mobile menu (hamburger)
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const navLinksContainer = document.querySelector('.nav-links');
   if (mobileMenuBtn && navLinksContainer) {
-    mobileMenuBtn.addEventListener('click', function () {
+    mobileMenuBtn.addEventListener('click', function(){
       this.classList.toggle('active');
       navLinksContainer.classList.toggle('active');
     });
   }
 
-  // Particles + cursor trails (skip here if Matrix canvas exists to avoid double effects on Labs)
-  const hasMatrix = !!document.getElementById('matrix-canvas');
-  if (!hasMatrix) {
-    // cursor trail (desktop)
+  // Light cursor trails only on main page (skip if matrix exists)
+  if (!document.getElementById('matrix-canvas')) {
     let trail = [], trailLength = 20;
     document.addEventListener('mousemove', (e) => {
       trail.push({ x: e.clientX, y: e.clientY });
       if (trail.length > trailLength) trail.shift();
       document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
-      const color = '59,130,246'; // blue for main site
+      const color = '59,130,246';
       trail.forEach((p, i) => {
         const dot = document.createElement('div');
         dot.className = 'cursor-trail';
-        dot.style.cssText = `position:fixed;left:${p.x}px;top:${p.y}px;width:${4 - i * 0.2}px;height:${4 - i * 0.2}px;background:rgba(${color},${0.5 - i * 0.025});border-radius:50%;pointer-events:none;z-index:9999;transition:all .1s ease-out;`;
+        dot.style.cssText = `position:fixed;left:${p.x}px;top:${p.y}px;width:${4 - i*0.2}px;height:${4 - i*0.2}px;background:rgba(${color},${Math.max(0,0.5 - i*0.025)});border-radius:50%;pointer-events:none;z-index:9999;`;
         document.body.appendChild(dot);
-        setTimeout(() => dot.remove(), 100);
+        setTimeout(()=>dot.remove(), 40);
       });
-    });
-
-    // touch effects
-    function isMobile(){
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-             || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    }
-    function createTouchTrail(x,y){
-      const el = document.createElement('div');
-      el.className = 'touch-trail';
-      el.style.cssText = `position:fixed;left:${x-6}px;top:${y-6}px;width:12px;height:12px;background:rgba(59,130,246,.6);border-radius:50%;pointer-events:none;z-index:9998;`;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 250);
-    }
-    function createParticleBurst(x,y){
-      const colors = ['#3b82f6','#06b6d4','#8b5cf6','#10b981'];
-      const count = 6;
-      for (let i=0;i<count;i++){
-        const ang = (360/count)*i, vel = 30+Math.random()*20, color = colors[Math.floor(Math.random()*colors.length)];
-        const el = document.createElement('div');
-        el.style.cssText = `position:fixed;left:${x-3}px;top:${y-3}px;width:6px;height:6px;background:${color};border-radius:50%;pointer-events:none;z-index:9997;animation:particleBurst${i} .8s ease-out forwards;`;
-        if(!document.getElementById('pbkf-'+i)){
-          const s = document.createElement('style');
-          s.id='pbkf-'+i;
-          s.textContent = `@keyframes particleBurst${i}{0%{transform:translate(0,0) scale(1);opacity:1;}100%{transform:translate(${Math.cos(ang*Math.PI/180)*vel}px,${Math.sin(ang*Math.PI/180)*vel}px) scale(0);opacity:0;}}`;
-          document.head.appendChild(s);
-        }
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 800);
-      }
-    }
-    if (isMobile()){
-      document.addEventListener('touchstart', e => { const t=e.touches[0]; createParticleBurst(t.clientX,t.clientY); }, {passive:true});
-      document.addEventListener('touchmove',  e => { const t=e.touches[0]; createTouchTrail(t.clientX,t.clientY); }, {passive:true});
-      const css = document.createElement('style');
-      css.textContent = '@media (max-width:768px){.cursor-trail{display:none!important;}}';
-      document.head.appendChild(css);
-    }
+    }, { passive: true });
   }
 
-  // Accordion + toast
+  /* ======================= Dark/Light Mode Toggle ===================== */
+  (function initThemeToggle(){
+    const body = document.body;
+
+    // Ensure a single shared group for top-right toggles
+    let group = document.querySelector('.toggle-group');
+    if (!group) {
+      group = document.createElement('div');
+      group.className = 'toggle-group';
+      document.body.appendChild(group);
+    }
+
+    // Create theme button (always present on both pages)
+    let themeBtn = document.getElementById('themeToggle');
+    if (!themeBtn) {
+      themeBtn = document.createElement('button');
+      themeBtn.id = 'themeToggle';
+      group.appendChild(themeBtn);
+    }
+
+    function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
+    function apply(mode){
+      if (mode === 'dark') body.setAttribute('data-theme','dark');
+      else body.removeAttribute('data-theme');
+      setIcon(mode);
+    }
+
+    // Page defaults: main = light, labs = dark (always open like this)
+    const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
+    const initial = isLabs ? 'dark' : 'light';
+    apply(initial);
+
+    themeBtn.addEventListener('click', () => {
+      const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+    });
+
+    // If Matrix button gets injected later by labs.js, move it next to theme button
+    const moveMatrixBtn = () => {
+      const m = document.getElementById('matrixToggle');
+      if (m && !group.contains(m)) group.appendChild(m);
+    };
+    moveMatrixBtn();
+    setTimeout(moveMatrixBtn, 0);
+  })();
+
+  /* ===================== Accordion + Easter Egg Toast ================= */
   const accButtons = document.querySelectorAll('.acc-header');
   const toastEl = document.getElementById('learnToast');
   const totalAcc = accButtons.length;
@@ -208,67 +204,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let toastShown = false;
 
   function setPanelHeight(panel, open) { panel.style.maxHeight = open ? (panel.scrollHeight+'px') : 0; }
-
-  function showToast() {
+  function showToast(){
     if (!toastEl || toastShown) return;
     toastEl.classList.add('show');
-    addBonusAccordion(); // add extra item once unlocked
     toastShown = true;
     setTimeout(() => toastEl.classList.remove('show'), 6000);
-  }
-
-  function addBonusAccordion(){
-    if (document.getElementById('acc-item-bonus')) return;
-    const container = document.getElementById('learnAccordion');
-    if (!container) return;
-
-    container.insertAdjacentHTML('beforeend', `
-      <div class="acc-item" id="acc-item-bonus">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
-          <span>Hmm… What's this?</span>
-          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
-          </svg>
-        </button>
-        <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
-          <div class="acc-inner">
-            <h3>Bonus Unlock!!</h3>
-            <p>Nice one! You explored every topic. Here’s a Link to JubahLabs.</p>
-            <h4>Ideas to try next</h4>
-            <p>• Turn a prompt into a JSON file and attach it in your chat.<br>
-               • Try creating your own agent with N8N.<br>
-               • Test an opensource model locally and note trade-offs.</p>
-            <p class="muted">Psst — you can see this panel because you opened all topics 😉</p>
-            <div style="margin-top:1rem">
-              <a class="btn" href="jubah-labs.html">Open JubahLabs</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-
-    // wire up this new item (collapsed by default)
-    const btn = document.getElementById('acc-button-bonus');
-    const item = btn?.closest('.acc-item');
-    const panel = item?.querySelector('.acc-content');
-    if (item && panel && btn) {
-      item.classList.remove('open');
-      setPanelHeight(panel, false);
-      btn.setAttribute('aria-expanded', 'false');
-      btn.addEventListener('click', () => {
-        const isOpen = item.classList.toggle('open');
-        btn.setAttribute('aria-expanded', String(isOpen));
-        setPanelHeight(panel, isOpen);
-      });
-    }
   }
 
   accButtons.forEach(btn => {
     const item = btn.closest('.acc-item');
     const panel = item.querySelector('.acc-content');
-    item.classList.remove('open');
-    setPanelHeight(panel, false);
-    btn.setAttribute('aria-expanded', 'false');
+    item.classList.remove('open'); setPanelHeight(panel, false);
+    btn.setAttribute('aria-expanded','false');
     btn.addEventListener('click', () => {
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(isOpen));
@@ -280,77 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Footer year (works on both pages)
+  // Footer year
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
-  
-  /* ==== Dark Mode (page-specific default) + Toggle + Mobile Hamburger === */
-(function(){
-  const body = document.body;
-
-  // --- Page-specific DEFAULT on every load (ignores saved state) ---
-  // Home (no #matrix-canvas) => light; Labs (has #matrix-canvas) => dark
-  const isLabs = !!document.getElementById('matrix-canvas');
-  const initial = isLabs ? 'dark' : 'light';
-
-  // Ensure the top-right toggle group exists
-  let group = document.querySelector('.toggle-group');
-  if (!group){
-    group = document.createElement('div');
-    group.className = 'toggle-group';
-    document.body.appendChild(group);
-  }
-
-  // Create/get the theme button
-  let themeBtn = document.getElementById('themeToggle');
-  if (!themeBtn){
-    themeBtn = document.createElement('button');
-    themeBtn.id = 'themeToggle';
-    group.appendChild(themeBtn);
-  }
-
-  function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
-  function applyTheme(mode){
-    if (mode === 'dark') body.setAttribute('data-theme','dark');
-    else body.removeAttribute('data-theme');
-    setIcon(mode);
-  }
-
-  // Apply default every load, then let user toggle
-  applyTheme(initial);
-
-  themeBtn.addEventListener('click', () => {
-    const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-  });
-
-  // If Matrix toggle appears later (Labs), pull it into the group so it sits left of themeBtn
-  function moveMatrixBtn(){ const m = document.getElementById('matrixToggle'); if (m && !group.contains(m)) group.prepend(m); }
-  moveMatrixBtn(); setTimeout(moveMatrixBtn, 0);
-
-  /* ==== Mobile Hamburger — open/close nav links ======================= */
-(function(){
-  const btn = document.getElementById('mobileMenuBtn') || document.querySelector('.mobile-menu-button');
-  const links = document.querySelector('nav .nav-links');
-  if (!btn || !links) return;
-
-  // open/close on tap
-  btn.addEventListener('click', () => {
-    btn.classList.toggle('active');
-    links.classList.toggle('active');
-  });
-
-  // close menu after clicking a section link
-  links.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      links.classList.remove('active');
-      btn.classList.remove('active');
-    });
-  });
-})();
-
-
-
-
-
 });
