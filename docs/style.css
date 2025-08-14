@@ -332,5 +332,11 @@ body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
   #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem; }
 }
 
+/* Ensure dark header/footer always win over light defaults */
+body[data-theme="dark"] nav,
+body[data-theme="dark"] footer{
+  background: linear-gradient(145deg, #0d0d0d, #141414) !important;
+  border-color: rgba(255,255,255,.05) !important;
+}
 
 
