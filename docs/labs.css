@@ -5,7 +5,6 @@
   position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
 }
 
-/* Dark variant tokens */
 body:has(#matrix-canvas){
   --bg: #0d0d0d;
   --bg-2: #141414;
@@ -70,14 +69,38 @@ body:has(#matrix-canvas) .site-avatar{
               -6px -6px 14px rgba(255,255,255,.05);
 }
 
-/* Cookie banner buttons → white text */
-body:has(#matrix-canvas) .cookie-btn{ color:#fff; }
-body:has(#matrix-canvas) .cookie-btn.accept{ color:#fff; }
-body:has(#matrix-canvas) .cookie-btn.decline{ color:#fff; }
+/* Cookie banner buttons */
+body:has(#matrix-canvas) .cookie-btn.accept{ color:#ffffff; }
+body:has(#matrix-canvas) .cookie-btn.decline{ color:#cccccc; }
+
+/* Cookie modal title → white */
+body:has(#matrix-canvas) .learn-more-modal h3{ color:#ffffff; }
+
+/* Matrix toggle button */
+#matrixToggle{
+  position:fixed;
+  top:90px;   /* just under 80px navbar */
+  right:20px;
+  z-index:1000;
+  padding:.6rem 1rem;
+  border-radius:12px;
+  font-weight:600;
+  background:#0d0d0d;
+  color:#e5e5e5;
+  box-shadow: var(--neu-out);
+  cursor:pointer;
+  border:0;
+  transition: all .25s ease;
+}
+#matrixToggle:hover{
+  box-shadow: var(--neu-inset);
+  color:#22c55e;
+}
 
 /* Mobile nav */
 @media (max-width:768px){
   body:has(#matrix-canvas) .nav-links{
     background: rgba(13,13,13,.95);
   }
+  #matrixToggle{ top:82px; right:12px; padding:.5rem .85rem; font-size:.9rem; }
 }
