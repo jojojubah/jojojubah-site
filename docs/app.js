@@ -1,4 +1,4 @@
-<script>
+
   (function(){
     // === MATRIX BACKGROUND (slowed down to match your file) ===
     var canvas = document.getElementById('matrix-canvas');
@@ -256,4 +256,4 @@ accButtons.forEach(btn => {
 // }
 
     });
-  </script>
+  
