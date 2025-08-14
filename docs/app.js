@@ -197,30 +197,49 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ===================== Accordion + Easter Egg Toast ================= */
-// containers
-const accContainer = document.getElementById('learnAccordion');
-const accButtons   = document.querySelectorAll('.acc-header');
-const toastEl      = document.getElementById('learnToast');
+// container + elements
+const accContainer =
+  document.getElementById('learnAccordion') ||
+  document.querySelector('.accordion');
+const accButtons = document.querySelectorAll('.acc-header');
+const toastEl    = document.getElementById('learnToast');
 
-// track which originals were opened
+// count ONLY originals present at load (not the future bonus item)
+const initialCount = accContainer
+  ? accContainer.querySelectorAll('.acc-item').length
+  : accButtons.length;
+
 const OPENED = new Set();
-// count only original items (not the bonus)
-const initialCount = accContainer ? accContainer.querySelectorAll('.acc-item').length : accButtons.length;
-let toastShown = false;
+let unlocked  = false;
 
-// helper for smooth open/close height
+// helpers
 function setPanelHeight(panel, open){
   panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
 }
 
-// create the bonus item (idempotent)
+function wireAccordionItem(item){
+  const btn   = item.querySelector('.acc-header');
+  const panel = item.querySelector('.acc-content');
+  if (!btn || !panel) return;
+
+  item.classList.remove('open');
+  setPanelHeight(panel, false);
+  btn.setAttribute('aria-expanded','false');
+
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+    setPanelHeight(panel, isOpen);
+  });
+}
+
 function addBonusAccordion(){
   if (!accContainer || document.getElementById('acc-item-bonus')) return;
 
   accContainer.insertAdjacentHTML('beforeend', `
     <div class="acc-item" id="acc-item-bonus">
       <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
-        <span>Hmm… What's this?</span>
+        <span>Hmm… What’s this?</span>
         <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
         </svg>
@@ -228,12 +247,11 @@ function addBonusAccordion(){
       <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
         <div class="acc-inner">
           <h3>Bonus Unlock!!</h3>
-          <p>Nice one! You explored every topic. Here’s a Link to JubahLabs.</p>
+          <p>Nice one! You explored every topic. Here’s a link to JubahLabs.</p>
           <h4>Ideas to try next</h4>
-          <p>• Turn a prompt into a JSON file and attach it in your chat.<br>
-             • Try creating your own agent with N8N.<br>
-             • Test an opensource model locally and note trade-offs.</p>
-          <p class="muted">Psst — you can see this panel because you opened all topics 😉</p>
+          <p>• Turn a prompt into JSON and attach it in chat.<br>
+             • Build a tiny agent in n8n.<br>
+             • Test an open-source model locally and compare.</p>
           <div style="margin-top:1rem">
             <a class="btn" href="jubah-labs.html">Open JubahLabs</a>
           </div>
@@ -242,55 +260,44 @@ function addBonusAccordion(){
     </div>
   `);
 
-  // wire up the new item
-  const btn   = document.getElementById('acc-button-bonus');
-  const item  = btn?.closest('.acc-item');
-  const panel = item?.querySelector('.acc-content');
-  if (btn && item && panel){
-    item.classList.remove('open'); setPanelHeight(panel, false);
-    btn.setAttribute('aria-expanded','false');
-    btn.addEventListener('click', ()=>{
-      const isOpen = item.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(isOpen));
-      setPanelHeight(panel, isOpen);
-    });
-  }
+  const bonusItem = document.getElementById('acc-item-bonus');
+  if (bonusItem) wireAccordionItem(bonusItem);
 }
 
-// toast + unlock helper
-function showToastAndBonus(){
-  if (toastShown) return;
-  if (toastEl){
-    toastEl.classList.add('show');
-    setTimeout(()=>toastEl.classList.remove('show'), 6000);
-  }
+function showToast(){
+  if (!toastEl) return;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'), 6000);
+}
+
+function unlockBonus(){
+  if (unlocked) return;
+  unlocked = true;
   addBonusAccordion();
-  localStorage.setItem('learnBonusUnlocked','1'); // persist across reloads
-  toastShown = true;
+  showToast();
+  localStorage.setItem('learnBonusUnlocked','1');
 }
 
-// recreate bonus if user unlocked previously
+// re-create bonus on reload if previously unlocked
 if (localStorage.getItem('learnBonusUnlocked') === '1') {
+  unlocked = true;
   addBonusAccordion();
 }
 
-// wire up original accordion items
-accButtons.forEach(btn=>{
-  const item  = btn.closest('.acc-item');
-  const panel = item.querySelector('.acc-content');
-  item.classList.remove('open'); setPanelHeight(panel, false);
-  btn.setAttribute('aria-expanded','false');
-
-  btn.addEventListener('click', ()=>{
-    const isOpen = item.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(isOpen));
-    setPanelHeight(panel, isOpen);
-    if (isOpen){
-      OPENED.add(btn.id || btn.textContent.trim());
-      if (!toastShown && OPENED.size >= initialCount) showToastAndBonus();
+// wire ORIGINAL items + completion tracking
+// (use the count captured at load so the bonus doesn’t affect it)
+document.querySelectorAll('.acc-item').forEach((item, i) => {
+  wireAccordionItem(item);
+  const btn = item.querySelector('.acc-header');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (item.classList.contains('open')) {
+      OPENED.add(i);                     // track this original by index
+      if (!unlocked && OPENED.size >= initialCount) unlockBonus();
     }
   });
 });
+
 
 
   // Footer year
