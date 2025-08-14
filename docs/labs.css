@@ -99,3 +99,18 @@ body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
   background:#000 !important;
 }
 
+/* === Pure-black Matrix in DARK mode (no green tint) ================== */
+/* 1) Disable green glow haze, 2) Fade trails to black more aggressively,
+   3) Ensure surfaces under the canvas are true black. */
+body[data-theme="dark"]:has(#matrix-canvas){
+  --matrix-glow: transparent;          /* no glow = no green bloom */
+  --matrix-fade: rgba(0,0,0,0.48);     /* stronger black fade per frame */
+}
+
+body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
+body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
+  background:#000 !important;          /* solid black behind the canvas */
+}
+
+
+
