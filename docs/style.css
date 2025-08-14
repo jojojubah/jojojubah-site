@@ -307,10 +307,12 @@ body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
 
 #themeToggle,
 #matrixToggle{
-  padding:.6rem 1rem;
+  min-width:44px;      /* keep tappable */
+  padding:.5rem .75rem;
   border:0;
   border-radius:12px;
   font-weight:600;
+  font-size:1rem;
   background: var(--bg);
   color: var(--text);
   box-shadow: var(--neu-out);
@@ -324,10 +326,11 @@ body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
   color: var(--accent);
 }
 
-/* keep tidy on mobile */
+/* mobile sizing */
 @media (max-width:768px){
   .toggle-group{ top:82px; right:12px; gap:6px; }
-  #themeToggle,#matrixToggle{ padding:.5rem .85rem; font-size:.85rem; }
+  #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem; }
 }
+
 
 
