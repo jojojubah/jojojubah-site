@@ -273,5 +273,15 @@ body[data-theme="dark"] .acc-header svg path{
   fill:#fff !important;
   stroke:none !important;
 }
+/* Dark mode: remove divider line on accordion panels */
+body[data-theme="dark"] .acc-content{
+  border-top: 0 !important;
+}
+
+/* (Optional) slightly deeper dark card so the edges don’t look like lines */
+body[data-theme="dark"] .acc-item{
+  border: 0 !important;
+  box-shadow: var(--neu-out); /* keep the soft neo shadow only */
+}
 
 
