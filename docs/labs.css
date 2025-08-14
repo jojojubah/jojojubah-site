@@ -125,5 +125,14 @@ body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
   background:#000 !important;
 }
 
+/* Labs (DARK): match light-mode trail length + pure-black underlay */
+body[data-theme="dark"]:has(#matrix-canvas){
+  --matrix-fade: rgba(0,0,0,0.08);   /* same as light => longer trails */
+  --matrix-glow: rgba(0,255,65,0.06);/* tiny halo only */
+}
+body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg,
+body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
+  background:#000 !important;
+}
 
 
