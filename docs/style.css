@@ -951,5 +951,48 @@ input:focus, textarea:focus, select:focus{
 }
 #navbar.scrolled{ backdrop-filter: blur(6px); }
 
+/* === Neumorphism tokens (safe to add) === */
+:root{
+  --neu-bg:#0b1221;             /* deep navy */
+  --neu-surface:#0f172a;        /* card base */
+  --neu-hi:rgba(255,255,255,.06);
+  --neu-lo:rgba(0,0,0,.6);
+  --neu-raised:-6px -6px 12px var(--neu-hi), 6px 6px 14px var(--neu-lo);
+  --neu-pressed:inset 2px 2px 4px var(--neu-lo), inset -2px -2px 4px var(--neu-hi);
+}
+
+/* Background */
+body{ background: radial-gradient(1200px 600px at 30% -20%, rgba(59,130,246,.08), transparent), var(--neu-bg); }
+
+/* Keep the navbar flat (no neu shadows) */
+#navbar{ background: rgba(11,18,33,.9); box-shadow:none; border-bottom:1px solid rgba(255,255,255,.06); }
+
+/* Cards that should look neumorphic */
+.about-content .about-text,
+.project-card,
+.contact-info,
+.acc-item,
+.toast,
+.cookie-banner {
+  background: var(--neu-surface);
+  border: none;
+  box-shadow: var(--neu-raised);
+}
+
+/* Buttons */
+.btn{
+  background: linear-gradient(145deg, #3b82f6, #2563eb);
+  border: none;
+  box-shadow: var(--neu-raised);
+}
+.btn:active{ box-shadow: var(--neu-pressed); }
+
+/* Active nav underline (clean, not shadow-based) */
+.nav-link{ position:relative; }
+.nav-link.active::after{
+  content:""; position:absolute; left:.5rem; right:.5rem; bottom:-14px; height:3px;
+  border-radius:3px; background:var(--accent-primary);
+}
+
     
   
