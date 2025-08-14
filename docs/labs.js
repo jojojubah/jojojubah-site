@@ -1,4 +1,4 @@
-// Jubah Labs — Classic Matrix rain (toggleable)
+// Jubah Labs — Classic Matrix rain (toggleable, fixed button)
 (function () {
   var canvas = document.getElementById('matrix-canvas');
   if (!canvas) return;
@@ -66,7 +66,7 @@
     }
   }
 
-  // --- Toggle support ---
+  // Start/stop
   function start(){
     if (!intervalId) intervalId = setInterval(draw, speedMs);
     canvas.style.display = '';
@@ -77,20 +77,24 @@
     canvas.style.display = 'none';
   }
 
-  start(); // default on
+  start();
 
+  // Ensure toggle button exists or create one
   var toggleBtn = document.getElementById('matrixToggle');
-  if (toggleBtn){
-    toggleBtn.addEventListener('click', function(){
-      if (intervalId){
-        stop();
-        toggleBtn.textContent = 'Turn Matrix On';
-      } else {
-        start();
-        toggleBtn.textContent = 'Turn Matrix Off';
-      }
-    });
-    // set initial label
-    toggleBtn.textContent = 'Turn Matrix Off';
+  if (!toggleBtn){
+    toggleBtn = document.createElement('button');
+    toggleBtn.id = 'matrixToggle';
+    document.body.appendChild(toggleBtn);
   }
+
+  toggleBtn.textContent = 'Turn Matrix Off';
+  toggleBtn.addEventListener('click', function(){
+    if (intervalId){
+      stop();
+      toggleBtn.textContent = 'Turn Matrix On';
+    } else {
+      start();
+      toggleBtn.textContent = 'Turn Matrix Off';
+    }
+  });
 })();
