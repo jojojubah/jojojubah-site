@@ -79,10 +79,13 @@
   if (group && !group.contains(btn)) group.appendChild(btn); else if (!btn.isConnected) document.body.appendChild(btn);
 
   // Label + click
-  function setLabel(){ btn.textContent = intervalId ? 'Turn Matrix Off' : 'Turn Matrix On'; }
+function setLabel(){
+  btn.textContent = intervalId ? '🟢 Matrix' : '⚫ Matrix';
+}
+setLabel();
+btn.addEventListener('click', function(){
+  if (intervalId) stop(); else start();
   setLabel();
-  btn.addEventListener('click', function(){
-    if (intervalId) stop(); else start();
-    setLabel();
-  });
+});
+
 })();
