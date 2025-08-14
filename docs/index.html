@@ -1738,18 +1738,53 @@ ${styleDump}
     </div>
   </nav>
 <!-- Matrix toggle bar UNDER the navbar -->
-<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;margin-top:96px;position:relative;z-index:3;">
-  <button id="matrixToggle" class="btn" style="padding:.4rem .7rem;font-size:.85rem;border-radius:10px;">Matrix: ON</button>
+<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:96px;position:relative;z-index:3;">
+  <span style="color:var(--text-secondary);font-size:.9rem;font-weight:500;">Matrix</span>
+  <div id="matrixToggle" style="position:relative;width:50px;height:28px;background:#374151;border-radius:14px;cursor:pointer;transition:all 0.3s ease;border:2px solid transparent;">
+    <div id="toggleSlider" style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:all 0.3s ease;box-shadow:0 2px 4px rgba(0,0,0,0.2);"></div>
+  </div>
 </div>
 
   <!-- PAGE CONTENT -->
-  <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;padding-top:120px;">
+<div class="container" style="min-height:100svh;padding:2rem;padding-top:120px;">
+  <!-- Main welcome card -->
+  <div style="display:grid;place-items:center;text-align:center;margin-bottom:3rem;">
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
-      <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 Welcome to JubahLabs</h1>
+      <h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 <span class="gradient-text">Welcome to JubahLabs</span> </h1>
       <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — this page is under construction. Feel free to check back later ;)</p>
       <a class="btn" href="${homeUrl}">Back to Home</a>
     </div>
   </div>
+
+  <!-- Additional cards grid -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto;">
+    
+    <!-- Card 1: Tools -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">AI Tools</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Custom AI tools and utilities for creators and developers.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+    <!-- Card 2: Tutorials -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">📚</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Exclusive Tutorials</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Advanced guides and step-by-step tutorials not available anywhere else.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+    <!-- Card 3: Community -->
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:3rem;margin-bottom:1rem;">👥</div>
+      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Lab Community</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Connect with other creators and share your projects and experiments.</p>
+      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+    </div>
+
+  </div>
+</div>
 
   <!-- FOOTER -->
   <footer id="footer">
@@ -1851,9 +1886,18 @@ window.addEventListener('resize', (() => {
     var toggleBtn = document.getElementById('matrixToggle');
 
     function updateToggleUI(){
-      if (!toggleBtn) return;
-      toggleBtn.textContent = 'Matrix: ' + (matrixOn ? 'ON' : 'OFF');
-    }
+  if (!toggleBtn || !document.getElementById('toggleSlider')) return;
+  const slider = document.getElementById('toggleSlider');
+  if (matrixOn) {
+    toggleBtn.style.background = 'var(--accent-primary)';
+    toggleBtn.style.borderColor = 'var(--accent-primary)';
+    slider.style.transform = 'translateX(22px)';
+  } else {
+    toggleBtn.style.background = '#374151';
+    toggleBtn.style.borderColor = 'transparent';
+    slider.style.transform = 'translateX(0)';
+  }
+}
     updateToggleUI();
 
     function startMatrix(){
@@ -1877,12 +1921,15 @@ window.addEventListener('resize', (() => {
     }
 
     if (toggleBtn) {
-      toggleBtn.addEventListener('click', function(){
-        matrixOn = !matrixOn;
-        if (matrixOn) startMatrix(); else stopMatrix();
-        updateToggleUI();
-      });
-    }
+  toggleBtn.addEventListener('click', function(){
+    matrixOn = !matrixOn;
+    if (matrixOn) startMatrix(); else stopMatrix();
+    updateToggleUI();
+  });
+  
+  // Initialize the toggle appearance
+  updateToggleUI();
+}
 
     // === Footer year ===
     var y=document.getElementById('secretYear'); if (y) y.textContent = new Date().getFullYear();
@@ -1974,7 +2021,7 @@ function showToast() {
   addBonusAccordion();
 
   toastShown = true;
-  setTimeout(() => toastEl.classList.remove('show'), 3000);
+  setTimeout(() => toastEl.classList.remove('show'), 6000);
 }
 
 accButtons.forEach(btn => {
