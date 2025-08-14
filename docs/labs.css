@@ -1,40 +1,45 @@
-/* Jubah Labs — Neumorphism + Matrix-friendly dark palette
-   This file overrides global tokens ONLY when #matrix-canvas exists. */
+/* Jubah Labs — Dark Neumorphism theme with Matrix green
+   Overrides global style.css only when #matrix-canvas exists */
 @import url("style.css");
 
-/* Matrix canvas behind content */
+/* Matrix canvas stays behind */
 .matrix-bg{
-  position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2; background:transparent;
+  position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
 }
 
-/* ===== Theme switch for Labs page (no HTML changes needed) ===== */
+/* Dark variant tokens */
 body:has(#matrix-canvas){
-  /* Dark neutral base (not pure black) so neon doesn’t clash */
-  --bg: #0f1624;
-  --bg-2: #0b1220;
-  --text: #dfe7f5;
-  --text-dim: #b7c1d6;
-  --text-muted: #94a3b8;
+  --bg: #0d0d0d;
+  --bg-2: #141414;
+  --text: #e5e5e5;
+  --text-dim: #b0b0b0;
+  --text-muted: #8a8a8a;
+  --accent: #22c55e; /* green accent to align with Matrix */
 
-  /* Keep brand accent but cool it slightly so it harmonizes with green */
-  --accent: #66a6ff;
-
-  /* Depth tuned for dark surfaces */
-  --neu-light: rgba(255,255,255,.06);
-  --neu-dark: rgba(0,0,0,.65);
+  --neu-light: rgba(255,255,255,.05);
+  --neu-dark: rgba(0,0,0,.8);
   --neu-radius: 16px;
+  --neu-inset: inset 6px 6px 14px var(--neu-dark),
+               inset -6px -6px 14px var(--neu-light);
+  --neu-out:   10px 10px 22px rgba(0,0,0,.85),
+               -10px -10px 22px rgba(255,255,255,.04);
 
-  /* Regenerate common shadows for dark mode */
-  --neu-inset: inset 6px 6px 14px var(--neu-dark), inset -6px -6px 14px var(--neu-light);
-  --neu-out:   10px 10px 22px rgba(0,0,0,.70), -10px -10px 22px rgba(255,255,255,.04);
-
+  background: linear-gradient(145deg, var(--bg), var(--bg-2));
   color: var(--text);
-  background: radial-gradient(800px 480px at 20% -10%, #16233a 0%, transparent 60%),
-              radial-gradient(700px 520px at 120% 20%, #1a2740 0%, transparent 60%),
-              linear-gradient(145deg, var(--bg), var(--bg-2));
 }
 
-/* Card/plate elements on Labs */
+/* Header + Footer both dark */
+body:has(#matrix-canvas) nav{
+  background: rgba(13,13,13,.92);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  backdrop-filter: blur(8px);
+}
+body:has(#matrix-canvas) footer{
+  background: linear-gradient(145deg, #0d0d0d, #141414);
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+/* Plates/cards dark */
 body:has(#matrix-canvas) .neu-plate,
 body:has(#matrix-canvas) .about-text,
 body:has(#matrix-canvas) .project-card,
@@ -43,8 +48,8 @@ body:has(#matrix-canvas) #cookieConsentBanner,
 body:has(#matrix-canvas) .footer-links a,
 body:has(#matrix-canvas) .nav-link,
 body:has(#matrix-canvas) .btn{
-  background:#0f1624;
-  color:var(--text);
+  background:#0d0d0d;
+  color: var(--text);
   box-shadow: var(--neu-out);
 }
 body:has(#matrix-canvas) .nav-link:hover,
@@ -53,47 +58,25 @@ body:has(#matrix-canvas) .btn:hover{
   box-shadow: var(--neu-inset);
 }
 
-/* Title readability over matrix */
+/* Section titles pop */
 body:has(#matrix-canvas) .section-title{
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  -webkit-background-clip:text;
+  background-clip:text;
   color: transparent;
-  background: linear-gradient(90deg, #e6eefc, #a6b8d8);
-  -webkit-background-clip:text; background-clip:text;
   opacity:.95;
 }
 
-/* Cookie banner buttons */
-body:has(#matrix-canvas) .cookie-btn{ color:#e6eefc }
-body:has(#matrix-canvas) .cookie-btn.decline{ color:#b7c1d6 }
-
-/* Header background tint on scroll */
-body:has(#matrix-canvas) nav{
-  background: rgba(11,18,32,.65);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  backdrop-filter: saturate(1.1) blur(10px);
-}
-
-/* Soft vignette to lift foreground without killing the matrix vibe */
-body:has(#matrix-canvas)::after{
-  content:""; position:fixed; inset:0; z-index:-1;
-  background:
-    radial-gradient(1200px 800px at 50% 130%, rgba(0,0,0,.45), transparent 70%),
-    radial-gradient(800px 600px at -10% 10%, rgba(0,0,0,.35), transparent 60%),
-    radial-gradient(800px 600px at 110% 0%, rgba(0,0,0,.35), transparent 60%);
-  pointer-events:none;
-}
-
-/* Matrix-specific helpers (optional) */
-.matrix-muted-note{ color:#9fb2d0 }
-
-/* Avatar/frame on dark */
+/* Avatar styling */
 body:has(#matrix-canvas) .site-avatar{
-  border-color: rgba(255,255,255,.12);
-  box-shadow: 6px 6px 14px rgba(0,0,0,.65), -6px -6px 14px rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.1);
+  box-shadow: 6px 6px 14px rgba(0,0,0,.75),
+              -6px -6px 14px rgba(255,255,255,.05);
 }
 
-/* Mobile menu surface */
+/* Mobile nav surface */
 @media (max-width:768px){
   body:has(#matrix-canvas) .nav-links{
-    background: rgba(15,22,36,.92);
+    background: rgba(13,13,13,.95);
   }
 }
