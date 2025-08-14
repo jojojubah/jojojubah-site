@@ -1688,6 +1688,55 @@ ${styleDump}
 .matrix-bg{position:fixed;inset:0;width:100%;height:100svh;pointer-events:none;z-index:-1;background:transparent;}
 
 /* "Matrix ON" green theme in a separable block we can toggle at runtime */
+/* === Cursor Particles (Blob Page, page-wide) — START === */
+:root{
+  --cursor-dot-size: 6px;
+  --cursor-float-distance: 200px;
+  --cursor-anim-ms: 900ms;
+}
+
+/* overlay (created by JS) that holds all dots */
+#cursorTrailOverlay{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* each floating dot — color follows site theme */
+.cursor-dot{
+  position: fixed;
+  width: var(--cursor-dot-size);
+  height: var(--cursor-dot-size);
+  background: var(--accent-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: float-up var(--cursor-anim-ms) ease-out forwards;
+  transform: translate(-50%, -50%);
+  opacity: 0.95;
+}
+
+@keyframes float-up {
+  0%   { transform: translate(-50%, -50%) translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) translateY(calc(-1 * var(--cursor-float-distance))) rotate(360deg); opacity: 0; }
+}
+
+/* Mobile: lighter footprint */
+@media (max-width: 768px){
+  :root{
+    --cursor-dot-size: 4px;
+    --cursor-float-distance: 140px;
+    --cursor-anim-ms: 800ms;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .cursor-dot{ animation: none; opacity: 0; }
+}
+/* === Cursor Particles (Blob Page, page-wide) — END === */
+
 </style>
 <style id="matrix-theme">
 :root{
@@ -1944,38 +1993,66 @@ window.addEventListener('resize', (() => {
       });
     }
 
-    // === Cursor trail (desktop) — color follows theme (blue when OFF, green when ON) ===
-    var trail=[], trailLength=20;
-    document.addEventListener('mousemove', function(e){
-      trail.push({x:e.clientX,y:e.clientY});
-      if(trail.length>trailLength) trail.shift();
-      document.querySelectorAll('.cursor-trail').forEach(function(el){ el.remove(); });
-      var color = matrixOn ? '34,197,94' : '59,130,246'; // green : blue
-      trail.forEach(function(point, idx){
-        var dot=document.createElement('div');
-        dot.className='cursor-trail';
-        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba('+color+','+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
-        document.body.appendChild(dot);
-        setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
-      });
-    });
+    // === Cursor Particles (Blob Page, page-wide) — START ===
+(function(){
+  // Skip if user prefers reduced motion
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
 
-    // === Touch trails + burst (mobile) — color follows theme ===
-    function isMobile(){ return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
-    var touchTrail=[];
-    function createTouchTrail(x,y){
-      touchTrail.push({x:x,y:y,timestamp:Date.now()});
-      touchTrail = touchTrail.filter(function(pt){ return Date.now()-pt.timestamp < 800; });
-      document.querySelectorAll('.touch-trail').forEach(function(el){ el.remove(); });
-      var color = matrixOn ? '6,182,212' /* teal-ish green glow */ : '6,182,212'; // keep same for subtlety
-      touchTrail.forEach(function(pt,idx){
-        var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
-        var el=document.createElement('div');
-        el.className='touch-trail';
-        el.style.cssText='position:fixed;left:'+(pt.x-size/2)+'px;top:'+(pt.y-size/2)+'px;width:'+size+'px;height:'+size+'px;background:rgba('+ (matrixOn? '34,197,94' : '6,182,212') +','+(opacity*0.7)+');border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.1s ease-out;';
-        document.body.appendChild(el);
-      });
+  // Create one overlay to hold all dots
+  let overlay = document.getElementById('cursorTrailOverlay');
+  if (!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'cursorTrailOverlay';
+    document.body.appendChild(overlay);
+  }
+
+  // Throttle spawn rate
+  let last = 0;
+  const minDelta = 12; // ms
+
+  // Gentler on mobile
+  const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  const burst = isMobile ? 1 : 2; // dots per move
+
+  function spawnDot(x, y){
+    const dot = document.createElement('div');
+    dot.className = 'cursor-dot';
+    dot.style.left = x + 'px';
+    dot.style.top  = y + 'px';
+
+    // small random jitter for organic feel
+    const jx = (Math.random() - 0.5) * 10; // ±5px
+    const jy = (Math.random() - 0.5) * 6;  // ±3px
+    const rot = (Math.random() * 20 - 10); // ±10deg
+    dot.style.transform = `translate(calc(-50% + ${jx}px), calc(-50% + ${jy}px)) rotate(${rot}deg)`;
+
+    overlay.appendChild(dot);
+
+    const ms = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cursor-anim-ms')) || 900;
+    setTimeout(() => dot.remove(), ms);
+  }
+
+  // Main pointer listener
+  window.addEventListener('pointermove', (e) => {
+    const now = performance.now();
+    if (now - last < minDelta) return;
+    last = now;
+
+    spawnDot(e.clientX, e.clientY);
+    if (burst > 1){
+      const spread = 8 + Math.random() * 8; // 8–16px offset
+      spawnDot(e.clientX + (Math.random() < 0.5 ? -spread : spread), e.clientY);
     }
+  }, { passive: true });
+
+  // Pause when tab not visible
+  document.addEventListener('visibilitychange', () => {
+    overlay.style.display = document.hidden ? 'none' : 'block';
+  });
+})();
+// === Cursor Particles (Blob Page, page-wide) — END ===
+
     function createParticleBurst(x,y){
       var colors = matrixOn ? ['#22c55e','#16a34a','#84cc16','#10b981'] : ['#3b82f6','#06b6d4','#8b5cf6','#10b981'];
       var count=6;
