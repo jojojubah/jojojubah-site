@@ -1545,13 +1545,14 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
             }
           `;
           
-          // Add keyframes to document
-          if (!document.querySelector(`#particle-keyframes-${i}`)) {
-            const style = document.createElement('style');
-            style.id = `particle-keyframes-${i}`;
-            style.textContent = keyframes;
-            document.head.appendChild(style);
-          }
+          // Add keyframes to document (guard against duplicates)
+if (!document.querySelector(`#particle-keyframes-${i}`)) {
+  const style = document.createElement('style');
+  style.id = `particle-keyframes-${i}`;
+  style.textContent = keyframes;
+  document.head.appendChild(style);
+}
+
           
           document.body.appendChild(particle);
           
@@ -1698,6 +1699,11 @@ ${styleDump}
   }
 }
 /* "Matrix ON" green theme in a separable block we can toggle at runtime */
+@keyframes float-up {
+  0%   { transform: translateY(0) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
+}
+
 </style>
 <style id="matrix-theme">
 :root{
@@ -1855,23 +1861,22 @@ let lastW = 0, lastH = 0;
 function resize(keepState = true) {
   const w = window.innerWidth;
   const h = window.innerHeight;
-  
+
   canvas.width = w;
   canvas.height = h;
-  
+
   const newCols = Math.floor(w / 20);
-  columns = newCols;
-  
   if (!keepState || drops.length !== newCols) {
     drops = new Array(newCols).fill(0);
   }
-  
-  lastW = w; 
+  columns = newCols;
+  lastW = w;
   lastH = h;
 }
 
-
+// call once without keeping state so columns/drops align on first paint
 resize(false);
+
 
 // debounce + ignore tiny height-only changes (caused by URL bar show/hide)
 window.addEventListener('resize', (() => {
