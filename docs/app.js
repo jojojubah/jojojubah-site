@@ -284,26 +284,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
   
-  /* ==== Dark Mode Toggle ============================================= */
+  /* ==== Dark Mode Toggle (robust) ===================================== */
 (function(){
   const body = document.body;
   const KEY = 'site-theme';
-  const saved = localStorage.getItem(KEY);
-  const initial = (saved === 'dark' || (saved === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches))
-    ? 'dark' : 'light';
 
-  function applyTheme(mode){
-  if (mode === 'dark') {
-    body.setAttribute('data-theme','dark');
-  } else {
-    body.removeAttribute('data-theme');
-  }
-  localStorage.setItem(KEY, mode);
-  themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️';
-}
-
-
-  // ensure wrapper group exists
+  // Ensure the toggle group exists (top-right under navbar)
   let group = document.querySelector('.toggle-group');
   if (!group){
     group = document.createElement('div');
@@ -311,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(group);
   }
 
-  // ensure theme button exists
+  // Create or get the theme button
   let themeBtn = document.getElementById('themeToggle');
   if (!themeBtn){
     themeBtn = document.createElement('button');
@@ -319,18 +305,41 @@ document.addEventListener('DOMContentLoaded', () => {
     group.appendChild(themeBtn);
   }
 
+  // Helpers
+  function setIcon(mode){
+    themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️';
+  }
+  function applyTheme(mode){
+    if (mode === 'dark') body.setAttribute('data-theme','dark');
+    else body.removeAttribute('data-theme');
+    localStorage.setItem(KEY, mode);
+    setIcon(mode);
+  }
+
+  // Decide initial mode
+  const saved = localStorage.getItem(KEY);
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = (saved === 'dark' || (saved === null && prefersDark)) ? 'dark' : 'light';
+
+  // Apply immediately
   applyTheme(initial);
+
+  // Click to toggle
   themeBtn.addEventListener('click', () => {
     const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     applyTheme(next);
   });
 
-  // if Matrix toggle already exists, move it into the group too
-  const matrixBtn = document.getElementById('matrixToggle');
-  if (matrixBtn && !group.contains(matrixBtn)){
-    group.appendChild(matrixBtn);
+  // If Matrix toggle exists (on Labs), move it into the group; if it’s injected later, catch it too.
+  function moveMatrixBtnIfPresent(){
+    const m = document.getElementById('matrixToggle');
+    if (m && !group.contains(m)) group.appendChild(m);
   }
+  moveMatrixBtnIfPresent();
+  // Try again on the next tick in case labs.js added it after us
+  setTimeout(moveMatrixBtnIfPresent, 0);
 })();
+
 
 
 });
