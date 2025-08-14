@@ -994,5 +994,12 @@ body{ background: radial-gradient(1200px 600px at 30% -20%, rgba(59,130,246,.08)
   border-radius:3px; background:var(--accent-primary);
 }
 
-    
+    /* Force the neumorphic surface even if old inline styles remain */
+[style*="box-shadow:var(--shadow-md)"],
+[style*="background:var(--card-bg)"]{
+  background: var(--neu-surface) !important;
+  border: none !important;
+  box-shadow: var(--neu-raised) !important;
+}
+
   
