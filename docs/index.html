@@ -206,22 +206,22 @@
     }
 
     /* Navigation */
-    /* NEWUI glass navbar */
-nav{
-  position: fixed; top:0; left:0; right:0;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  z-index: 1000;
-  transition: var(--transition);
-}
-nav.scrolled{
-  background: rgba(255,255,255,0.18);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-}
-.nav-link{ color: rgba(255,255,255,0.9); }
-.nav-link:hover, .nav-link.active{ color:#fff; }
-.hamburger{ background:#fff; }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 15, 28, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 1000;
+      transition: var(--transition);
+    }
+
+    nav.scrolled {
+      background: rgba(10, 15, 28, 0.95);
+      box-shadow: var(--shadow-md);
+    }
 
     .nav-container {
       display: flex;
@@ -431,18 +431,17 @@ nav.scrolled{
       text-align: center;
     }
 
-    /* NEWUI glass — About */
-.about-text{
-  position: relative;
-  overflow: hidden;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
+    .about-text {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-md);
+    }
 
     /* Projects Section */
     .projects-grid {
@@ -452,25 +451,31 @@ nav.scrolled{
       margin-top: 3rem;
     }
 
-    /* NEWUI glass for project cards */
-.project-card{
-  position: relative;
-  overflow: hidden;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.project-card:hover{
-  transform: translateY(-8px);
-  box-shadow: 0 15px 45px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
-  border-color: rgba(255,255,255,0.25);
-}
-/* remove the old colored header bg for a cleaner glass look */
-.project-image{ background: transparent; }
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-md);
+    }
 
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-primary);
+    }
+
+    .project-image {
+      height: 200px;
+      background: var(--gradient-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
 
     .project-image::before {
       content: '';
@@ -504,30 +509,23 @@ nav.scrolled{
       line-height: 1.6;
     }
 
-    /* NEWUI button style (replaces old .btn) */
-.btn{
-  background: rgba(255,255,255,0.2);
-  color:#fff;
-  border:1px solid rgba(255,255,255,0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 12px 24px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow:
-    8px 8px 16px rgba(0,0,0,0.1),
-    -8px -8px 16px rgba(255,255,255,0.1);
-}
-.btn:hover{
-  background: rgba(255,255,255,0.3);
-  box-shadow:
-    inset 8px 8px 16px rgba(0,0,0,0.1),
-    inset -8px -8px 16px rgba(255,255,255,0.1);
-  transform: scale(0.98);
-}
-.btn:active{ transform: scale(0.95); }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--gradient-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
 
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
 
     /* Contact Section */
     .contact-content {
@@ -536,18 +534,14 @@ nav.scrolled{
       text-align: center;
     }
 
-    /* NEWUI glass — Contact */
-.contact-info{
-  position: relative;
-  overflow: hidden;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
+    .contact-info {
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-md);
+    }
 
     .contact-item {
       margin-bottom: 1.5rem;
@@ -564,12 +558,12 @@ nav.scrolled{
     }
 
     /* Footer */
-    footer{
-  background: rgba(255,255,255,0.12);
-  border-top: 1px solid rgba(255,255,255,0.2);
-  padding:3rem 0; text-align:center;
-}
-.footer-links a:hover{ color:#fff; }
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--card-border);
+      padding: 3rem 0;
+      text-align: center;
+    }
 
     .footer-content {
       display: flex;
@@ -759,18 +753,16 @@ nav.scrolled{
   max-width: 900px;
   margin: 0 auto;
 }
-/* NEWUI glass — Learn/Accordion items */
-.acc-item{
-  position: relative;
+.acc-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: var(--transition);
+  margin-bottom: 1rem;
 }
-
 .acc-item:hover {
   border-color: var(--accent-primary);
   transform: translateY(-2px);
@@ -853,72 +845,107 @@ nav.scrolled{
   }
 }
 
-/* === NEWUI THEME OVERRIDES (from NEWUIJojoJubah.html) — paste-at-end === */
-body{
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* NEWUI font */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* NEWUI gradient */
-  color:#fff;
-}
+    /* === NEWUI: Liquid Glass Cards + Clay Buttons (scoped, non-destructive) === */
 
-/* Hide old animated bg & particles so NEWUI gradient shows cleanly */
-.background-gradient,
-#particles { display:none !important; }
-
-/* Slightly larger rounded corners like NEWUI card */
-:root { --border-radius: 20px; }
-
-/* Universal “glass” look applied to your cards/boxes/nav/footer */
-.project-card,
-.about-text,
-.contact-info,
-.acc-item,
-nav,
-footer {
+/* Card base */
+.card {
   position: relative;
   overflow: hidden;
-  background: rgba(255,255,255,0.15) !important;
-  border: 1px solid rgba(255,255,255,0.2) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   box-shadow:
-    0 8px 32px rgba(0,0,0,0.1),
-    inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    0 8px 32px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Subtle shimmer pass from NEWUI .card::before */
-.project-card::before,
-.about-text::before,
-.contact-info::before,
-.acc-item::before{
-  content:'';
-  position:absolute; inset:0; left:-100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-  transition:left 0.5s;
-}
-.project-card:hover::before,
-.about-text:hover::before,
-.contact-info:hover::before,
-.acc-item:hover::before{ left:100%; }
-
-/* Section titles + logo text: plain white like NEWUI */
-.section-title, .logo-text{
-  background:none !important;
-  color:#fff !important;
-  -webkit-text-fill-color: initial !important;
+/* Keep your existing hover JS working; this only enhances non-JS-hover states */
+.card:hover {
+  box-shadow:
+    0 14px 44px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.28);
 }
 
-/* Mobile menu sheet uses glass instead of dark wall */
-@media (max-width:768px){
-  .nav-links{
-    background: rgba(255,255,255,0.12) !important;
-    backdrop-filter: blur(20px) !important;
-  }
+/* Shimmer sweep (slowed down per your note) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: -120%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+  transition: left 1.2s ease; /* was ~0.5s in typical demos – slowed down */
+  pointer-events: none;
+}
+.card:hover::before { left: 120%; }
+
+/* Tweak spacing when card is applied to existing sections (safe, light) */
+.hero-content.card,
+.about-content.card,
+.contact-content.card {
+  padding: clamp(1rem, 2vw, 2rem);
+  border-radius: 20px;
 }
 
-/* Scroll bar line not needed in this aesthetic (optional) */
-.scroll-indicator { display:none !important; }
+/* Project card composition: preserve your .project-card rules, then refine visual */
+.project-card.card {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(18px);
+}
 
-    
+/* Mobile polish */
+@media (max-width: 768px) {
+  .card { border-radius: 16px; }
+  .hero-content.card,
+  .about-content.card,
+  .contact-content.card { padding: 1rem; }
+}
+
+/* Clay/Glass Button */
+.button,
+a.button,
+button.button,
+.btn.button { /* ensure NEWUI wins if element also has .btn */
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 12px 24px;
+  border-radius: 15px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.30);
+  background: rgba(255,255,255,0.18);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    8px 8px 16px rgba(0,0,0,0.10),
+    -8px -8px 16px rgba(255,255,255,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  border-inline: 1px solid rgba(255,255,255,0.28);
+}
+.button:hover,
+a.button:hover,
+button.button:hover,
+.btn.button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    12px 12px 28px rgba(0,0,0,0.16),
+    -10px -10px 24px rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.24);
+}
+
+/* Subtle active press */
+.button:active,
+a.button:active,
+button.button:active,
+.btn.button:active { transform: translateY(0); }
+
+/* Small utility for icons inside buttons (optional) */
+.button .icon { width: 1.1em; height: 1.1em; }
+
   </style>
 </head>
 <body>
@@ -997,7 +1024,7 @@ footer {
     <section id="about">
       <div class="container">
         <h2 class="section-title fade-in">About JojoJubah</h2>
-        <div class="about-content fade-in">
+        <div class="about-content card fade-in">
           <div class="about-text">
             Hi, I'm JojoJubah ;) im not an expert but i enjoy sharing fun tips and tricks about AI, tech, coding, and digital currencies.<br><br>
             I create fun tutorials and guides, so anyone can level up their skills and join the new wave of artificial intelligence.<br><br>
@@ -1016,7 +1043,7 @@ footer {
 
       <!-- Prompting -->
       <div class="acc-item">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-prompting" id="acc-button-prompting">
+        <button class="acc-header button" aria-expanded="false" aria-controls="acc-panel-prompting" id="acc-button-prompting">
           <span>What is Prompt Engineering?</span>
           <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
         </button>
@@ -1039,7 +1066,7 @@ footer {
 
       <!-- Agents -->
       <div class="acc-item">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-agents" id="acc-button-agents">
+        <button class="acc-header button" aria-expanded="false" aria-controls="acc-panel-agents" id="acc-button-agents">
           <span>What are AI Agents?</span>
           <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
         </button>
@@ -1059,7 +1086,7 @@ footer {
 
       <!-- Open-source -->
       <div class="acc-item">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-oss" id="acc-button-oss">
+        <button class="acc-header button" aria-expanded="false" aria-controls="acc-panel-oss" id="acc-button-oss">
           <span>What are Opensource Models?</span>
           <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
         </button>
@@ -1087,7 +1114,7 @@ footer {
       <div class="container">
         <h2 class="section-title fade-in">Featured Projects</h2>
         <div class="projects-grid">
-          <div class="project-card fade-in">
+          <div class="project-card card fade-in">
             <div class="project-image">
               <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="50" cy="30" r="20" fill="rgba(255,255,255,0.9)"/>
@@ -1101,10 +1128,10 @@ footer {
             <div class="project-content">
               <h3 class="project-title">Build a Custom Youtube Download App (Easy Method)</h3>
               <p class="project-description">Download YouTube MP3's in seconds using the power of AI - built with Batch and explained in a full tutorial!</p>
-              <a href="https://www.youtube.com/watch?v=TjYel8UL5aI&t=46s" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Tutorial</a>
+              <a href="https://www.youtube.com/watch?v=TjYel8UL5aI&t=46s" class="btn button" target="_blank" rel="nofollow noopener noreferrer">Watch Tutorial</a>
             </div>
           </div>
-          <div class="project-card fade-in">
+          <div class="project-card card fade-in">
             <div class="project-image">
               <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="30" cy="35" r="15" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
@@ -1129,10 +1156,10 @@ footer {
             <div class="project-content">
               <h3 class="project-title">Improve Your LLM Responses With this trick</h3>
               <p class="project-description">Use this follow up prompting technique to Improve your responses from AI Step-by-step on my channel.</p>
-              <a href="https://www.youtube.com/shorts/kXA6Ktdqzos" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
+              <a href="https://www.youtube.com/shorts/kXA6Ktdqzos" class="btn button" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
             </div>
           </div>
-          <div class="project-card fade-in">
+          <div class="project-card card fade-in">
             <div class="project-image">
               <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="20" y="45" width="60" height="35" fill="rgba(255,255,255,0.9)" rx="4"/>
@@ -1160,7 +1187,7 @@ footer {
             <div class="project-content">
               <h3 class="project-title">This LLM AI App works offline!</h3>
               <p class="project-description">No Account needed, completely private LLM chats, works offline - large selection of models to choose from.</p>
-              <a href="https://www.youtube.com/shorts/bn2pKtWXi0w" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
+              <a href="https://www.youtube.com/shorts/bn2pKtWXi0w" class="btn button" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
             </div>
           </div>
         </div>
@@ -1171,7 +1198,7 @@ footer {
     <section id="contact">
       <div class="container">
         <h2 class="section-title fade-in">Contact & Socials</h2>
-        <div class="contact-content fade-in">
+        <div class="contact-content card fade-in">
           <div class="contact-info">
             <div class="contact-item">
               <strong>Email:</strong> hendrixjuba@gmail.com <span class="muted">(email me)</span>
@@ -1453,13 +1480,11 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
       }
 
       // Event listeners
-     // inside document.addEventListener('DOMContentLoaded', …)
-const DISABLE_PARTICLES = true;
-window.addEventListener('load', () => {
-  if (!DISABLE_PARTICLES) createParticles();
-  handleScroll();
-});
-
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('load', () => {
+        createParticles();
+        handleScroll();
+      });
 
       // Enhanced hover effects for project cards
       const projectCards = document.querySelectorAll('.project-card');
@@ -1694,7 +1719,7 @@ function setPanelHeight(panel, open) {
 
   container.insertAdjacentHTML('beforeend', `
     <div class="acc-item" id="acc-item-bonus">
-      <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
+      <button class="acc-header button" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
         <span>Hmm… What's this?</span>
         <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
@@ -1713,7 +1738,7 @@ function setPanelHeight(panel, open) {
           <p class="muted">Psst — you can see this panel because you opened all topics 😉</p>
 
           <div style="margin-top:1rem">
-            <a href="#" class="btn" id="bonusNewPage">Open JubahLabs</a>
+            <a href="#" class="btn button" id="bonusNewPage">Open JubahLabs</a>
           </div>
         </div>
       </div>
@@ -1827,7 +1852,7 @@ ${styleDump}
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
       <h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 <span class="gradient-text">Welcome to JubahLabs</span> </h1>
       <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — this page is under construction. Feel free to check back later ;)</p>
-      <a class="btn" href="${homeUrl}">Back to Home</a>
+      <a class="btn button" href="${homeUrl}">Back to Home</a>
     </div>
   </div>
 
@@ -1839,7 +1864,7 @@ ${styleDump}
       <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
       <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">AI Tools</h3>
       <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Custom AI tools and utilities for creators and developers.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+      <button class="btn button" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
     </div>
 
     <!-- Card 2: Tutorials -->
@@ -1847,7 +1872,7 @@ ${styleDump}
       <div style="font-size:3rem;margin-bottom:1rem;">📚</div>
       <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Exclusive Tutorials</h3>
       <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Advanced guides and step-by-step tutorials not available anywhere else.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+      <button class="btn button" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
     </div>
 
     <!-- Card 3: Community -->
@@ -1855,7 +1880,7 @@ ${styleDump}
       <div style="font-size:3rem;margin-bottom:1rem;">👥</div>
       <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Lab Community</h3>
       <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Connect with other creators and share your projects and experiments.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
+      <button class="btn button" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
     </div>
 
   </div>
