@@ -76,7 +76,7 @@
     if (!document.getElementById('matrix-theme')) {
       themeEl = document.createElement('style');
       themeEl.id = 'matrix-theme';
-      themeEl.textContent = ":root{--accent-primary:#22c55e;--accent-secondary:#16a34a;--accent-tertiary:#84cc16;--card-border:rgba(34,197,94,0.25);--gradient-primary:linear-gradient(135deg,#22c55e 0%,#16a34a 50%,#84cc16 100%);--gradient-secondary:linear-gradient(135deg,#16a34a 0%,#22c55e 100%);} .site-avatar{box-shadow:0 0 20px rgba(34,197,94,0.3)!important;border-color:var(--accent-primary)!important;} .site-avatar:hover{box-shadow:0 0 30px rgba(34,197,94,0.5)!important;}";
+      themeEl.textContent = ":root{--accent-primary:#3b82f6;--accent-secondary:#2563eb;--accent-tertiary:#60a5fa;--card-border:rgba(59,130,246,0.25);--gradient-primary:linear-gradient(135deg,#3b82f6 0%,#2563eb 50%,#60a5fa 100%);--gradient-secondary:linear-gradient(135deg,#2563eb 0%,#3b82f6 100%);} .site-avatar{box-shadow:0 0 20px rgba(59,130,246,0.3)!important;border-color:var(--accent-primary)!important;} .site-avatar:hover{box-shadow:0 0 30px rgba(59,130,246,0.5)!important;}";
       document.head.appendChild(themeEl);
     }
   }
