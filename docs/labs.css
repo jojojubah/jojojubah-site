@@ -1,29 +1,39 @@
-/* labs.css — inherits your look, then overrides accents + renders a matrix canvas layer */
-
-/* Pull in the main site CSS so layout/components match exactly */
+/* Jubah Labs — keep Matrix page readable while the rest of the site uses light Neumorphism */
 @import url("style.css");
 
-/* Matrix canvas layer (behind content) */
-.matrix-bg {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100svh;
-  pointer-events: none;
-  z-index: -1;
-  background: transparent;
+/* The Matrix canvas goes behind content */
+.matrix-bg{
+  position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-1; background:transparent;
 }
 
-/* Green theme overrides (from your blob page) */
+/* On pages that include #matrix-canvas, gently shift to a darker panel look so neon green pops.
+   This isolates the visual without breaking the global neumorphic structure. */
+body:has(#matrix-canvas){
+  /* Dark-ish neutral (not pure black) to avoid harsh contrast */
+  background: linear-gradient(145deg, #0f1320, #0b0f1a);
+  color: #e5ecf7;
+}
+body:has(#matrix-canvas) .neu-plate,
+body:has(#matrix-canvas) .about-text,
+body:has(#matrix-canvas) .project-card,
+body:has(#matrix-canvas) .contact-info,
+body:has(#matrix-canvas) #cookieConsentBanner,
+body:has(#matrix-canvas) .footer-links a,
+body:has(#matrix-canvas) .nav-link,
+body:has(#matrix-canvas) .btn{
+  background:#0f1423;
+  color:#e5ecf7;
+  box-shadow: 10px 10px 20px rgba(0,0,0,.55), -10px -10px 20px rgba(255,255,255,.04);
+}
+body:has(#matrix-canvas) .nav-link:hover,
+body:has(#matrix-canvas) .footer-links a:hover,
+body:has(#matrix-canvas) .btn:hover{
+  box-shadow: inset 6px 6px 12px rgba(0,0,0,.6), inset -6px -6px 12px rgba(255,255,255,.04);
+}
+
+/* Accent stays blue for brand; the matrix neon provides its own green energy */
 :root{
-  --accent-primary:#3b82f6; /* blue-500 */
-  --accent-secondary:#2563eb; /* blue-600 */
-  --accent-tertiary:#60a5fa; /* blue-400 */
-  --card-border: rgba(59,130,246,0.25);
-  --gradient-primary: linear-gradient(135deg,#3b82f6 0%, #2563eb 50%, #60a5fa 100%);
-  --gradient-secondary: linear-gradient(135deg,#2563eb 0%, #3b82f6 100%);
+  --accent:#3b82f6;
 }
-/* avatar glow in blue */
-.site-avatar{ box-shadow: 0 0 20px rgba(59,130,246,0.3); border-color: var(--accent-primary); }
-.site-avatar:hover{ box-shadow: 0 0 30px rgba(59,130,246,0.5); }
-
+.site-avatar{ box-shadow: 6px 6px 12px rgba(0,0,0,.4), -6px -6px 12px rgba(255,255,255,.35); border-color: #eaf0f8 }
+.site-avatar:hover{ transform: scale(1.06) rotate(3deg) }
