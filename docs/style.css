@@ -73,11 +73,17 @@ nav a:focus {
     -4px -4px 8px var(--shadow-light);
 }
 
-/* Sections */
+/* Sections (apply clay directly) */
 section {
   margin: 24px 0;
   padding: 32px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow:
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
 }
+
 section h2 {
   margin: 0 0 8px;
   font-size: 1.25rem;
@@ -88,10 +94,6 @@ section p {
   color: var(--text);
 }
 
-/* Clay wrapper for section content */
-section .clay {
-  padding: 24px;
-}
 
 /* Footer */
 footer {
