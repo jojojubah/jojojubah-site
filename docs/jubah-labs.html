@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jubah Labs — Bonus</title>
+
+  <!-- Favicons (reuse) -->
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+
+  <!-- Fonts (reuse) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Same minimal styles so it matches index without adding UI complexity -->
+  <style>
+    :root { --maxw: 1000px; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.5; }
+    a { color: inherit; }
+    header, nav, main, footer { width: 100%; }
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 16px; }
+    header { border-bottom: 1px solid #eee; }
+    nav ul { list-style: none; display: flex; gap: 12px; padding: 0; margin: 8px 0 0; flex-wrap: wrap; }
+    nav a { text-decoration: none; padding: 6px 8px; border-radius: 6px; }
+    nav a:focus, nav a:hover { outline: 1px dashed #aaa; }
+    main { padding: 24px 0; }
+    h1 { font-size: 1.5rem; margin: 0; }
+    p { color: #444; }
+
+    @media (max-width: 768px) {
+      main { padding: 16px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav aria-label="Utility">
+        <ul>
+          <li><a href="index.html">← Back to Home</a></li>
+          <li><a href="#top">Top</a></li>
+        </ul>
+      </nav>
+      <h1 id="top">Jubah Labs</h1>
+      <p class="muted">A simple, separate page to keep experiments isolated from the main UI.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <h2>Notes</h2>
+      <p>Put your “bonus” content here. Keep it simple while you rebuild the main UI.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="jubah-labs.html">Jubah Labs</a></li>
+        </ul>
+      </nav>
+      <small class="muted">© <span id="year"></span> Jojo.</small>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('year').textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
