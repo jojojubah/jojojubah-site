@@ -1,14 +1,19 @@
-/* Jubah Labs — Matrix tweaks + dark defaults.
-   If site dark mode is ON (body[data-theme="dark"]), we let style.css drive colors.
-   Otherwise, we apply the Labs dark tokens when #matrix-canvas is present. */
+/* Jubah Labs — Dark theme aligned to main site, minimal background, Matrix-friendly */
 @import url("style.css");
 
-/* Matrix canvas sits behind content */
+/* Put the canvas behind everything */
 .matrix-bg{
   position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
 }
 
-/* --- Use Labs dark only when NOT already in site dark mode --- */
+/* Minimal dark background (override main page’s white glows) */
+body:has(#matrix-canvas) .background-gradient{
+  background:
+    radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,0.04) 0%, transparent 60%),
+    linear-gradient(145deg, var(--bg), var(--bg-2));
+}
+
+/* Use Labs dark tokens when site-wide dark mode is NOT active */
 body:has(#matrix-canvas):not([data-theme="dark"]){
   --bg: #0d0d0d;
   --bg-2: #141414;
@@ -18,25 +23,23 @@ body:has(#matrix-canvas):not([data-theme="dark"]){
   --accent: #22c55e;
 
   --neu-light: rgba(255,255,255,.05);
-  --neu-dark: rgba(0,0,0,.8);
+  --neu-dark: rgba(0,0,0,.80);
   --neu-radius: 16px;
-  --neu-inset: inset 6px 6px 14px var(--neu-dark),
-               inset -6px -6px 14px var(--neu-light);
-  --neu-out:   10px 10px 22px rgba(0,0,0,.85),
-               -10px -10px 22px rgba(255,255,255,.04);
+  --neu-inset: inset 6px 6px 14px var(--neu-dark), inset -6px -6px 14px var(--neu-light);
+  --neu-out:   10px 10px 22px rgba(0,0,0,.85), -10px -10px 22px rgba(255,255,255,.04);
 
   background: linear-gradient(145deg, var(--bg), var(--bg-2));
   color: var(--text);
 }
 
-/* Header + Footer unified when Labs dark is active */
+/* Header + footer match (dark) when Labs dark is active */
 body:has(#matrix-canvas):not([data-theme="dark"]) nav,
 body:has(#matrix-canvas):not([data-theme="dark"]) footer{
   background: linear-gradient(145deg, #0d0d0d, #141414);
   border-color: rgba(255,255,255,.05);
 }
 
-/* Plates/cards on Labs dark (auto in site dark via tokens) */
+/* Cards/plates pick up tokens (also works in site dark mode) */
 body:has(#matrix-canvas) .neu-plate,
 body:has(#matrix-canvas) .about-text,
 body:has(#matrix-canvas) .project-card,
@@ -51,37 +54,36 @@ body:has(#matrix-canvas) .btn{
 }
 body:has(#matrix-canvas) .nav-link:hover,
 body:has(#matrix-canvas) .footer-links a:hover,
-body:has(#matrix-canvas) .btn:hover{
-  box-shadow: var(--neu-inset);
-}
+body:has(#matrix-canvas) .btn:hover{ box-shadow: var(--neu-inset); }
 
-/* Titles get green gradient on Labs page */
+/* Titles with subtle green accent */
 body:has(#matrix-canvas) .section-title{
   background: linear-gradient(90deg, #22c55e, #86efac);
-  -webkit-background-clip:text; background-clip:text; color: transparent; opacity:.95;
+  -webkit-background-clip:text; background-clip:text; color:transparent; opacity:.95;
 }
 
-/* Avatar rim */
+/* Avatar rim on dark */
 body:has(#matrix-canvas) .site-avatar{
   border-color: rgba(255,255,255,.1);
   box-shadow: 6px 6px 14px rgba(0,0,0,.75), -6px -6px 14px rgba(255,255,255,.05);
 }
 
-/* Cookie text contrasts on dark */
+/* Cookie: better contrast on dark */
 body:has(#matrix-canvas) .cookie-btn.accept{ color:#ffffff; }
 body:has(#matrix-canvas) .cookie-btn.decline{ color:#cccccc; }
 body:has(#matrix-canvas) .learn-more-modal h3{ color:#ffffff; }
 
-/* Matrix toggle (positioning kept; style pulled from tokens) */
+/* IMPORTANT: remove the old fixed positioning that caused overlap.
+   The buttons now live inside .toggle-group from style.css */
+#matrixToggle{ all: unset; } /* reset any inline styles */
 #matrixToggle{
-  position:fixed; top:90px; right:20px; z-index:1000;
-  padding:.6rem 1rem; border:0; border-radius:12px; font-weight:600;
-  background: var(--bg); color: var(--text); box-shadow: var(--neu-out);
-  cursor:pointer; transition: all .25s ease;
+  display:inline-block; padding:.6rem 1rem; border-radius:12px; font-weight:600; cursor:pointer;
+  background: var(--bg); color: var(--text); box-shadow: var(--neu-out); transition: all .25s ease;
 }
 #matrixToggle:hover{ box-shadow: var(--neu-inset); color: var(--accent); }
 
+/* Mobile */
 @media (max-width:768px){
   body:has(#matrix-canvas) .nav-links{ background: rgba(13,13,13,.95); }
-  #matrixToggle{ top:82px; right:12px; padding:.5rem .85rem; font-size:.9rem; }
+  #matrixToggle{ padding:.5rem .85rem; font-size:.9rem; }
 }
