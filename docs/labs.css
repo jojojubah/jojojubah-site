@@ -81,3 +81,21 @@ body[data-theme="dark"]:has(#matrix-canvas) .nav-links{
 @media (max-width:768px){
   #matrixToggle{ padding:.45rem .6rem; font-size:.9rem; }
 }
+
+/* === Fix: Pure black Matrix background in DARK mode ================== */
+/* Put solid black directly under the canvas only on Labs + dark theme */
+body[data-theme="dark"]:has(#matrix-canvas) .matrix-bg{
+  background:#000 !important;
+}
+
+/* Keep the trail fade truly black in dark mode (removes any tint) */
+body[data-theme="dark"]:has(#matrix-canvas){
+  --matrix-fade: rgba(0,0,0,0.14);
+  --matrix-glow: rgba(0,255,65,0.18); /* soft glow; lower if you want zero haze */
+}
+
+/* Ensure the page-wide gradient behind everything stays neutral (no green) */
+body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
+  background:#000 !important;
+}
+
