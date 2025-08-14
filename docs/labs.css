@@ -135,4 +135,10 @@ body[data-theme="dark"]:has(#matrix-canvas) .background-gradient{
   background:#000 !important;
 }
 
+/* Labs light mode: use blue matrix digits */
+body:not([data-theme="dark"]):has(#matrix-canvas){
+  --matrix-color: #3b82f6;            /* brand blue */
+  --matrix-glow:  rgba(0,0,0,0);      /* no glow on light */
+  --matrix-fade:  rgba(255,255,255,0.08); /* white-ish trail like before */
+}
 
