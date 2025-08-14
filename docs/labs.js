@@ -79,22 +79,17 @@
 
   start();
 
-  // Ensure toggle button exists or create one
-  var toggleBtn = document.getElementById('matrixToggle');
+    // Ensure toggle button exists or create one
+  let toggleBtn = document.getElementById('matrixToggle');
   if (!toggleBtn){
     toggleBtn = document.createElement('button');
     toggleBtn.id = 'matrixToggle';
-    document.body.appendChild(toggleBtn);
+    toggleBtn.textContent = 'Turn Matrix Off';
+    // if toggle group exists, append there
+    const group = document.querySelector('.toggle-group');
+    if (group){ group.appendChild(toggleBtn); }
+    else { document.body.appendChild(toggleBtn); }
   }
 
-  toggleBtn.textContent = 'Turn Matrix Off';
-  toggleBtn.addEventListener('click', function(){
-    if (intervalId){
-      stop();
-      toggleBtn.textContent = 'Turn Matrix On';
-    } else {
-      start();
-      toggleBtn.textContent = 'Turn Matrix Off';
-    }
   });
 })();
