@@ -1545,14 +1545,13 @@ document.getElementById('learnMoreBtn').onclick = function(e) {
             }
           `;
           
-          // Add keyframes to document (guard against duplicates)
-if (!document.querySelector(`#particle-keyframes-${i}`)) {
-  const style = document.createElement('style');
-  style.id = `particle-keyframes-${i}`;
-  style.textContent = keyframes;
-  document.head.appendChild(style);
-}
-
+          // Add keyframes to document
+          if (!document.querySelector(`#particle-keyframes-${i}`)) {
+            const style = document.createElement('style');
+            style.id = `particle-keyframes-${i}`;
+            style.textContent = keyframes;
+            document.head.appendChild(style);
+          }
           
           document.body.appendChild(particle);
           
@@ -1687,23 +1686,8 @@ ${styleDump}
 
 /* MATRIX CANVAS */
 .matrix-bg{position:fixed;inset:0;width:100%;height:100svh;pointer-events:none;z-index:-1;background:transparent;}
-/* Floating cursor trail animation - MISSING KEYFRAMES */
-@keyframes float-up {
-  0% { 
-    transform: translateY(0) rotate(0deg); 
-    opacity: 1; 
-  }
-  100% { 
-    transform: translateY(-200px) rotate(360deg); 
-    opacity: 0; 
-  }
-}
-/* "Matrix ON" green theme in a separable block we can toggle at runtime */
-@keyframes float-up {
-  0%   { transform: translateY(0) rotate(0deg);   opacity: 1; }
-  100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
-}
 
+/* "Matrix ON" green theme in a separable block we can toggle at runtime */
 </style>
 <style id="matrix-theme">
 :root{
@@ -1718,28 +1702,6 @@ ${styleDump}
 .site-avatar:hover{ box-shadow: 0 0 30px rgba(34,197,94,0.5) !important; }
 #matrixToggleWrap{position:relative;z-index:3}
 @media (max-width:768px){#matrixToggleWrap{justify-content:center}}
-/* Floating cursor trail animation - MISSING KEYFRAMES */
-@keyframes float-up {
-  0% { 
-    transform: translateY(0) rotate(0deg); 
-    opacity: 1; 
-  }
-  100% { 
-    transform: translateY(-200px) rotate(360deg); 
-    opacity: 0; 
-  }
-}
-/* Floating cursor trail animation - MISSING KEYFRAMES */
-@keyframes float-up {
-  0% { 
-    transform: translateY(0) rotate(0deg); 
-    opacity: 1; 
-  }
-  100% { 
-    transform: translateY(-200px) rotate(360deg); 
-    opacity: 0; 
-  }
-}
 
 </style>
 </head>
@@ -1776,53 +1738,18 @@ ${styleDump}
     </div>
   </nav>
 <!-- Matrix toggle bar UNDER the navbar -->
-<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:96px;position:relative;z-index:3;">
-  <span style="color:var(--text-secondary);font-size:.9rem;font-weight:500;">Matrix</span>
-  <div id="matrixToggle" style="position:relative;width:50px;height:28px;background:#374151;border-radius:14px;cursor:pointer;transition:all 0.3s ease;border:2px solid transparent;">
-    <div id="toggleSlider" style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:all 0.3s ease;box-shadow:0 2px 4px rgba(0,0,0,0.2);"></div>
-  </div>
+<div id="matrixToggleWrap" class="container" style="display:flex;justify-content:flex-end;margin-top:96px;position:relative;z-index:3;">
+  <button id="matrixToggle" class="btn" style="padding:.4rem .7rem;font-size:.85rem;border-radius:10px;">Matrix: ON</button>
 </div>
 
   <!-- PAGE CONTENT -->
-<div class="container" style="min-height:100svh;padding:2rem;padding-top:120px;">
-  <!-- Main welcome card -->
-  <div style="display:grid;place-items:center;text-align:center;margin-bottom:3rem;">
+  <div class="container" style="min-height:100svh;display:grid;place-items:center;text-align:center;padding:2rem;padding-top:120px;">
     <div style="max-width:760px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);">
-      <h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 <span class="gradient-text">Welcome to JubahLabs</span> </h1>
+      <h1 class="gradient-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin:0 0 1rem;">💻 Welcome to JubahLabs</h1>
       <p class="project-description" style="margin:0 0 1.25rem;">You found the hidden page — this page is under construction. Feel free to check back later ;)</p>
       <a class="btn" href="${homeUrl}">Back to Home</a>
     </div>
   </div>
-
-  <!-- Additional cards grid -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto;">
-    
-    <!-- Card 1: Tools -->
-    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-      <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
-      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">AI Tools</h3>
-      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Custom AI tools and utilities for creators and developers.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
-    </div>
-
-    <!-- Card 2: Tutorials -->
-    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-      <div style="font-size:3rem;margin-bottom:1rem;">📚</div>
-      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Exclusive Tutorials</h3>
-      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Advanced guides and step-by-step tutorials not available anywhere else.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
-    </div>
-
-    <!-- Card 3: Community -->
-    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;backdrop-filter:blur(10px);box-shadow:var(--shadow-md);transition:var(--transition);" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-      <div style="font-size:3rem;margin-bottom:1rem;">👥</div>
-      <h3 class="gradient-text" style="font-size:1.5rem;font-weight:600;margin:0 0 1rem;">Lab Community</h3>
-      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Connect with other creators and share your projects and experiments.</p>
-      <button class="btn" style="opacity:0.6;cursor:not-allowed;">Coming Soon</button>
-    </div>
-
-  </div>
-</div>
 
   <!-- FOOTER -->
   <footer id="footer">
@@ -1844,9 +1771,6 @@ ${styleDump}
   (function(){
     // === MATRIX BACKGROUND (slowed down to match your file) ===
     var canvas = document.getElementById('matrix-canvas');
-    // Guard: if there's no matrix canvas on this page, bail out cleanly
-if (!canvas) { return; }
-
     var ctx = canvas.getContext('2d');
     var characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
     var drops = [], columns = 0;
@@ -1859,24 +1783,33 @@ if (!canvas) { return; }
 let lastW = 0, lastH = 0;
 
 function resize(keepState = true) {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const w = document.documentElement.clientWidth;
+  const h = document.documentElement.clientHeight; // more stable than innerHeight on mobile
 
+  const prevCols = columns;
   canvas.width = w;
   canvas.height = h;
 
   const newCols = Math.floor(w / 20);
-  if (!keepState || drops.length !== newCols) {
-    drops = new Array(newCols).fill(0);
+  if (keepState && drops.length) {
+    if (newCols === prevCols) {
+      // same column count — keep existing drops entirely
+      lastW = w; lastH = h;
+      return;
+    }
+    // preserve as many columns as possible
+    const next = new Array(newCols).fill(0);
+    for (let i = 0; i < Math.min(prevCols, newCols); i++) next[i] = drops[i];
+    drops = next;
+    columns = newCols;
+  } else {
+    columns = newCols;
+    drops = Array(columns).fill(0);
   }
-  columns = newCols;
-  lastW = w;
-  lastH = h;
+  lastW = w; lastH = h;
 }
 
-// call once without keeping state so columns/drops align on first paint
-resize(false);
-
+resize(true);
 
 // debounce + ignore tiny height-only changes (caused by URL bar show/hide)
 window.addEventListener('resize', (() => {
@@ -1918,69 +1851,38 @@ window.addEventListener('resize', (() => {
     var toggleBtn = document.getElementById('matrixToggle');
 
     function updateToggleUI(){
-  if (!toggleBtn) return;
-  const slider = document.getElementById('toggleSlider');
-  if (matrixOn) {
-    toggleBtn.style.background = 'var(--accent-primary)';
-    toggleBtn.style.borderColor = 'var(--accent-primary)';
-    if (slider) slider.style.transform = 'translateX(22px)';
-  } else {
-    toggleBtn.style.background = '#374151';
-    toggleBtn.style.borderColor = 'transparent';
-    if (slider) slider.style.transform = 'translateX(0)';
-  }
-}
-
+      if (!toggleBtn) return;
+      toggleBtn.textContent = 'Matrix: ' + (matrixOn ? 'ON' : 'OFF');
+    }
     updateToggleUI();
 
     function startMatrix(){
-  if (intervalId) return;
-  intervalId = setInterval(draw, speedMs);
-  canvas.style.display = 'block';
-  canvas.style.opacity = '1';
-  
-  // Re-add green theme
-  if (!document.getElementById('matrix-theme')) {
-    const style = document.createElement('style');
-    style.id = 'matrix-theme';
-    style.textContent = `:root{--accent-primary:#22c55e;--accent-secondary:#16a34a;--accent-tertiary:#84cc16;--card-border:rgba(34,197,94,0.25);--gradient-primary:linear-gradient(135deg,#22c55e 0%,#16a34a 50%,#84cc16 100%);--gradient-secondary:linear-gradient(135deg,#16a34a 0%,#22c55e 100%);} .site-avatar{box-shadow:0 0 20px rgba(34,197,94,0.3)!important;border-color:var(--accent-primary)!important;} .site-avatar:hover{box-shadow:0 0 30px rgba(34,197,94,0.5)!important;}`;
-    document.head.appendChild(style);
-  }
-}
-
-function stopMatrix(){
-  if (intervalId) { 
-    clearInterval(intervalId); 
-    intervalId = null; 
-  }
-  canvas.style.display = 'none';
-  
-  // Remove green theme
-  const themeStyle = document.getElementById('matrix-theme');
-  if (themeStyle) {
-    themeStyle.remove();
-  }
-}
-
+      if (intervalId) return;
+      intervalId = setInterval(draw, speedMs);
+      canvas.style.display = '';
+      // add green theme
+      if (!document.getElementById('matrix-theme')) {
+        themeEl = document.createElement('style');
+        themeEl.id = 'matrix-theme';
+        themeEl.textContent = ":root{--accent-primary:#22c55e;--accent-secondary:#16a34a;--accent-tertiary:#84cc16;--card-border:rgba(34,197,94,0.25);--gradient-primary:linear-gradient(135deg,#22c55e 0%,#16a34a 50%,#84cc16 100%);--gradient-secondary:linear-gradient(135deg,#16a34a 0%,#22c55e 100%);} .site-avatar{box-shadow:0 0 20px rgba(34,197,94,0.3)!important;border-color:var(--accent-primary)!important;} .site-avatar:hover{box-shadow:0 0 30px rgba(34,197,94,0.5)!important;}";
+        document.head.appendChild(themeEl);
+      }
+    }
+    function stopMatrix(){
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      canvas.style.display = 'none';
+      // remove green theme
+      var el = document.getElementById('matrix-theme');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
 
     if (toggleBtn) {
-  toggleBtn.addEventListener('click', function(){
-    matrixOn = !matrixOn;
-    if (matrixOn) {
-      startMatrix();
-    } else {
-      stopMatrix();
+      toggleBtn.addEventListener('click', function(){
+        matrixOn = !matrixOn;
+        if (matrixOn) startMatrix(); else stopMatrix();
+        updateToggleUI();
+      });
     }
-    updateToggleUI();
-  });
-}
-
-// Initialize toggle appearance OUTSIDE the if block
-updateToggleUI();
-
-
-// Initialize toggle appearance OUTSIDE the if block
-updateToggleUI();
 
     // === Footer year ===
     var y=document.getElementById('secretYear'); if (y) y.textContent = new Date().getFullYear();
@@ -1995,25 +1897,20 @@ updateToggleUI();
       });
     }
 
-    // === Cursor trail (desktop) - Easter Eggs style with matrix theme colors ===
-document.addEventListener('mousemove', function(e) {
-  // Create floating trail element
-  const trail = document.createElement('div');
-  trail.style.position = 'absolute';
-  trail.style.left = e.clientX + 'px';
-  trail.style.top = e.clientY + 'px';
-  trail.style.width = '6px';
-  trail.style.height = '6px';
-  trail.style.background = matrixOn ? '#22c55e' : '#3498db'; // green when matrix on, blue when off
-  trail.style.borderRadius = '50%';
-  trail.style.pointerEvents = 'none';
-  trail.style.position = 'fixed';
-  trail.style.zIndex = '9999';
-  trail.style.animation = 'float-up 1s ease-out forwards';
-  document.body.appendChild(trail);
-  
-  setTimeout(() => trail.remove(), 1000);
-});
+    // === Cursor trail (desktop) — color follows theme (blue when OFF, green when ON) ===
+    var trail=[], trailLength=20;
+    document.addEventListener('mousemove', function(e){
+      trail.push({x:e.clientX,y:e.clientY});
+      if(trail.length>trailLength) trail.shift();
+      document.querySelectorAll('.cursor-trail').forEach(function(el){ el.remove(); });
+      var color = matrixOn ? '34,197,94' : '59,130,246'; // green : blue
+      trail.forEach(function(point, idx){
+        var dot=document.createElement('div');
+        dot.className='cursor-trail';
+        dot.style.cssText='position:fixed;left:'+point.x+'px;top:'+point.y+'px;width:'+(4-idx*0.2)+'px;height:'+(4-idx*0.2)+'px;background:rgba('+color+','+(0.5-idx*0.025)+');border-radius:50%;pointer-events:none;z-index:9999;transition:all 0.1s ease-out;';
+        document.body.appendChild(dot);
+        setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 100);
+      });
     });
 
     // === Touch trails + burst (mobile) — color follows theme ===
@@ -2023,7 +1920,7 @@ document.addEventListener('mousemove', function(e) {
       touchTrail.push({x:x,y:y,timestamp:Date.now()});
       touchTrail = touchTrail.filter(function(pt){ return Date.now()-pt.timestamp < 800; });
       document.querySelectorAll('.touch-trail').forEach(function(el){ el.remove(); });
-      var color = matrixOn ? '34,197,94' : '6,182,212'; // green when matrix on
+      var color = matrixOn ? '6,182,212' /* teal-ish green glow */ : '6,182,212'; // keep same for subtlety
       touchTrail.forEach(function(pt,idx){
         var age=Date.now()-pt.timestamp, opacity=Math.max(0,1-(age/800)), size=Math.max(2,12-idx*1.5);
         var el=document.createElement('div');
@@ -2077,7 +1974,7 @@ function showToast() {
   addBonusAccordion();
 
   toastShown = true;
-  setTimeout(() => toastEl.classList.remove('show'), 6000);
+  setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
 
 accButtons.forEach(btn => {
