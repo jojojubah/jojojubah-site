@@ -455,5 +455,7 @@ body[data-theme="dark"] .acc-header svg path{
   stroke:none !important;
 }
 
+/* Hamburger bars: white in dark mode */
+body[data-theme="dark"] .hamburger{ background:#fff !important; }
 
 
