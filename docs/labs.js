@@ -1,18 +1,15 @@
-// Jubah Labs — Classic Matrix rain (neon green on black)
+// Jubah Labs — Classic Matrix rain (toggleable)
 (function () {
   var canvas = document.getElementById('matrix-canvas');
   if (!canvas) return;
 
   var ctx = canvas.getContext('2d');
-
-  // Classic green
   var MATRIX_COLOR = '#00ff41';
   var BG_FADE      = 'rgba(0, 0, 0, 0.07)';
-
   var characters = 'アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
   var drops = [], columns = 0;
-  var speedMs = 75;
-  var rowStep = 16;
+  var speedMs = 75, rowStep = 16;
   var lastW = 0, lastH = 0, intervalId = null;
 
   function resize(keep) {
@@ -53,7 +50,6 @@
   function draw() {
     ctx.fillStyle = BG_FADE;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = MATRIX_COLOR;
     ctx.font = '20px monospace';
 
@@ -70,8 +66,31 @@
     }
   }
 
-  function start(){ if (!intervalId) intervalId = setInterval(draw, speedMs); }
-  function stop(){ if (intervalId){ clearInterval(intervalId); intervalId=null; } }
+  // --- Toggle support ---
+  function start(){
+    if (!intervalId) intervalId = setInterval(draw, speedMs);
+    canvas.style.display = '';
+  }
+  function stop(){
+    if (intervalId){ clearInterval(intervalId); intervalId=null; }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    canvas.style.display = 'none';
+  }
 
-  start();
+  start(); // default on
+
+  var toggleBtn = document.getElementById('matrixToggle');
+  if (toggleBtn){
+    toggleBtn.addEventListener('click', function(){
+      if (intervalId){
+        stop();
+        toggleBtn.textContent = 'Turn Matrix On';
+      } else {
+        start();
+        toggleBtn.textContent = 'Turn Matrix Off';
+      }
+    });
+    // set initial label
+    toggleBtn.textContent = 'Turn Matrix Off';
+  }
 })();
