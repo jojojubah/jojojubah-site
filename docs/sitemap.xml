@@ -8,18 +8,11 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Favicon PNG -->
+  <!-- Jubah Labs bonus page -->
   <url>
-    <loc>https://jojojubah.com/favicon.png</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Favicon ICO -->
-  <url>
-    <loc>https://jojojubah.com/favicon.ico</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://jojojubah.com/jubah-labs.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>
