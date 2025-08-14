@@ -283,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Footer year (works on both pages)
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
-/* ==== Dark Mode Toggle ============================================= */
+  
+  /* ==== Dark Mode Toggle ============================================= */
 (function(){
   const body = document.body;
   const KEY = 'site-theme';
@@ -298,23 +299,37 @@ document.addEventListener('DOMContentLoaded', () => {
       body.removeAttribute('data-theme');
     }
     localStorage.setItem(KEY, mode);
-    btn.textContent = (mode === 'dark') ? 'Light Mode' : 'Dark Mode';
+    themeBtn.textContent = (mode === 'dark') ? 'Light Mode' : 'Dark Mode';
   }
 
-  // ensure button exists (added here so no HTML edits needed)
-  let btn = document.getElementById('themeToggle');
-  if (!btn){
-    btn = document.createElement('button');
-    btn.id = 'themeToggle';
-    document.body.appendChild(btn);
+  // ensure wrapper group exists
+  let group = document.querySelector('.toggle-group');
+  if (!group){
+    group = document.createElement('div');
+    group.className = 'toggle-group';
+    document.body.appendChild(group);
   }
 
-  // init + click
+  // ensure theme button exists
+  let themeBtn = document.getElementById('themeToggle');
+  if (!themeBtn){
+    themeBtn = document.createElement('button');
+    themeBtn.id = 'themeToggle';
+    group.appendChild(themeBtn);
+  }
+
   applyTheme(initial);
-  btn.addEventListener('click', () => {
+  themeBtn.addEventListener('click', () => {
     const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     applyTheme(next);
   });
+
+  // if Matrix toggle already exists, move it into the group too
+  const matrixBtn = document.getElementById('matrixToggle');
+  if (matrixBtn && !group.contains(matrixBtn)){
+    group.appendChild(matrixBtn);
+  }
 })();
+
 
 });
