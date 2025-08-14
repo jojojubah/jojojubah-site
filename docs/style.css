@@ -295,12 +295,18 @@ body[data-theme="dark"] .cookie-btn.decline{ color:#cccccc; }
 /* cookie Learn More modal title readable */
 body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
 
-/* --- Dark Mode Toggle button --- */
-#themeToggle{
+/* === Toggle Buttons (Dark Mode + Matrix) ============================= */
+.toggle-group{
   position:fixed;
-  top:90px;              /* just beneath 80px navbar */
+  top:90px;      /* just beneath 80px navbar */
   right:20px;
   z-index:1000;
+  display:flex;
+  gap:10px;
+}
+
+#themeToggle,
+#matrixToggle{
   padding:.6rem 1rem;
   border:0;
   border-radius:12px;
@@ -311,10 +317,17 @@ body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
   cursor:pointer;
   transition: all .25s ease;
 }
-#themeToggle:hover{ box-shadow: var(--neu-inset); color: var(--accent); }
+
+#themeToggle:hover,
+#matrixToggle:hover{
+  box-shadow: var(--neu-inset);
+  color: var(--accent);
+}
 
 /* keep tidy on mobile */
 @media (max-width:768px){
-  #themeToggle{ top:82px; right:12px; padding:.5rem .85rem; font-size:.9rem; }
+  .toggle-group{ top:82px; right:12px; gap:6px; }
+  #themeToggle,#matrixToggle{ padding:.5rem .85rem; font-size:.85rem; }
 }
+
 
