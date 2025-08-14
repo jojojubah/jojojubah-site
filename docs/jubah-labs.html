@@ -1,58 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jubah Labs — Bonus</title>
-
-  <!-- Favicons (reuse) -->
-  <link rel="icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-
-  <!-- Fonts (reuse) -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jubah Labs – Secret Page</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="labs.css">
-
-  
 </head>
 <body>
-  <header>
+  <!-- Background gradient from main theme is preserved by labs.css -->
+  <div class="background-gradient"></div>
+  <canvas class="matrix-bg" id="matrix-canvas" aria-hidden="true"></canvas>
+
+  <!-- Nav (same markup for consistency) -->
+  <nav id="navbar">
     <div class="container">
-      <nav aria-label="Utility">
-        <ul>
-          <li><a href="index.html">← Back to Home</a></li>
-          <li><a href="#top">Top</a></li>
+      <div class="nav-container">
+        <div class="logo-area">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
         </ul>
-      </nav>
-      <h1 id="top">Jubah Labs</h1>
-      <p class="muted">A simple, separate page to keep experiments isolated from the main UI.</p>
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
+        </button>
+      </div>
     </div>
-  </header>
+  </nav>
 
   <main>
-    <section class="container">
-      <h2>Notes</h2>
-      <p>Put your “bonus” content here. Keep it simple while you rebuild the main UI.</p>
+    <!-- Simple hero with theme toggle -->
+    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;">
+      <div class="container">
+        <h1 class="hero-title">Welcome to <span class="gradient-text">Jubah Labs</span></h1>
+        <p class="hero-subtitle">Matrix mode demo + green theme</p>
+        <div id="matrixToggleWrap" style="margin-top:1.25rem;display:flex;gap:1rem;justify-content:center;">
+          <button class="btn" id="matrixToggle" type="button">Turn Matrix OFF</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Optional section for future experiments -->
+    <section id="labs">
+      <div class="container">
+        <h2 class="section-title">Experiments</h2>
+        <div class="about-content">
+          <div class="about-text">
+            This page reuses your site styles & scripts. The green theme + Matrix background can be toggled.
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
+  <!-- Footer (same structure) -->
   <footer>
     <div class="container">
-      <nav aria-label="Footer">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="jubah-labs.html">Jubah Labs</a></li>
-        </ul>
-      </nav>
-      <small class="muted">© <span id="year"></span> Jojo.</small>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#learn">Learn</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
     </div>
   </footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('year').textContent = new Date().getFullYear();
-    });
-  </script>
+  <!-- Scripts -->
+  <script src="app.js" defer></script>
+  <script src="labs.js" defer></script>
 </body>
 </html>
