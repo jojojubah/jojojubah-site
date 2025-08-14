@@ -1,11 +1,15 @@
-/* Jubah Labs — Dark Neumorphism theme with Matrix green */
+/* Jubah Labs — Matrix tweaks + dark defaults.
+   If site dark mode is ON (body[data-theme="dark"]), we let style.css drive colors.
+   Otherwise, we apply the Labs dark tokens when #matrix-canvas is present. */
 @import url("style.css");
 
+/* Matrix canvas sits behind content */
 .matrix-bg{
   position:fixed; inset:0; width:100%; height:100svh; pointer-events:none; z-index:-2;
 }
 
-body:has(#matrix-canvas){
+/* --- Use Labs dark only when NOT already in site dark mode --- */
+body:has(#matrix-canvas):not([data-theme="dark"]){
   --bg: #0d0d0d;
   --bg-2: #141414;
   --text: #e5e5e5;
@@ -25,16 +29,14 @@ body:has(#matrix-canvas){
   color: var(--text);
 }
 
-/* Header + Footer unified */
-body:has(#matrix-canvas) nav,
-body:has(#matrix-canvas) footer{
+/* Header + Footer unified when Labs dark is active */
+body:has(#matrix-canvas):not([data-theme="dark"]) nav,
+body:has(#matrix-canvas):not([data-theme="dark"]) footer{
   background: linear-gradient(145deg, #0d0d0d, #141414);
   border-color: rgba(255,255,255,.05);
-  border-width: 0 0 1px 0;
 }
-body:has(#matrix-canvas) footer{ border-width:1px 0 0 0; }
 
-/* Plates/cards */
+/* Plates/cards on Labs dark (auto in site dark via tokens) */
 body:has(#matrix-canvas) .neu-plate,
 body:has(#matrix-canvas) .about-text,
 body:has(#matrix-canvas) .project-card,
@@ -43,7 +45,7 @@ body:has(#matrix-canvas) #cookieConsentBanner,
 body:has(#matrix-canvas) .footer-links a,
 body:has(#matrix-canvas) .nav-link,
 body:has(#matrix-canvas) .btn{
-  background:#0d0d0d;
+  background: var(--bg);
   color: var(--text);
   box-shadow: var(--neu-out);
 }
@@ -53,54 +55,33 @@ body:has(#matrix-canvas) .btn:hover{
   box-shadow: var(--neu-inset);
 }
 
-/* Section titles */
+/* Titles get green gradient on Labs page */
 body:has(#matrix-canvas) .section-title{
   background: linear-gradient(90deg, #22c55e, #86efac);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color: transparent;
-  opacity:.95;
+  -webkit-background-clip:text; background-clip:text; color: transparent; opacity:.95;
 }
 
-/* Avatar */
+/* Avatar rim */
 body:has(#matrix-canvas) .site-avatar{
   border-color: rgba(255,255,255,.1);
-  box-shadow: 6px 6px 14px rgba(0,0,0,.75),
-              -6px -6px 14px rgba(255,255,255,.05);
+  box-shadow: 6px 6px 14px rgba(0,0,0,.75), -6px -6px 14px rgba(255,255,255,.05);
 }
 
-/* Cookie banner buttons */
+/* Cookie text contrasts on dark */
 body:has(#matrix-canvas) .cookie-btn.accept{ color:#ffffff; }
 body:has(#matrix-canvas) .cookie-btn.decline{ color:#cccccc; }
-
-/* Cookie modal title → white */
 body:has(#matrix-canvas) .learn-more-modal h3{ color:#ffffff; }
 
-/* Matrix toggle button */
+/* Matrix toggle (positioning kept; style pulled from tokens) */
 #matrixToggle{
-  position:fixed;
-  top:90px;   /* just under 80px navbar */
-  right:20px;
-  z-index:1000;
-  padding:.6rem 1rem;
-  border-radius:12px;
-  font-weight:600;
-  background:#0d0d0d;
-  color:#e5e5e5;
-  box-shadow: var(--neu-out);
-  cursor:pointer;
-  border:0;
-  transition: all .25s ease;
+  position:fixed; top:90px; right:20px; z-index:1000;
+  padding:.6rem 1rem; border:0; border-radius:12px; font-weight:600;
+  background: var(--bg); color: var(--text); box-shadow: var(--neu-out);
+  cursor:pointer; transition: all .25s ease;
 }
-#matrixToggle:hover{
-  box-shadow: var(--neu-inset);
-  color:#22c55e;
-}
+#matrixToggle:hover{ box-shadow: var(--neu-inset); color: var(--accent); }
 
-/* Mobile nav */
 @media (max-width:768px){
-  body:has(#matrix-canvas) .nav-links{
-    background: rgba(13,13,13,.95);
-  }
+  body:has(#matrix-canvas) .nav-links{ background: rgba(13,13,13,.95); }
   #matrixToggle{ top:82px; right:12px; padding:.5rem .85rem; font-size:.9rem; }
 }
