@@ -343,5 +343,16 @@ body[data-theme="dark"] footer{
 @media (max-width:768px){
   .toggle-group{ top: 98px; }  /* was ~82px; this clears the navbar comfortably */
 }
+/* Footer link sizing on mobile: keep to a single row */
+@media (max-width:768px){
+  footer .footer-links{
+    gap: .5rem;
+    flex-wrap: nowrap;              /* prevent wrapping */
+  }
+  footer .footer-links a{
+    font-size: .85rem;              /* smaller text */
+    padding: .35rem .55rem;         /* tighter pills */
+  }
+}
 
 
