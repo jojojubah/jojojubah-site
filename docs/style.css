@@ -1,56 +1,40 @@
 /* ================================
-   Neumorphism Theme — Light, Soft
+   Neumorphism Theme — Light / Dark
    ================================ */
 
-/* Color & depth tokens */
+/* ---- Tokens (light defaults) ---- */
 :root{
-  /* Base surface */
-  --bg: #e9eef5;                 /* main background (light neutral) */
-  --bg-2: #edf2f8;               /* slightly lighter for gradients */
-  --text: #3a4252;
-  --text-dim: #6b7280;
-  --text-muted: #8a94a6;
+  --bg:#e9eef5; --bg-2:#edf2f8;
+  --text:#3a4252; --text-dim:#6b7280; --text-muted:#8a94a6;
+  --accent:#3b82f6;
 
-  /* Accent (kept blue to match your brand; easy to swap later) */
-  --accent: #3b82f6;
-
-  /* Neumorphic depth (tuned for light surfaces) */
-  --neu-light: #ffffff;
-  --neu-dark: #cfd6e2;           /* shadow color */
-  --neu-radius: 16px;
-  --neu-inset: inset 6px 6px 12px var(--neu-dark),
-               inset -6px -6px 12px var(--neu-light);
-  --neu-out:   10px 10px 20px var(--neu-dark),
-               -10px -10px 20px var(--neu-light);
-
-  /* Motion */
+  --neu-light:#ffffff; --neu-dark:#cfd6e2; --neu-radius:16px;
+  --neu-inset: inset 6px 6px 12px var(--neu-dark), inset -6px -6px 12px var(--neu-light);
+  --neu-out:   10px 10px 20px var(--neu-dark), -10px -10px 20px var(--neu-light);
   --t: all .25s cubic-bezier(.25,.1,.25,1);
-
-  /* Sizes */
-  --container-pad: 2rem;
+  --container-pad:2rem;
 }
 
-/* Reset */
+/* ---- Reset / base ---- */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
-  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji", sans-serif;
+  color:var(--text);
   background: linear-gradient(145deg,var(--bg),var(--bg-2));
-  min-height:100dvh;
-  line-height:1.6;
-  overflow-x:hidden;
+  min-height:100dvh; line-height:1.6; overflow-x:hidden;
 }
 
-/* Generic containers */
+/* Containers */
 .container{max-width:1200px;margin:0 auto;padding:0 var(--container-pad)}
 
-/* ==== Background helpers from your layout (softened) ==== */
+/* ---- Background helpers ---- */
 .background-gradient{
   position:fixed; inset:0; z-index:-2;
-  background: radial-gradient(1200px 800px at 10% 10%, #ffffff 0%, transparent 60%),
-              radial-gradient(1000px 700px at 90% 20%, #ffffff 0%, transparent 60%),
-              linear-gradient(145deg,var(--bg),var(--bg-2));
+  /* Subtle on light, *not* pure white */
+  background:
+    radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,.50) 0%, transparent 60%),
+    linear-gradient(145deg, #f7f8fb, #eef2f8);
 }
 .particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
 
@@ -58,326 +42,162 @@ body{
 .scroll-indicator{
   position:fixed; top:80px; left:0; height:3px; width:0%;
   background: linear-gradient(90deg,var(--accent),#60a5fa);
-  z-index:999;
-  transition:width .12s ease-out;
+  z-index:999; transition:width .12s ease-out;
 }
 
-/* ==== Neumorphic primitives ==== */
-.neu-plate{
-  background: var(--bg);
-  border-radius: var(--neu-radius);
-  box-shadow: var(--neu-out);
-}
+/* ---- Neumorphic primitives ---- */
+.neu-plate{background:var(--bg);border-radius:var(--neu-radius);box-shadow:var(--neu-out)}
 .neu-plate:hover{transform:translateY(-2px)}
-.neu-press{ box-shadow: var(--neu-inset); }
-.hr-neu{
-  height:1px;border:0;margin:1.25rem 0;
-  background: linear-gradient(90deg,transparent,#dbe3ef,transparent);
-}
+.neu-press{box-shadow:var(--neu-inset)}
+.hr-neu{height:1px;border:0;margin:1.25rem 0;background:linear-gradient(90deg,transparent,#dbe3ef,transparent)}
 
-/* ==== Nav ==== */
+/* ---- Nav ---- */
 nav{
   position:fixed; inset:0 auto auto 0; right:0; z-index:1000;
   backdrop-filter:saturate(1.1) blur(10px);
   background: rgba(233,238,245,.55);
-  border-bottom: 1px solid #dde6f2;
+  border-bottom:1px solid #dde6f2;
 }
 nav.scrolled{background: rgba(233,238,245,.8)}
 .nav-container{height:80px;display:flex;align-items:center;justify-content:space-between}
 .logo-area{display:flex;align-items:center;gap:12px}
 .site-avatar{
   width:48px;height:48px;border-radius:12px;border:2px solid #eaf0f8;
-  box-shadow: 6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
-  object-fit:cover; transition: var(--t);
+  box-shadow:6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
+  object-fit:cover; transition:var(--t);
 }
 .site-avatar:hover{transform:scale(1.06) rotate(3deg)}
-.logo-text{
-  font-weight:800;font-size:1.5rem;
-  color:transparent; background: linear-gradient(90deg,var(--accent),#60a5fa);
-  -webkit-background-clip:text;background-clip:text;
-}
+.logo-text{font-weight:800;font-size:1.5rem;color:transparent;background:linear-gradient(90deg,var(--accent),#60a5fa);-webkit-background-clip:text;background-clip:text}
 
 .nav-links{display:flex;gap:1.25rem;list-style:none}
 .nav-link{
-  text-decoration:none; color:var(--text-dim); font-weight:600;
-  padding:.55rem .9rem; border-radius:12px;
-  background: var(--bg);
-  box-shadow: var(--neu-out);
-  transition: var(--t);
+  text-decoration:none;color:var(--text-dim);font-weight:600;padding:.55rem .9rem;border-radius:12px;
+  background:var(--bg); box-shadow:var(--neu-out); transition:var(--t);
 }
-.nav-link:hover,.nav-link.active{
-  color:#0f172a;
-  box-shadow: var(--neu-inset);
-}
+.nav-link:hover,.nav-link.active{color:#0f172a;box-shadow:var(--neu-inset)}
 
-/* Mobile menu */
+/* Hamburger */
 .mobile-menu-button{display:none;background:none;border:0;cursor:pointer;padding:.5rem}
 .hamburger{width:24px;height:3px;background:#0f172a;border-radius:2px;margin:4px 0;transition:var(--t)}
 .mobile-menu-button.active .hamburger:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .mobile-menu-button.active .hamburger:nth-child(2){opacity:0}
 .mobile-menu-button.active .hamburger:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
 
-/* ==== Sections ==== */
+/* ---- Sections ---- */
 section{padding:8rem 0; position:relative}
 .section-title{
-  text-align:center;margin-bottom:3rem;font-weight:800;
-  font-size:clamp(2rem,5vw,3rem);
-  color:transparent; background:linear-gradient(90deg,#0f172a,var(--text));
-  -webkit-background-clip:text;background-clip:text;
+  text-align:center;margin-bottom:3rem;font-weight:800;font-size:clamp(2rem,5vw,3rem);
+  color:transparent;background:linear-gradient(90deg,#0f172a,var(--text));-webkit-background-clip:text;background-clip:text
 }
 
 /* Hero */
 #home{min-height:100dvh; display:flex; align-items:center; overflow:hidden}
 .hero-content{text-align:center; z-index:1}
 .hero-title{font-size:clamp(3rem,8vw,6rem);font-weight:900;letter-spacing:-.02em;margin-bottom:.5rem}
-.gradient-text{color:transparent; background:linear-gradient(90deg,var(--accent),#60a5fa); -webkit-background-clip:text;background-clip:text}
+.gradient-text{color:transparent;background:linear-gradient(90deg,var(--accent),#60a5fa);-webkit-background-clip:text;background-clip:text}
 .hero-subtitle{color:var(--text-dim); font-size:1.15rem; margin-bottom:1.75rem}
 .hero-socials{display:flex;justify-content:center;gap:1rem}
 .social-link{
   width:54px;height:54px; display:flex; align-items:center; justify-content:center;
   color:#4b5563; text-decoration:none; border-radius:14px;
-  background: var(--bg); box-shadow: var(--neu-out); transition: var(--t);
+  background:var(--bg); box-shadow:var(--neu-out); transition:var(--t);
 }
-.social-link:hover{ box-shadow: var(--neu-inset); color:#0f172a; transform:translateY(-2px)}
+.social-link:hover{ box-shadow:var(--neu-inset); color:#0f172a; transform:translateY(-2px)}
 .social-link svg{width:24px;height:24px;fill:currentColor}
 
-/* About */
+/* About / Projects / Buttons */
 .about-content{max-width:850px;margin:0 auto;text-align:center}
-.about-text{
-  padding:2.25rem;border-radius:var(--neu-radius); background:var(--bg);
-  box-shadow: var(--neu-out); color:var(--text-dim); font-size:1.075rem;
-}
+.about-text{padding:2.25rem;border-radius:var(--neu-radius);background:var(--bg);box-shadow:var(--neu-out);color:var(--text-dim);font-size:1.075rem}
 
-/* Projects */
-.projects-grid{
-  display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
-  gap:1.5rem; margin-top:2rem;
-}
-.project-card{ border-radius:var(--neu-radius); background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden}
-.project-card:hover{ transform:translateY(-3px) }
-.project-image{
-  height:200px; display:flex; align-items:center; justify-content:center;
-  background: linear-gradient(145deg,#f0f4fb,#e2e8f6);
-  border-bottom:1px solid #e5edf8;
-}
+.projects-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin-top:2rem}
+.project-card{border-radius:var(--neu-radius); background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden}
+.project-card:hover{transform:translateY(-3px)}
+.project-image{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#f0f4fb,#e2e8f6);border-bottom:1px solid #e5edf8}
 .project-content{padding:1.75rem}
 .project-title{font-weight:700;font-size:1.25rem;color:#0f172a;margin-bottom:.5rem}
 .project-description{color:var(--text-dim);margin-bottom:1rem}
 .btn{
-  display:inline-block; border:0; cursor:pointer;
-  padding:.8rem 1.25rem; border-radius:12px; font-weight:700;
-  color:#0f172a; background: var(--bg); box-shadow: var(--neu-out); transition: var(--t);
-  text-decoration:none;
+  display:inline-block;border:0;cursor:pointer;padding:.8rem 1.25rem;border-radius:12px;font-weight:700;
+  color:#0f172a;background:var(--bg);box-shadow:var(--neu-out);transition:var(--t);text-decoration:none;
 }
-.btn:hover{ box-shadow: var(--neu-inset) }
+.btn:hover{box-shadow:var(--neu-inset)}
 
 /* Contact */
 .contact-content{max-width:620px;margin:0 auto;text-align:center}
-.contact-info{ padding:2rem; border-radius:var(--neu-radius); background:var(--bg); box-shadow: var(--neu-out) }
-.contact-item{ margin-bottom:1rem; font-size:1.05rem }
-.muted{ color: var(--text-muted); font-size:.9rem }
+.contact-info{padding:2rem;border-radius:var(--neu-radius);background:var(--bg);box-shadow:var(--neu-out)}
+.contact-item{margin-bottom:1rem;font-size:1.05rem}
+.muted{color:var(--text-muted);font-size:.9rem}
 
 /* Footer */
-footer{
-  padding:3rem 0; border-top:1px solid #e1e8f4;
-  background: linear-gradient(145deg, #e8edf4, #f4f7fb);
-}
+footer{padding:3rem 0;border-top:1px solid #e1e8f4;background:linear-gradient(145deg,#e8edf4,#f4f7fb)}
 .footer-content{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:12px}
 .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
 .footer-links a{color:var(--text-dim);text-decoration:none;padding:.5rem .85rem;border-radius:12px;background:var(--bg);box-shadow:var(--neu-out);transition:var(--t)}
 .footer-links a:hover{box-shadow:var(--neu-inset);color:#0f172a}
 
-/* Cookie Consent */
-#cookieConsentBanner{
-  position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
-  background: var(--bg); border-radius:18px; box-shadow: var(--neu-out);
-  padding:1rem 1.25rem; z-index:10000; width:min(92vw,520px); text-align:center
-}
+/* Cookie */
+#cookieConsentBanner{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--bg);border-radius:18px;box-shadow:var(--neu-out);padding:1rem 1.25rem;z-index:10000;width:min(92vw,520px);text-align:center}
 #cookieConsentBanner p{color:var(--text-dim);margin-bottom:.85rem}
 #cookieConsentBanner a{color:var(--accent);text-decoration:underline}
 .cookie-buttons{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
-.cookie-btn{
-  padding:.7rem 1.1rem;border-radius:12px;border:0;font-weight:700;cursor:pointer;
-  background:var(--bg); box-shadow: var(--neu-out); color:#0f172a; transition:var(--t)
-}
+.cookie-btn{padding:.7rem 1.1rem;border-radius:12px;border:0;font-weight:700;cursor:pointer;background:var(--bg);box-shadow:var(--neu-out);color:#0f172a;transition:var(--t)}
 .cookie-btn:hover{box-shadow:var(--neu-inset)}
 .cookie-btn.accept{color:#0f172a}
 .cookie-btn.decline{color:#475569}
 
-/* Learn “modal” */
-.learn-more-modal{
-  position:fixed; inset:auto 0 0 0; margin:auto; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:min(90vw,540px); background:var(--bg); border-radius:18px; box-shadow: var(--neu-out);
-  padding:1.5rem; z-index:10001;
-}
+/* Learn modal */
+.learn-more-modal{position:fixed;inset:auto 0 0 0;margin:auto;top:50%;left:50%;transform:translate(-50%,-50%);width:min(90vw,540px);background:var(--bg);border-radius:18px;box-shadow:var(--neu-out);padding:1.5rem;z-index:10001}
 .learn-more-modal h3{color:#0f172a;margin-bottom:.75rem}
-.learn-more-modal .close-btn{position:absolute; top:10px; right:14px; background:none;border:0;font-size:1.6rem;color:#64748b;cursor:pointer}
+.learn-more-modal .close-btn{position:absolute;top:10px;right:14px;background:none;border:0;font-size:1.6rem;color:#64748b;cursor:pointer}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:10000}
 
-/* Accordion (Learn) */
+/* Accordion */
 .accordion{max-width:900px;margin:0 auto}
-.acc-item{ background:var(--bg); border-radius:var(--neu-radius); box-shadow:var(--neu-out); overflow:hidden; transition:var(--t); margin-bottom:1rem }
-.acc-item:hover{ transform: translateY(-2px) }
-.acc-header{
-  width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem;
-  padding:1.1rem 1.25rem; background:transparent; border:0; cursor:pointer;
-  color:#0f172a; font-weight:700; text-align:left;
-}
-.acc-icon{opacity:.8; transition:transform .2s ease}
+.acc-item{background:var(--bg);border-radius:var(--neu-radius);box-shadow:var(--neu-out);overflow:hidden;transition:var(--t);margin-bottom:1rem}
+.acc-item:hover{transform:translateY(-2px)}
+.acc-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.25rem;background:transparent;border:0;cursor:pointer;color:#0f172a;font-weight:700;text-align:left}
+.acc-icon{opacity:.8;transition:transform .2s ease}
 .acc-item.open .acc-icon{transform:rotate(180deg)}
-.acc-content{ max-height:0; overflow:hidden; transition:max-height .3s ease; border-top:1px solid #e5edf8 }
-.acc-inner{ padding:1rem 1.25rem 1.35rem; color:var(--text-dim) }
-.acc-inner h3,.acc-inner h4{ color:#0f172a; margin:.5rem 0 .25rem }
-.acc-inner p{ margin-bottom:.6rem }
+.acc-content{max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:1px solid #e5edf8}
+.acc-inner{padding:1rem 1.25rem 1.35rem;color:var(--text-dim)}
+.acc-inner h3,.acc-inner h4{color:#0f172a;margin:.5rem 0 .25rem}
+.acc-inner p{margin-bottom:.6rem}
 
 /* Toast */
-.toast{
-  position:fixed; right:24px; bottom:24px; z-index:10002; pointer-events:none;
-  padding:.8rem 1rem; border-radius:14px; background:var(--bg); color:#0f172a; box-shadow:var(--neu-out);
-  opacity:0; transform:translateY(12px); transition:opacity .25s ease, transform .25s ease;
-}
-.toast.show{opacity:1; transform:translateY(0)}
+.toast{position:fixed;right:24px;bottom:24px;z-index:10002;pointer-events:none;padding:.8rem 1rem;border-radius:14px;background:var(--bg);color:#0f172a;box-shadow:var(--neu-out);opacity:0;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease}
+.toast.show{opacity:1;transform:translateY(0)}
 
-/* Fade-ins */
-.fade-in{opacity:0; transform:translateY(30px); transition:opacity .6s ease, transform .6s ease}
-.fade-in.visible{opacity:1; transform:none}
+/* Fade-in helper */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease, transform .6s ease}
+.fade-in.visible{opacity:1;transform:none}
 
-/* Responsive */
-@media (max-width:768px){
-  .container{padding:0 1rem}
-  .nav-links{
-    position:fixed; top:80px; left:-100%; width:100%; height:calc(100dvh - 80px);
-    backdrop-filter: blur(8px);
-    background: rgba(233,238,245,.9);
-    flex-direction:column; align-items:center; padding-top:1.25rem; transition:left .25s ease; z-index:999;
-  }
-  .nav-links.active{ left:0 }
-  .hero-title{font-size: clamp(2.2rem, 9vw, 3rem)}
-  .section-title{font-size: 2rem}
-  #cookieConsentBanner{width:min(88vw,480px)}
-}
-/* === Dark Mode (site-wide) ===========================================
-   Applied when <body data-theme="dark"> is present. Mirrors Labs dark.
-   ------------------------------------------------------------------- */
+/* =============================== Dark Mode ============================ */
 body[data-theme="dark"]{
-  /* tokens */
-  --bg: #0d0d0d;
-  --bg-2: #141414;
-  --text: #e5e5e5;
-  --text-dim: #b0b0b0;
-  --text-muted: #8a8a8a;
-  --accent: #22c55e; /* green accent to match Labs vibe */
+  --bg:#0a0a0a; --bg-2:#121316;
+  --text:#e5e5e5; --text-dim:#b0b0b0; --text-muted:#8a8a8a;
+  --accent:#22c55e;
 
-  --neu-light: rgba(255,255,255,.05);
-  --neu-dark: rgba(0,0,0,.8);
-  --neu-radius: 16px;
-  --neu-inset: inset 6px 6px 14px var(--neu-dark),
-               inset -6px -6px 14px var(--neu-light);
-  --neu-out:   10px 10px 22px rgba(0,0,0,.85),
-               -10px -10px 22px rgba(255,255,255,.04);
+  --neu-light:rgba(255,255,255,.05);
+  --neu-dark:rgba(0,0,0,.8);
+  --neu-inset: inset 6px 6px 14px var(--neu-dark), inset -6px -6px 14px var(--neu-light);
+  --neu-out:   10px 10px 22px rgba(0,0,0,.85), -10px -10px 22px rgba(255,255,255,.04);
 
-  color: var(--text);
+  color:var(--text);
   background: linear-gradient(145deg, var(--bg), var(--bg-2));
 }
-
-/* header & footer surfaces in dark */
-body[data-theme="dark"] nav,
-body[data-theme="dark"] footer{
-  background: linear-gradient(145deg, #0d0d0d, #141414);
-  border-color: rgba(255,255,255,.05);
-}
-
-/* plates/buttons/etc inherit the dark tokens automatically; ensure cookie text good */
-body[data-theme="dark"] .cookie-btn.accept{ color:#ffffff; }
-body[data-theme="dark"] .cookie-btn.decline{ color:#cccccc; }
-
-/* cookie Learn More modal title readable */
-body[data-theme="dark"] .learn-more-modal h3{ color:#ffffff; }
-
-/* === Toggle Buttons (Dark Mode + Matrix) ============================= */
-.toggle-group{
-  position:fixed;
-  top:90px;      /* just beneath 80px navbar */
-  right:20px;
-  z-index:1000;
-  display:flex;
-  gap:10px;
-}
-
-#themeToggle,
-#matrixToggle{
-  min-width:44px;      /* keep tappable */
-  padding:.5rem .75rem;
-  border:0;
-  border-radius:12px;
-  font-weight:600;
-  font-size:1rem;
-  background: var(--bg);
-  color: var(--text);
-  box-shadow: var(--neu-out);
-  cursor:pointer;
-  transition: all .25s ease;
-}
-
-#themeToggle:hover,
-#matrixToggle:hover{
-  box-shadow: var(--neu-inset);
-  color: var(--accent);
-}
-
-/* mobile sizing */
-@media (max-width:768px){
-  .toggle-group{ top:82px; right:12px; gap:6px; }
-  #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem; }
-}
-
-/* Ensure dark header/footer always win over light defaults */
-body[data-theme="dark"] nav,
-body[data-theme="dark"] footer{
-  background: linear-gradient(145deg, #0d0d0d, #141414) !important;
-  border-color: rgba(255,255,255,.05) !important;
-}
-
-/* Mobile spacing tweak for the top-right toggle group */
-@media (max-width:768px){
-  .toggle-group{ top: 98px; }  /* was ~82px; this clears the navbar comfortably */
-}
-/* Footer link sizing on mobile: keep to a single row */
-@media (max-width:768px){
-  footer .footer-links{
-    gap: .5rem;
-    flex-wrap: nowrap;              /* prevent wrapping */
-  }
-  footer .footer-links a{
-    font-size: .85rem;              /* smaller text */
-    padding: .35rem .55rem;         /* tighter pills */
-  }
-}
-/* === Backgrounds: subtle on light, mostly black on dark ================= */
-
-/* Light mode (no data-theme="dark"): not pure white anymore */
-body:not([data-theme="dark"]) .background-gradient{
-  background:
-    radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,0.50) 0%, transparent 60%),
-    linear-gradient(145deg, #f7f8fb, #eef2f8);
-}
-
-/* Dark mode: near-black with a whisper of grey */
-body[data-theme="dark"]{
-  --bg: #0a0a0a;     /* darker than before */
-  --bg-2:#121316;
-}
 body[data-theme="dark"] .background-gradient{
+  /* Near-black with a whisper of grey */
   background:
     radial-gradient(900px 600px at 18% 6%, rgba(255,255,255,0.06) 0%, transparent 60%),
     linear-gradient(145deg, var(--bg), var(--bg-2));
 }
-
-/* === Ensure text is white in DARK mode everywhere ====================== */
-body[data-theme="dark"]{
-  color:#f1f5f9;
+body[data-theme="dark"] nav,
+body[data-theme="dark"] footer{
+  background:linear-gradient(145deg,#0a0a0a,#121316) !important;
+  border-color:rgba(255,255,255,.06) !important;
 }
+/* Dark text enforcement (nav/accordion/buttons/links) */
 body[data-theme="dark"] .nav-link,
 body[data-theme="dark"] .footer-links a,
 body[data-theme="dark"] .btn,
@@ -386,76 +206,42 @@ body[data-theme="dark"] .project-description,
 body[data-theme="dark"] .about-text,
 body[data-theme="dark"] .contact-info,
 body[data-theme="dark"] .contact-item,
-body[data-theme="dark"] .muted{
-  color:#f1f5f9 !important;
-}
-body[data-theme="dark"] .section-title{
-  color:#ffffff !important;
-  background:none !important;           /* disable any blue gradient text */
-  -webkit-background-clip: initial;
-  background-clip: initial;
-}
-
-/* Buttons in dark should not use dark-blue text */
-body[data-theme="dark"] .btn{ color:#f1f5f9 !important; }
-
-/* Navbar & footer surfaces (reinforce dark look) */
-body[data-theme="dark"] nav,
-body[data-theme="dark"] footer{
-  background: linear-gradient(145deg, #0a0a0a, #121316) !important;
-  border-color: rgba(255,255,255,.06) !important;
-}
-
-/* === Toggle group mobile nudge (more spacing below navbar) ============= */
-@media (max-width:768px){
-  .toggle-group{ top: 104px; }  /* was closer; move it a bit lower */
-}
-
-/* === Footer: center everything on mobile =============================== */
-@media (max-width:768px){
-  .footer-content{
-    justify-content:center;
-    text-align:center;
-    flex-direction:column;
-    align-items:center;
-    gap:.75rem;
-  }
-  .footer-links{
-    justify-content:center;
-  }
-}
-
-/* === Mobile hamburger visibility/treatment ============================= */
-@media (max-width:768px){
-  .mobile-menu-button{ display:block; }
-  nav .nav-links{
-    position:fixed; top:80px; left:-100%; width:100%; height:calc(100dvh - 80px);
-    backdrop-filter: blur(8px);
-    background: rgba(233,238,245,.95);
-    flex-direction:column; align-items:center; padding-top:1.25rem; transition:left .25s ease; z-index:999;
-  }
-  body[data-theme="dark"] nav .nav-links{
-    background: rgba(10,10,10,.96);
-  }
-  nav .nav-links.active{ left:0; }
-}
-
-/* Accordion: force white text/icons in dark mode */
-body[data-theme="dark"] .acc-header{ color:#fff !important; }
-body[data-theme="dark"] .acc-inner{ color:#e5e5e5 !important; }
-body[data-theme="dark"] .acc-inner h3,
-body[data-theme="dark"] .acc-inner h4{ color:#fff !important; }
-
-/* SVG arrow inside header */
+body[data-theme="dark"] .muted{ color:#f1f5f9 !important; }
+body[data-theme="dark"] .section-title{ color:#fff !important; background:none !important; -webkit-background-clip:initial; background-clip:initial; }
 body[data-theme="dark"] .acc-header .acc-icon,
 body[data-theme="dark"] .acc-header svg,
-body[data-theme="dark"] .acc-header svg path{
-  color:#fff !important;
-  fill:#fff !important;
-  stroke:none !important;
-}
-
-/* Hamburger bars: white in dark mode */
+body[data-theme="dark"] .acc-header svg path{ fill:#fff !important; color:#fff !important; }
 body[data-theme="dark"] .hamburger{ background:#fff !important; }
 
+/* ====================== Top-right Toggle Group ======================= */
+.toggle-group{
+  position:fixed; top:90px; right:20px; z-index:1000;
+  display:flex; gap:10px;
+}
+#themeToggle,#matrixToggle{
+  min-width:44px; padding:.5rem .75rem; border:0; border-radius:12px; font-weight:600; font-size:1rem;
+  background:var(--bg); color:var(--text); box-shadow:var(--neu-out); cursor:pointer; transition:all .25s ease;
+}
+#themeToggle:hover,#matrixToggle:hover{ box-shadow:var(--neu-inset); color:var(--accent) }
 
+/* ============================== Responsive ============================ */
+@media (max-width:768px){
+  .container{padding:0 1rem}
+  .mobile-menu-button{display:block}
+  .nav-links{
+    position:fixed; top:80px; left:-100%; width:100%; height:calc(100dvh - 80px);
+    backdrop-filter:blur(8px); background:rgba(233,238,245,.95);
+    flex-direction:column; align-items:center; padding-top:1.25rem; transition:left .25s ease; z-index:999;
+  }
+  body[data-theme="dark"] .nav-links{ background:rgba(10,10,10,.96) }
+  .nav-links.active{ left:0 }
+
+  /* extra spacing so toggles don’t hug the navbar */
+  .toggle-group{ top:98px; right:12px; gap:6px }
+  #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem }
+
+  /* Footer: center everything + keep one row of links */
+  .footer-content{justify-content:center;text-align:center;flex-direction:column;align-items:center;gap:.75rem}
+  .footer-links{justify-content:center;gap:.5rem;flex-wrap:nowrap}
+  .footer-links a{font-size:.85rem;padding:.35rem .55rem}
+}
