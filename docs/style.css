@@ -827,6 +827,129 @@
     transform: translate(-50%, 0);
   }
 }
+/* === NEUMORPHIC THEME OVERRIDES — delete this block to undo === */
+
+/* 1) Dark palette tuned for neumorphism (blue accents stay) */
+:root{
+  /* Deep navy + raised surface */
+  --bg-primary: #0a0f1c;
+  --bg-secondary: #0d1426;
+  --bg-elev:    #0f1b2f;
+
+  /* Keep your brand blues */
+  --accent-primary: #3b82f6;   /* blue-500 */
+  --accent-secondary:#2563eb;  /* blue-600 */
+  --accent-tertiary:#60a5fa;   /* blue-400 */
+
+  /* Text tuned for dark UI */
+  --text-primary:   #e8f0ff;
+  --text-secondary: #b8c4dd;
+
+  /* Card variables used across components */
+  --card-bg: var(--bg-elev);
+  --card-border: rgba(59,130,246,0.14);
+
+  /* Soft shadow pair for dark neumorphism */
+  --neo-dark:  rgba(0,0,0,.55);      /* bottom-right shadow */
+  --neo-light: rgba(255,255,255,.06);/* top-left highlight */
+
+  /* Keep your existing transitions/radius */
+  /* --border-radius, --transition already defined */
+}
+
+/* 2) Background (subtle radial—no harsh banding) */
+body{
+  background:
+    radial-gradient(1200px 800px at 15% 10%, #0e1629 0%, rgba(10,15,28,0.92) 60%) ,
+    #0a0f1c;
+  color: var(--text-primary);
+}
+
+/* 3) Cards & surfaces (accordion items, modal panes, generic blocks) */
+.acc-item,
+.learn-more-modal,
+.toast,
+.nav-container {
+  background: var(--bg-elev);
+  border: none;
+  box-shadow:
+    10px 10px 24px var(--neo-dark),
+    -10px -10px 24px var(--neo-light);
+}
+
+/* Hover lift — very subtle to keep the effect clean */
+.acc-item:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    12px 12px 28px var(--neo-dark),
+    -12px -12px 28px var(--neo-light);
+  border: none;
+}
+
+/* Accordion inner divider looks ‘cut in’ with neo — remove line */
+.acc-content{ border-top: none; }
+
+/* 4) Buttons: blue, soft-raised, crisp text */
+.btn{
+  /* fallback solid */
+  background: var(--accent-primary);
+  /* gentle vertical tint if supported */
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent-primary) 92%, #000 8%),
+    var(--accent-primary)
+  );
+  color: #f8fbff;
+  border: none;
+  box-shadow:
+    8px 8px 18px rgba(0,0,0,.45),
+    -6px -6px 14px rgba(255,255,255,.05),
+    0 0 0 1px rgba(59,130,246,.25) inset;
+}
+.btn:hover{
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+  box-shadow:
+    10px 10px 22px rgba(0,0,0,.5),
+    -8px -8px 16px rgba(255,255,255,.06),
+    0 0 0 1px rgba(59,130,246,.35) inset;
+}
+.btn:active{
+  transform: translateY(0);
+  box-shadow:
+    inset 8px 8px 16px rgba(0,0,0,.55),
+    inset -8px -8px 16px rgba(255,255,255,.04);
+}
+
+/* 5) Inputs (if present) — pressed-in look */
+input, textarea, select{
+  background: var(--bg-elev);
+  border: none;
+  color: var(--text-primary);
+  box-shadow:
+    inset 8px 8px 16px var(--neo-dark),
+    inset -8px -8px 16px var(--neo-light);
+}
+input:focus, textarea:focus, select:focus{
+  outline: 2px solid color-mix(in srgb, var(--accent-primary), #ffffff 15%);
+  outline-offset: 2px;
+}
+
+/* 6) Avatar ring tuned so it doesn’t clash with soft shadows */
+.site-avatar{
+  border: 1px solid rgba(59,130,246,.35);
+  box-shadow:
+    8px 8px 18px rgba(0,0,0,.45),
+    -6px -6px 14px rgba(255,255,255,.05);
+}
+
+/* 7) Navbar — subtle glass with neo shadows */
+#navbar{
+  background: color-mix(in srgb, var(--bg-primary) 88%, #000 12%);
+  box-shadow:
+    10px 10px 24px var(--neo-dark),
+    -10px -10px 24px var(--neo-light);
+}
+#navbar.scrolled{ backdrop-filter: blur(6px); }
 
     
   
