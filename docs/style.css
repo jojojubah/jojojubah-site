@@ -344,4 +344,42 @@ body[data-theme="dark"] #learnToast a {
   color: #fff;
   text-decoration: underline;
 }
+/* === Assistant (Jojo) — START === */
+.assistant{
+  position:fixed; right:20px; bottom:20px; z-index:10000;
+  display:flex; align-items:flex-end; gap:10px; cursor:grab; user-select:none;
+}
+.assistant:active{ cursor:grabbing; }
+.assistant-avatar{
+  width:64px; height:64px; border-radius:50%; object-fit:cover;
+  border:2px solid rgba(255,255,255,.7);
+  box-shadow:var(--neu-out);
+  background:var(--bg);
+}
+.assistant-bubble{
+  position:absolute; right:calc(100% + 12px); bottom:6px;
+  max-width:min(320px,80vw);
+  background:var(--bg); color:var(--text);
+  border-radius:14px; padding:12px 14px;
+  box-shadow:var(--neu-out);
+  border:1px solid rgba(0,0,0,.06);
+  display:none;
+}
+.assistant-bubble.show{ display:block; animation:popIn .15s ease-out; }
+@keyframes popIn{ from{opacity:0;transform:scale(.9);} to{opacity:1;transform:scale(1);} }
+.assistant-close{
+  position:absolute; right:6px; top:6px; background:none; border:0;
+  font-size:18px; line-height:1; color:var(--text-dim); cursor:pointer;
+}
+.assistant-actions{ display:flex; gap:8px; margin-top:.5rem; }
+.assistant-btn{
+  padding:.4rem .8rem; border-radius:10px; border:0;
+  background:var(--bg); box-shadow:var(--neu-out);
+  font-weight:600; cursor:pointer;
+}
+.assistant-btn:hover{ box-shadow:var(--neu-inset); }
+/* Dark mode adjustments */
+body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--text); }
+/* === Assistant (Jojo) — END === */
+
 
