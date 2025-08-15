@@ -275,14 +275,17 @@ function unlockBonus(){
   unlocked = true;
   addBonusAccordion();
   showToast();
-  localStorage.setItem('learnBonusUnlocked','1');
+  // bonus should reset on refresh → use sessionStorage (clears each tab load)
+sessionStorage.setItem('learnBonusUnlocked','1'); // was localStorage
+
 }
 
-// re-create bonus on reload if previously unlocked
-if (localStorage.getItem('learnBonusUnlocked') === '1') {
+// session-only unlock: do NOT persist across refresh
+if (sessionStorage.getItem('learnBonusUnlocked') === '1') {
   unlocked = true;
   addBonusAccordion();
 }
+
 
 // wire ORIGINAL items + completion tracking
 // (use the count captured at load so the bonus doesn’t affect it)
