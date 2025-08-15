@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!tips[key]) return;
       textEl.textContent = tips[key];
       bubble.classList.add('show');
-      setTimeout(()=> bubble.classList.remove('show'), 6000); // auto-hide after 6s
+      setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 6s
     };
 
     // Close button
