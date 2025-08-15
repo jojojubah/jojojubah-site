@@ -277,4 +277,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
-});
+  
+
+  // === Contact: simple reveal email ===
+  const revealBtn = document.getElementById('revealEmail');
+  const hiddenWrap = document.getElementById('emailHidden');
+  const visibleEmail = document.getElementById('emailVisible');
+
+  if (revealBtn && hiddenWrap && visibleEmail) {
+    revealBtn.addEventListener('click', () => {
+      hiddenWrap.remove();          // remove the button
+      visibleEmail.hidden = false;  // show the email
+    });
+  }
+
+});  // <-- keep this closing line as it is
+
