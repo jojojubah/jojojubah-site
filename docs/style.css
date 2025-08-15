@@ -462,3 +462,8 @@ body[data-theme="dark"] #assistantClose:hover{ background: rgba(255,255,255,.18)
   margin-right: 28px; /* space so text doesn't hit the close X */
 }
 
+/* Safety: hide any accidental 'Next' button in bubble */
+#assistantBubble button:not(#assistantClose) {
+  display: none !important;
+}
+
