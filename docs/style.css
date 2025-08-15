@@ -382,5 +382,11 @@ body[data-theme="dark"] #learnToast a {
 /* Dark mode adjustments */
 body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--text); }
 /* === Assistant (Jojo) — END === */
+/* === Assistant fix: always above cookie banner === */
+#jojoAssistant,
+#assistantBubble {
+  z-index: 99999 !important; /* sits above cookie banner & all UI */
+  position: fixed;
+}
 
 
