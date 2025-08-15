@@ -296,5 +296,20 @@ body[data-theme="dark"] .acc-item{
   height: 100%;
   display: block;
 }
+/* === Contact: reveal email effect === */
+.reveal-inline-btn {
+  display: inline-block;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.1s;
+  margin-left: 6px;
+}
+.reveal-inline-btn:hover { background: #e2e8f0; }
+.reveal-inline-btn:active { transform: scale(0.96); }
+
 
 
