@@ -309,55 +309,58 @@ function unlockBonus(){
   });
 // === Assistant (Jojo) — START ===
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('jojoAssistant');
+  const root   = document.getElementById('jojoAssistant');
   if (!root) return;
-
-  const bubble   = document.getElementById('assistantBubble');
-  const textEl   = document.getElementById('assistantText');
+  const bubble = document.getElementById('assistantBubble');
+  const textEl = document.getElementById('assistantText');
   const closeBtn = document.getElementById('assistantClose');
-  const nextBtn  = document.getElementById('assistantNextBtn');
 
-  let tips = [];      // will load from JSON
-  let index = 0;
+  let tips = {};
 
-  // Load tips.json (custom messages you’ll create later in /data/tips.json)
-  fetch('data/tips.json', { cache:'no-store' })
-    .then(r=>r.ok ? r.json() : [])
-    .then(json => { if(Array.isArray(json)) tips = json; });
+  // Load JSON tips
+  fetch('data/tips.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : {})
+    .then(json => { tips = json || {}; });
 
-  function showTip(){
-    if (!tips.length) return;
-    index = (index+1) % tips.length;
-    textEl.textContent = tips[index];
+  // Show specific tip by key
+  function showTip(key){
+    if (!tips[key]) return;
+    textEl.textContent = tips[key];
+    bubble.classList.add('show');
   }
 
-  // Behaviour triggers
-  root.addEventListener('mouseenter', ()=>{ bubble.classList.add('show'); showTip(); });
-  root.addEventListener('click',      ()=>{ bubble.classList.toggle('show'); showTip(); });
-  closeBtn.addEventListener('click',  ()=> bubble.classList.remove('show'));
-  nextBtn.addEventListener('click',   showTip);
+  // Close button
+  closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
 
-  // Simple drag (desktop + mobile)
-  let drag=false, sx=0, sy=0, sl=0, st=0;
-  root.addEventListener('pointerdown', e=>{
-    if(e.target.closest('.assistant-bubble')) return;
-    drag=true; sx=e.clientX; sy=e.clientY;
-    const r=root.getBoundingClientRect(); sl=r.left; st=r.top;
-    root.setPointerCapture(e.pointerId);
-  });
-  window.addEventListener('pointermove', e=>{
-    if(!drag) return;
-    const dx=e.clientX-sx, dy=e.clientY-sy;
-    root.style.left = sl+dx+"px"; root.style.top = st+dy+"px";
-    root.style.right="auto"; root.style.bottom="auto";
-  });
-  window.addEventListener('pointerup', ()=> drag=false);
+  // === Trigger 1: theme toggle ===
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn){
+    themeBtn.addEventListener('click', () => {
+      showTip('themeToggle');
+    });
+  }
 
-  // 💡 later: you can mix in a free API here.
-  // Example: fetch("https://api.adviceslip.com/advice")...
+  // === Trigger 2: user scrolls into Projects section ===
+  const projects = document.getElementById('projects');
+  if (projects){
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          showTip('projectsSection');
+          observer.disconnect(); // only show once
+        }
+      });
+    }, { threshold: 0.4 });
+    observer.observe(projects);
+  }
+
+  // 💡 To add new triggers later:
+  // 1. Add a new key/value in tips.json
+  // 2. Call showTip('yourKey') inside the right event
 });
 // === Assistant (Jojo) — END ===
 
+
   
-}); // <-- closes the single DOMContentLoaded, keep it exactly once
+ // <-- closes the single DOMContentLoaded, keep it exactly once
 
