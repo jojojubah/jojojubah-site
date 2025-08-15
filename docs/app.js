@@ -308,12 +308,13 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(json => { tips = json || {}; });
 
     // Show specific tip by key
-    window.showTip = function(key){
-      if (!tips[key]) return;
-      textEl.textContent = tips[key];
-      bubble.classList.add('show');
-      setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 6s
-    };
+window.showTip = function(key){
+  if (!tips[key]) return;
+  textEl.textContent = tips[key];   // ✅ only text, no button
+  bubble.classList.add('show');
+  setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
+};
+
 
     // Close button
     closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
