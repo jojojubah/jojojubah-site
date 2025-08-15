@@ -346,7 +346,8 @@ body[data-theme="dark"] #learnToast a {
 }
 /* === Assistant (Jojo) — START === */
 .assistant{
-  position:fixed; right:20px; bottom:20px; z-index:10000;
+  position:fixed; right:20px; bottom:20px; z-index:11000; /* higher than cookie banner */
+
   display:flex; align-items:flex-end; gap:10px; cursor:grab; user-select:none;
 }
 .assistant:active{ cursor:grabbing; }
