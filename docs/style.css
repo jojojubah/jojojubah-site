@@ -380,7 +380,7 @@ body[data-theme="dark"] #learnToast a {
   bottom: calc(20px + var(--assistant-size) + var(--assistant-gap));
   right: 20px;
   max-width: min(360px, 80vw);
-  padding: 14px 18px;
+  padding: 14px 44px 14px 18px; /* extra right padding for × */
   border-radius: 12px;
   display: none;
   z-index: var(--assistant-z);
@@ -393,6 +393,7 @@ body[data-theme="dark"] #learnToast a {
   border: 1px solid rgba(0,0,0,.12);
   box-shadow: var(--neu-out);
 }
+
 body[data-theme="dark"] #assistantBubble{
   border-color: rgba(255,255,255,.10);
 }
