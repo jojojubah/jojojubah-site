@@ -1,7 +1,4 @@
-[
-  "👋 Welcome to JojoJubah!",
-  "💡 Tip: Share files with AI instead of giant copy-paste.",
-  "🎬 Check out the Projects section for tutorials.",
-  "😏 Fun fact: This assistant is draggable.",
-  "🔒 Privacy first: This site works without tracking cookies."
-]
+{
+  "themeToggle": "🌙 Great, you found the light/dark mode toggle!",
+  "projectsSection": "🎬 Explore some cool projects here."
+}
