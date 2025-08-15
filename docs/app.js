@@ -308,9 +308,8 @@ function unlockBonus(){
     }
   });
 // === Assistant (Jojo) — START ===
-document.addEventListener('DOMContentLoaded', () => {
-  const root   = document.getElementById('jojoAssistant');
-  if (!root) return;
+const root   = document.getElementById('jojoAssistant');
+if (root) {
   const bubble = document.getElementById('assistantBubble');
   const textEl = document.getElementById('assistantText');
   const closeBtn = document.getElementById('assistantClose');
@@ -353,11 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.4 });
     observer.observe(projects);
   }
-
-  // 💡 To add new triggers later:
-  // 1. Add a new key/value in tips.json
-  // 2. Call showTip('yourKey') inside the right event
-});
+}
 // === Assistant (Jojo) — END ===
 
 
