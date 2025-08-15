@@ -334,4 +334,14 @@ body[data-theme="dark"] .btn {
 }
 body[data-theme="dark"] .btn:hover { box-shadow: var(--neu-inset); }
 
+/* === Dark mode: Toast text should be white (main page only) === */
+body[data-theme="dark"] #learnToast {
+  color: #fff; /* text only, no color changes elsewhere */
+}
+
+/* (Optional) if you ever add a link inside the toast */
+body[data-theme="dark"] #learnToast a {
+  color: #fff;
+  text-decoration: underline;
+}
 
