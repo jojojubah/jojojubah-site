@@ -345,14 +345,13 @@ body[data-theme="dark"] #learnToast a {
   text-decoration: underline;
 }
 /* === Assistant (Jojo) — START ======================================= */
-/* Size/stack tokens (uses your site colors: --bg, --bg-2, --text, etc.) */
 :root{
-  --assistant-size: 64px;   /* avatar diameter */
-  --assistant-gap: 12px;    /* vertical gap between avatar and bubble */
-  --assistant-z: 99999;     /* must sit above cookie banner */
+  --assistant-size: 64px;
+  --assistant-gap: 12px;
+  --assistant-z: 99999;
 }
 
-/* Floating avatar (bottom-right) */
+/* Floating avatar */
 .assistant{
   position: fixed;
   right: 20px;
@@ -375,26 +374,22 @@ body[data-theme="dark"] #learnToast a {
   box-shadow: var(--neu-out);
 }
 
-/* Bubble (RIGHT edge aligned to avatar RIGHT edge) */
+/* Tooltip bubble */
 #assistantBubble{
   position: fixed;
-  /* sits above the avatar; mirrors the same right offset (20px) so edges align */
   bottom: calc(20px + var(--assistant-size) + var(--assistant-gap));
   right: 20px;
-
   max-width: min(360px, 80vw);
   padding: 14px 18px;
   border-radius: 12px;
-  display: none; /* toggled by .show */
+  display: none;
   z-index: var(--assistant-z);
 
-  /* Neutral, theme-aware background (uses your site tokens) */
   background:
     radial-gradient(140px 80px at 18% 26%, rgba(255,255,255,.18), transparent 60%),
     linear-gradient(145deg, var(--bg), var(--bg-2));
   color: var(--text);
 
-  /* Subtle border + your neo shadow, good in both themes */
   border: 1px solid rgba(0,0,0,.12);
   box-shadow: var(--neu-out);
 }
@@ -403,12 +398,11 @@ body[data-theme="dark"] #assistantBubble{
 }
 #assistantBubble.show{ display: block !important; }
 
-/* Speech-bubble arrow (points toward avatar near its center) */
+/* Arrow */
 #assistantBubble::after{
   content: "";
   position: absolute;
   bottom: -16px;
-  /* arrow sits roughly over the avatar center measured from the bubble's right edge */
   right: calc((var(--assistant-size) / 2) - 8px);
   border-width: 16px 12px 0;
   border-style: solid;
@@ -420,7 +414,7 @@ body[data-theme="dark"] #assistantBubble::after{
   filter: drop-shadow(0 -1px 0 rgba(255,255,255,.08));
 }
 
-/* Close (×) — readable in both themes */
+/* Close (×) only */
 #assistantClose{
   position: absolute;
   right: 10px;
@@ -440,40 +434,23 @@ body[data-theme="dark"] #assistantClose{
 }
 body[data-theme="dark"] #assistantClose:hover{ background: rgba(255,255,255,.18); }
 
-/* Any buttons inside the bubble (match your neo buttons; no white halo) */
-#assistantBubble button{
-  background: var(--bg);
-  color: var(--text) !important;
-  border: 0;
-  padding: 8px 12px;
-  border-radius: 12px;
-  font-weight: 700;
-  box-shadow: var(--neu-out);
-}
-#assistantBubble button:hover{ box-shadow: var(--neu-inset); }
-body[data-theme="dark"] #assistantBubble button{ color: #fff !important; }
-
-/* Make sure the assistant container always floats above everything */
+/* Ensure container stays above */
 #jojoAssistant{ position: fixed; z-index: var(--assistant-z) !important; }
 
-/* ----------------------------- Mobile ------------------------------- */
-/* Keep bubble compact and bottom-right, similar to desktop */
+/* Mobile tweaks */
 @media (max-width: 640px){
-  :root{
-    --assistant-size: 56px; /* slightly smaller avatar on mobile */
-  }
+  :root{ --assistant-size: 56px; }
   #assistantBubble{
-    right: 12px;  /* keep to the bottom-right corner */
+    right: 12px;
     bottom: calc(12px + var(--assistant-size) + 8px);
-    max-width: 78vw;       /* smaller so it doesn’t fill the screen */
-    padding: 10px 12px;    /* tighter padding */
-    font-size: 14px;       /* slightly smaller text */
+    max-width: 72vw;
+    padding: 10px 12px;
+    font-size: 14px;
   }
   #assistantBubble::after{
-    right: 36px;           /* good default alignment on small screens */
+    right: 36px;
     border-width: 14px 10px 0;
     bottom: -14px;
   }
 }
 /* === Assistant (Jojo) — END ========================================= */
-
