@@ -466,4 +466,9 @@ body[data-theme="dark"] #assistantClose:hover{ background: rgba(255,255,255,.18)
 #assistantBubble button:not(#assistantClose) {
   display: none !important;
 }
+/* Prevent tooltip text overlapping close button */
+#assistantText {
+  padding-right: 24px; /* space so text doesn't run under the × */
+  margin: 0;           /* clean reset */
+}
 
