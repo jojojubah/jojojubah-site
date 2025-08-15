@@ -417,4 +417,41 @@ body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--tex
   filter: drop-shadow(0 -1px 0 #999);
 }
 
+/* === Assistant bubble: make .show actually show (ID beats class otherwise) === */
+#assistantBubble.show { 
+  display: block !important;  /* override the earlier display:none */
+}
+
+/* (Optional) keep the Clippy look you added */
+#assistantBubble {
+  position: fixed;
+  bottom: 110px;         /* adjust if needed */
+  right: 100px;          /* adjust if needed */
+  background: #ffffcc;
+  color: #000;
+  padding: 12px 16px;
+  border: 2px solid #999;
+  border-radius: 6px;
+  font-size: 15px;
+  max-width: 240px;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+  z-index: 99999;
+}
+
+#assistantBubble::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  right: 20px; 
+  border-width: 15px 12px 0;
+  border-style: solid;
+  border-color: #ffffcc transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 #999);
+}
+
+/* Mobile tweak so it doesn't go off-screen */
+@media (max-width: 640px){
+  #assistantBubble { right: 16px; bottom: 100px; max-width: 86vw; }
+  #assistantBubble::after { right: 40px; }
+}
 
