@@ -345,97 +345,111 @@ body[data-theme="dark"] #learnToast a {
   text-decoration: underline;
 }
 /* === Assistant (Jojo) — START === */
-.assistant{
-  position:fixed; right:20px; bottom:20px; z-index:11000; /* higher than cookie banner */
+:root{
+  --assistant-size: 64px;          /* avatar size (matches .assistant-avatar) */
+  --assistant-gap: 16px;           /* space between bubble and avatar */
+  --assistant-z: 99999;            /* stays above cookie banner etc. */
 
+  /* Bubble colors (light) */
+  --assistant-bg-1: #3cc1b5;       /* teal */
+  --assistant-bg-2: #2f7fd4;       /* blue */
+  --assistant-border: #1e3a5f;     /* deep blue edge */
+  --assistant-text: #fff;
+  --assistant-btn-bg: rgba(255,255,255,.15);
+  --assistant-btn-bg-hover: rgba(255,255,255,.25);
+  --assistant-btn-text: #fff;
+}
+body[data-theme="dark"]{
+  /* Slightly deeper hues in dark mode */
+  --assistant-bg-1: #2cab9e;
+  --assistant-bg-2: #2563eb;
+  --assistant-border: rgba(255,255,255,.22);
+  --assistant-text: #fff;
+  --assistant-btn-bg: rgba(255,255,255,.14);
+  --assistant-btn-bg-hover: rgba(255,255,255,.24);
+  --assistant-btn-text: #fff;
+}
+
+/* Avatar + root */
+.assistant{
+  position:fixed; right:20px; bottom:20px; z-index:var(--assistant-z);
   display:flex; align-items:flex-end; gap:10px; cursor:grab; user-select:none;
 }
 .assistant:active{ cursor:grabbing; }
 .assistant-avatar{
-  width:64px; height:64px; border-radius:50%; object-fit:cover;
+  width:var(--assistant-size); height:var(--assistant-size);
+  border-radius:50%; object-fit:cover; background:var(--bg);
   border:2px solid rgba(255,255,255,.7);
   box-shadow:var(--neu-out);
-  background:var(--bg);
 }
-.assistant-bubble{
-  position:absolute; right:calc(100% + 12px); bottom:6px;
-  max-width:min(320px,80vw);
-  background:var(--bg); color:var(--text);
-  border-radius:14px; padding:12px 14px;
-  box-shadow:var(--neu-out);
-  border:1px solid rgba(0,0,0,.06);
-  display:none;
-}
-.assistant-bubble.show{ display:block; animation:popIn .15s ease-out; }
-@keyframes popIn{ from{opacity:0;transform:scale(.9);} to{opacity:1;transform:scale(1);} }
-.assistant-close{
-  position:absolute; right:6px; top:6px; background:none; border:0;
-  font-size:18px; line-height:1; color:var(--text-dim); cursor:pointer;
-}
-.assistant-actions{ display:flex; gap:8px; margin-top:.5rem; }
-.assistant-btn{
-  padding:.4rem .8rem; border-radius:10px; border:0;
-  background:var(--bg); box-shadow:var(--neu-out);
-  font-weight:600; cursor:pointer;
-}
-.assistant-btn:hover{ box-shadow:var(--neu-inset); }
-/* Dark mode adjustments */
-body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--text); }
-/* === Assistant (Jojo) — END === */
-/* === Assistant fix: always above cookie banner === */
-#jojoAssistant,
-#assistantBubble {
-  z-index: 99999 !important; /* sits above cookie banner & all UI */
-  position: fixed;
-}
-/* === Assistant Bubble (Clippy style) === */
-#assistantBubble {
-  position: fixed;
-  bottom: 110px;          /* keeps it above the assistant headshot */
-  right: 40px;            /* align closer above the avatar */
-  background: linear-gradient(135deg, #38b2ac, #3182ce); /* teal → blue gradient */
-  color: #fff;            /* white text for readability */
+
+/* Bubble (Clippy style, right edge aligned to avatar left edge) */
+#assistantBubble{
+  position:fixed;
+  bottom: calc(20px + var(--assistant-size) + 10px);      /* above avatar */
+  right: calc(20px + var(--assistant-size) + var(--assistant-gap)); /* align to avatar */
+  max-width: min(360px, 80vw);
   padding: 14px 18px;
-  border: 2px solid #1e3a5f;
-  border-radius: 8px;
-  font-size: 15px;
-  max-width: 260px;
-  box-shadow: 2px 4px 12px rgba(0,0,0,0.35);
-  z-index: 99999;
-  display: none;          /* hidden until .show is applied */
+  border: 2px solid var(--assistant-border);
+  border-radius: 10px;
+  color: var(--assistant-text);
+  background: radial-gradient(140px 80px at 18% 26%, rgba(255,255,255,.25), transparent 60%),
+              linear-gradient(135deg, var(--assistant-bg-1), var(--assistant-bg-2));
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  z-index: var(--assistant-z);
+  display: none; /* shown via .show */
+}
+#assistantBubble.show{ display:block !important; }
+
+#assistantBubble::after{
+  /* speech arrow pointing toward avatar */
+  content:"";
+  position:absolute;
+  bottom:-16px;
+  right: calc(var(--assistant-gap) + (var(--assistant-size) / 2) - 8px);
+  border-width:16px 12px 0;
+  border-style:solid;
+  border-color: var(--assistant-bg-2) transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 var(--assistant-border));
 }
 
-#assistantBubble.show {
-  display: block !important;
+/* Close (×) */
+#assistantClose{
+  position:absolute; right:10px; top:8px;
+  background: rgba(255,255,255,.18);
+  border:0; border-radius:8px; padding:6px 10px;
+  color:#fff; font-weight:800; cursor:pointer;
 }
+#assistantClose:hover{ background: rgba(255,255,255,.28); }
 
-#assistantBubble::after {
-  content: "";
-  position: absolute;
-  bottom: -15px;
-  right: 40px; /* arrow aligns under bubble */
-  border-width: 15px 12px 0;
-  border-style: solid;
-  border-color: #3182ce transparent transparent transparent;
-  filter: drop-shadow(0 -1px 0 #1e3a5f);
+/* Any buttons inside bubble (keep clean, readable) */
+#assistantBubble button{
+  background: var(--assistant-btn-bg);
+  color: var(--assistant-btn-text) !important;
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: none;         /* remove neumorph halo that looked white in light mode */
 }
+#assistantBubble button:hover{ background: var(--assistant-btn-bg-hover); }
 
-/* Ensure buttons inside bubble are visible */
-#assistantBubble button {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff !important;       /* force white text */
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-#assistantBubble button:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
+/* Legacy class-based bubble (kept for safety) */
+.assistant-bubble{ display:none; }
+.assistant-bubble.show{ display:block !important; }
 
-/* Mobile tweak */
-@media (max-width: 640px){
-  #assistantBubble { right: 16px; bottom: 100px; max-width: 86vw; }
-  #assistantBubble::after { right: 40px; }
-}
+/* Keep assistant above everything */
+#jojoAssistant{ position:fixed; z-index:var(--assistant-z) !important; }
 
+/* Mobile: keep bubble in bounds */
+@media (max-width:640px){
+  #assistantBubble{
+    right: 16px;
+    bottom: calc(16px + var(--assistant-size) + 8px);
+    max-width: 92vw;
+  }
+  #assistantBubble::after{
+    right: 48px; /* reasonable default on small screens */
+  }
+}
+/* === Assistant (Jojo) — END === */
