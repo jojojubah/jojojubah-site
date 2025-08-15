@@ -181,6 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       apply(next);
+
+      // 🧩 Assistant trigger for theme change
+      showTip && showTip('themeToggle');
     });
 
     const moveMatrixBtn = () => {
@@ -253,28 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>toastEl.classList.remove('show'), 6000);
   }
 
-  // ✅ BONUS UNLOCK (no persistence) + auto-open bonus
-function unlockBonus(){
-  if (unlocked) return;
-  unlocked = true;
-
-  addBonusAccordion(); // inject the bonus item
-
-  // Auto-open the newly added bonus accordion
-  const bonusItem = document.getElementById('acc-item-bonus');
-  if (bonusItem) {
-    bonusItem.classList.add('open');
-    const btn   = bonusItem.querySelector('.acc-header');
-    const panel = bonusItem.querySelector('.acc-content');
-    if (btn)   btn.setAttribute('aria-expanded','true');
-    if (panel) setPanelHeight(panel, true);
-    // Optional: smooth scroll into view
-    // bonusItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // ✅ BONUS UNLOCK (no persistence)
+  function unlockBonus(){
+    if (unlocked) return;
+    unlocked = true;
+    addBonusAccordion();
+    showToast();
   }
-
-  showToast(); // show the toast after unlock
-}
-
 
   // wire originals
   document.querySelectorAll('.acc-item').forEach((item, i) => {
@@ -289,73 +277,59 @@ function unlockBonus(){
     });
   });
 
-    // Footer year
+  // Footer year
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
 
-  // === Contact: simple reveal email (delegated, robust) ===
-  // This listens on the document for clicks on #revealEmail
+  // Contact: reveal email
   document.addEventListener('click', function(e){
-    const btn = e.target.closest('#revealEmail'); // closest() = safe if icon/text inside button is clicked
+    const btn = e.target.closest('#revealEmail');
     if (!btn) return;
-
     const hiddenWrap   = document.getElementById('emailHidden');
     const visibleEmail = document.getElementById('emailVisible');
-
     if (hiddenWrap && visibleEmail) {
-      hiddenWrap.remove();          // remove the button wrapper
-      visibleEmail.hidden = false;  // show the email text
+      hiddenWrap.remove();
+      visibleEmail.hidden = false;
     }
   });
-// === Assistant (Jojo) — START ===
-const root   = document.getElementById('jojoAssistant');
-if (root) {
-  const bubble = document.getElementById('assistantBubble');
-  const textEl = document.getElementById('assistantText');
-  const closeBtn = document.getElementById('assistantClose');
 
-  let tips = {};
+  /* ========================== Assistant (Jojo) ======================== */
+  const root   = document.getElementById('jojoAssistant');
+  if (root) {
+    const bubble = document.getElementById('assistantBubble');
+    const textEl = document.getElementById('assistantText');
+    const closeBtn = document.getElementById('assistantClose');
 
-  // Load JSON tips
-  fetch('data/tips.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : {})
-    .then(json => { tips = json || {}; });
+    let tips = {};
 
-  // Show specific tip by key
-  function showTip(key){
-    if (!tips[key]) return;
-    textEl.textContent = tips[key];
-    bubble.classList.add('show');
+    // Load JSON tips
+    fetch('data/tips.json', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : {})
+      .then(json => { tips = json || {}; });
+
+    // Show specific tip by key
+    window.showTip = function(key){
+      if (!tips[key]) return;
+      textEl.textContent = tips[key];
+      bubble.classList.add('show');
+      setTimeout(()=> bubble.classList.remove('show'), 6000); // auto-hide after 6s
+    };
+
+    // Close button
+    closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
+
+    // Trigger 2: user scrolls into Projects section
+    const projects = document.getElementById('projects');
+    if (projects){
+      const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            showTip('projectsSection');
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+      observer.observe(projects);
+    }
   }
-
-  // Close button
-  closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
-
-  // === Trigger 1: theme toggle ===
-  const themeBtn = document.getElementById('themeToggle');
-  if (themeBtn){
-    themeBtn.addEventListener('click', () => {
-      showTip('themeToggle');
-    });
-  }
-
-  // === Trigger 2: user scrolls into Projects section ===
-  const projects = document.getElementById('projects');
-  if (projects){
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          showTip('projectsSection');
-          observer.disconnect(); // only show once
-        }
-      });
-    }, { threshold: 0.4 });
-    observer.observe(projects);
-  }
-}
-// === Assistant (Jojo) — END ===
-
-
-  
- // <-- closes the single DOMContentLoaded, keep it exactly once
-
+});
