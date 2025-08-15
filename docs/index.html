@@ -263,9 +263,17 @@
         <h2 class="section-title fade-in">Contact & Socials</h2>
         <div class="contact-content fade-in">
           <div class="contact-info">
-            <div class="contact-item">
-              <strong>Email:</strong> hendrixjuba@gmail.com <span class="muted">(email me)</span>
-            </div>
+            <!-- Email with reveal -->
+    <div class="contact-item">
+      <strong>Email:</strong>
+      <span id="emailHidden">
+        <button id="revealEmail" class="reveal-inline-btn">Reveal</button>
+      </span>
+      <span id="emailVisible" hidden>
+        hendrixjuba@gmail.com
+      </span>
+      <span class="muted">(email me)</span>
+    </div>
             <div class="contact-item">
               <strong>Location:</strong> London, UK <span class="muted">(remote, open for collabs!)</span>
             </div>
