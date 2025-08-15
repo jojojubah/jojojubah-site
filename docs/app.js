@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let index = 0;
 
   // Load tips.json (custom messages you’ll create later in /data/tips.json)
-  fetch('/data/tips.json', { cache:'no-store' })
+  fetch('data/tips.json', { cache:'no-store' })
     .then(r=>r.ok ? r.json() : [])
     .then(json => { if(Array.isArray(json)) tips = json; });
 
