@@ -275,21 +275,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+    // Footer year
   const y = document.getElementById('secretYear');
   if (y) y.textContent = new Date().getFullYear();
-  
 
-  // === Contact: simple reveal email ===
-  const revealBtn = document.getElementById('revealEmail');
-  const hiddenWrap = document.getElementById('emailHidden');
-  const visibleEmail = document.getElementById('emailVisible');
+  // === Contact: simple reveal email (delegated, robust) ===
+  // This listens on the document for clicks on #revealEmail
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('#revealEmail'); // closest() = safe if icon/text inside button is clicked
+    if (!btn) return;
 
-  if (revealBtn && hiddenWrap && visibleEmail) {
-    revealBtn.addEventListener('click', () => {
-      hiddenWrap.remove();          // remove the button
-      visibleEmail.hidden = false;  // show the email
-    });
-  }
+    const hiddenWrap   = document.getElementById('emailHidden');
+    const visibleEmail = document.getElementById('emailVisible');
 
-});  // <-- keep this closing line as it is
+    if (hiddenWrap && visibleEmail) {
+      hiddenWrap.remove();          // remove the button wrapper
+      visibleEmail.hidden = false;  // show the email text
+    }
+  });
+
+}); // <-- closes the single DOMContentLoaded, keep it exactly once
 
