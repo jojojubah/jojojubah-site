@@ -311,5 +311,52 @@ body[data-theme="dark"] .acc-item{
 .reveal-inline-btn:hover { background: #e2e8f0; }
 .reveal-inline-btn:active { transform: scale(0.96); }
 
+/* === Dark Mode Pop Tweak (v1) — minimal & reversible === */
+body[data-theme="dark"] {
+  /* Slightly lighter dark base + brighter text for contrast */
+  --bg:    #0d1117;
+  --bg-2:  #0a0e14;
+  --text:  #e8edf4;
+
+  /* Stronger neumorphic shadows in dark */
+  --neu-out:   14px 18px 40px rgba(0,0,0,.75), -8px -8px 24px rgba(255,255,255,.03);
+  --neu-inset: inset 2px 2px 4px rgba(0,0,0,.55), inset -2px -2px 4px rgba(255,255,255,.05);
+}
+
+/* Cards: deepen background + add a thin soft border for definition */
+body[data-theme="dark"] .project-card,
+body[data-theme="dark"] .contact-content,
+body[data-theme="dark"] .card {
+  background: #0f141b;                      /* slightly lighter than page bg */
+  box-shadow: var(--neu-out);
+  border: 1px solid rgba(255,255,255,.06);   /* subtle edge = more “pop” */
+}
+
+/* Project text contrast */
+body[data-theme="dark"] .project-card .project-title { color: #f8fafc; }
+body[data-theme="dark"] .project-card .project-description { color: #cbd5e1; }
+
+/* Buttons: darker base + brighter label + stronger shadow */
+body[data-theme="dark"] .btn {
+  background: #111827;                       /* readable against card bg */
+  color: #f8fafc;
+  box-shadow: 0 10px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+body[data-theme="dark"] .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(0,0,0,.7);
+  filter: brightness(1.05);
+}
+body[data-theme="dark"] .btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(0,0,0,.6) inset;
+}
+body[data-theme="dark"] .btn:focus-visible {
+  outline: 2px solid rgba(99,102,241,.75);   /* accessible focus ring */
+  outline-offset: 2px;
+}
+
 
 
