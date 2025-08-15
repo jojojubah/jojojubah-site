@@ -233,13 +233,15 @@ function wireAccordionItem(item){
   });
 }
 
+// === Create/wire the secret bonus accordion ===
 function addBonusAccordion(){
   if (!accContainer || document.getElementById('acc-item-bonus')) return;
 
+  // Insert bonus item at the end (hidden until user unlocks)
   accContainer.insertAdjacentHTML('beforeend', `
     <div class="acc-item" id="acc-item-bonus">
       <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
-        <span>Hmm… What’s this?</span>
+        <span>Hmm... What's this?</span> <!-- simple ASCII to avoid font/encoding quirks -->
         <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
         </svg>
@@ -260,9 +262,11 @@ function addBonusAccordion(){
     </div>
   `);
 
-  const bonusItem = document.getElementById('acc-item-bonus');
+  // ✅ make sure we wire the brand-new item
+  const bonusItem = document.getElementById('acc-item-bonus'); // was split/typo before
   if (bonusItem) wireAccordionItem(bonusItem);
 }
+
 
 function showToast(){
   if (!toastEl) return;
@@ -270,15 +274,16 @@ function showToast(){
   setTimeout(()=>toastEl.classList.remove('show'), 6000);
 }
 
+// === BONUS UNLOCK (no persistence on refresh) ===
 function unlockBonus(){
   if (unlocked) return;
   unlocked = true;
-  addBonusAccordion();
-  showToast();
-  // bonus should reset on refresh → use sessionStorage (clears each tab load)
-sessionStorage.setItem('learnBonusUnlocked','1'); // was localStorage
+  addBonusAccordion();  // add the bonus item
+  showToast();          // show the “bonus unlocked” toast
 
+  // No localStorage or sessionStorage here → bonus resets on refresh
 }
+
 
 // session-only unlock: do NOT persist across refresh
 if (sessionStorage.getItem('learnBonusUnlocked') === '1') {
