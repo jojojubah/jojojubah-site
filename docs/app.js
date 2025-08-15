@@ -253,14 +253,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>toastEl.classList.remove('show'), 6000);
   }
 
-  // ✅ updated: no persistence
-  function unlockBonus(){
-    if (unlocked) return;
-    unlocked = true;
-    addBonusAccordion();
-    showToast();
-    // no localStorage/sessionStorage → bonus resets on refresh
+  // ✅ BONUS UNLOCK (no persistence) + auto-open bonus
+function unlockBonus(){
+  if (unlocked) return;
+  unlocked = true;
+
+  addBonusAccordion(); // inject the bonus item
+
+  // Auto-open the newly added bonus accordion
+  const bonusItem = document.getElementById('acc-item-bonus');
+  if (bonusItem) {
+    bonusItem.classList.add('open');
+    const btn   = bonusItem.querySelector('.acc-header');
+    const panel = bonusItem.querySelector('.acc-content');
+    if (btn)   btn.setAttribute('aria-expanded','true');
+    if (panel) setPanelHeight(panel, true);
+    // Optional: smooth scroll into view
+    // bonusItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  showToast(); // show the toast after unlock
+}
+
 
   // wire originals
   document.querySelectorAll('.acc-item').forEach((item, i) => {
