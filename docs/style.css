@@ -388,5 +388,33 @@ body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--tex
   z-index: 99999 !important; /* sits above cookie banner & all UI */
   position: fixed;
 }
+/* === Assistant Tooltip (Clippy style bubble) === */
+#assistantBubble {
+  position: fixed;
+  bottom: 110px; /* above assistant headshot */
+  right: 100px;
+  background: #ffffcc; /* classic pale yellow bubble */
+  color: #000;
+  padding: 12px 16px;
+  border: 2px solid #999;
+  border-radius: 6px;
+  font-size: 15px;
+  max-width: 240px;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 99999;
+}
+
+/* Speech bubble arrow */
+#assistantBubble::after {
+  content: "";
+  position: absolute;
+  bottom: -15px; /* arrow position */
+  right: 20px;   /* aligns with Jojo headshot */
+  border-width: 15px 12px 0;
+  border-style: solid;
+  border-color: #ffffcc transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 #999);
+}
 
 
