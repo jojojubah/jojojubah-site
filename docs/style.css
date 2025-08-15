@@ -388,68 +388,52 @@ body[data-theme="dark"] .assistant-bubble{ background:var(--bg); color:var(--tex
   z-index: 99999 !important; /* sits above cookie banner & all UI */
   position: fixed;
 }
-/* === Assistant Tooltip (Clippy style bubble) === */
+/* === Assistant Bubble (Clippy style) === */
 #assistantBubble {
   position: fixed;
-  bottom: 110px; /* above assistant headshot */
-  right: 100px;
-  background: #ffffcc; /* classic pale yellow bubble */
-  color: #000;
-  padding: 12px 16px;
-  border: 2px solid #999;
-  border-radius: 6px;
+  bottom: 110px;          /* keeps it above the assistant headshot */
+  right: 40px;            /* align closer above the avatar */
+  background: linear-gradient(135deg, #38b2ac, #3182ce); /* teal → blue gradient */
+  color: #fff;            /* white text for readability */
+  padding: 14px 18px;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
   font-size: 15px;
-  max-width: 240px;
-  box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
-  display: none;
+  max-width: 260px;
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.35);
   z-index: 99999;
+  display: none;          /* hidden until .show is applied */
 }
 
-/* Speech bubble arrow */
-#assistantBubble::after {
-  content: "";
-  position: absolute;
-  bottom: -15px; /* arrow position */
-  right: 20px;   /* aligns with Jojo headshot */
-  border-width: 15px 12px 0;
-  border-style: solid;
-  border-color: #ffffcc transparent transparent transparent;
-  filter: drop-shadow(0 -1px 0 #999);
-}
-
-/* === Assistant bubble: make .show actually show (ID beats class otherwise) === */
-#assistantBubble.show { 
-  display: block !important;  /* override the earlier display:none */
-}
-
-/* (Optional) keep the Clippy look you added */
-#assistantBubble {
-  position: fixed;
-  bottom: 110px;         /* adjust if needed */
-  right: 100px;          /* adjust if needed */
-  background: #ffffcc;
-  color: #000;
-  padding: 12px 16px;
-  border: 2px solid #999;
-  border-radius: 6px;
-  font-size: 15px;
-  max-width: 240px;
-  box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
-  z-index: 99999;
+#assistantBubble.show {
+  display: block !important;
 }
 
 #assistantBubble::after {
   content: "";
   position: absolute;
   bottom: -15px;
-  right: 20px; 
+  right: 40px; /* arrow aligns under bubble */
   border-width: 15px 12px 0;
   border-style: solid;
-  border-color: #ffffcc transparent transparent transparent;
-  filter: drop-shadow(0 -1px 0 #999);
+  border-color: #3182ce transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 #1e3a5f);
 }
 
-/* Mobile tweak so it doesn't go off-screen */
+/* Ensure buttons inside bubble are visible */
+#assistantBubble button {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff !important;       /* force white text */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#assistantBubble button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Mobile tweak */
 @media (max-width: 640px){
   #assistantBubble { right: 16px; bottom: 100px; max-width: 86vw; }
   #assistantBubble::after { right: 40px; }
