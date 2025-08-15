@@ -283,5 +283,18 @@ body[data-theme="dark"] .acc-item{
   border: 0 !important;
   box-shadow: var(--neu-out); /* keep the soft neo shadow only */
 }
+/* === Featured Projects: Video Embeds === */
+.project-video {
+  width: 100%;
+  aspect-ratio: 16/9;   /* keeps proper video shape */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.project-video iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 
