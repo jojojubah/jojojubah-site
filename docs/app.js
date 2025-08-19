@@ -23,6 +23,7 @@
   function enableGoogleAnalytics() {
     if (window.GA_LOADED) return;
     window.GA_LOADED = true;
+
     const s = document.createElement('script');
     s.async = true;
     s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
@@ -116,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // ✅ active nav link (use viewport middle so short sections still activate)
+    // active nav link (viewport middle so short sections still activate)
     let current = '';
     const mid = y + window.innerHeight / 3;
     sections.forEach(sec => {
@@ -188,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       apply(next);
-      // 🧩 Assistant trigger for theme change
+      // 🔧 FIX: guard without ReferenceError
       window.showTip && window.showTip('themeToggle');
     });
 
@@ -300,37 +301,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ========================== Assistant (Jojo) ======================== */
-  const root   = document.getElementById('jojoAssistant');
+  const root = document.getElementById('jojoAssistant');
   if (root) {
-    const bubble = document.getElementById('assistantBubble');
-    const textEl = document.getElementById('assistantText');
+    const bubble   = document.getElementById('assistantBubble');
+    const textEl   = document.getElementById('assistantText');
     const closeBtn = document.getElementById('assistantClose');
 
     let tips = {};
 
-    // Load JSON tips
+    // Load JSON tips (non-blocking)
     fetch('data/tips.json', { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : {})
-      .then(json => { tips = json || {}; });
+      .then(r => r.ok ? r.json() : Promise.resolve({}))
+      .then(json => { tips = json || {}; })
+      .catch(() => { tips = {}; });
 
-    // Show specific tip by key
+    // Expose safe helper
     window.showTip = function(key){
       if (!tips[key]) return;
-      textEl.textContent = tips[key];   // ✅ only text, no button
+      textEl.textContent = tips[key];
       bubble.classList.add('show');
-      setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
+      setTimeout(()=> bubble.classList.remove('show'), 9000);
     };
 
-    // Close button
+    // Close button (optional chaining for safety)
     closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
 
-    // Trigger 2: user scrolls into Projects section
+    // Trigger: user scrolls into Projects section (guarded)
     const projects = document.getElementById('projects');
     if (projects){
       const observer = new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
-          if(entry.isIntersecting){
-            window.showTip('projectsSection');
+          if (entry.isIntersecting){
+            window.showTip && window.showTip('projectsSection'); // 🔧 FIX
             observer.disconnect();
           }
         });
