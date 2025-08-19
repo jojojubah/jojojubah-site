@@ -114,13 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active nav link
-    let current = '';
-    sections.forEach(sec => { if (y >= sec.offsetTop - 120) current = sec.id; });
-    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+    // active nav link (use viewport middle so short sections still activate)
+let current = '';
+const y = window.scrollY || window.pageYOffset;
+const mid = y + window.innerHeight / 3; // adjust if you want earlier/later switch
+
+sections.forEach(sec => {
+  if (sec.offsetTop <= mid) current = sec.id;
+});
+navLinks.forEach(a => {
+  a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+});
+
 
   // Mobile menu (hamburger)
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
