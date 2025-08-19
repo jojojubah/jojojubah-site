@@ -170,6 +170,12 @@ footer{padding:3rem 0;border-top:1px solid #e1e8f4;background:linear-gradient(14
 .toast{position:fixed;right:24px;bottom:24px;z-index:10002;pointer-events:none;padding:.8rem 1rem;border-radius:14px;background:var(--bg);color:#0f172a;box-shadow:var(--neu-out);opacity:0;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease}
 .toast.show{opacity:1;transform:translateY(0)}
 
+/* Bottom-left variant for toasts (opt-in) */
+.toast--left{
+  left: 24px;
+  right: auto;
+}
+
 /* Fade-in helper */
 .fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease, transform .6s ease}
 .fade-in.visible{opacity:1;transform:none}
