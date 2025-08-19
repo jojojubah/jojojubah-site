@@ -16,9 +16,7 @@ body:has(#econ-root) .section-title{
 }
 
 /* Tighten accordion a touch for glossary */
-#econGlossary, #econGlossaryLeft, #econGlossaryRight {
-  /* nothing here yet, just a common hook if you want per-accordion tweaks later */
-}
+#econGlossary, #econGlossaryLeft, #econGlossaryRight { }
 #econGlossary .acc-item .acc-inner,
 #econGlossaryLeft .acc-item .acc-inner,
 #econGlossaryRight .acc-item .acc-inner { padding-top: .75rem; padding-bottom: .75rem; }
