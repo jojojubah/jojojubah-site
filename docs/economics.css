@@ -1,0 +1,25 @@
+/* Economics page — standalone layer that reuses the main site styles */
+@import url("style.css");
+
+/* Green gradient utility for the hero word "Economics" */
+.gradient-green{
+  color: transparent;
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Optional: make section titles slightly greener on this page only */
+body:has(#econ-root) .section-title{
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  -webkit-background-clip:text; background-clip:text; color:transparent; opacity:.95;
+}
+
+/* Tighten accordion a touch for glossary */
+#econGlossary .acc-item .acc-inner { padding-top: .75rem; padding-bottom: .75rem; }
+#econGlossary .acc-item h4 { margin: .25rem 0 .25rem; }
+#econGlossary .term { font-weight: 800; color: #0f172a; }
+body[data-theme="dark"] #econGlossary .term { color: #e5e5e5; }
+
+/* Keep in-page anchor jumps comfy under the fixed navbar (in case style.css changes) */
+section { scroll-margin-top: 96px; }
