@@ -100,8 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function onScroll() {
     const y = window.scrollY || window.pageYOffset;
 
-    navbar && navbar.classList.toggle('scrolled', y > 20);
+    // sticky background
+    if (navbar) navbar.classList.toggle('scrolled', y > 20);
 
+    // scroll progress
     if (scrollIndicator) {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docH > 0 ? (y / docH) * 100 : 0;
@@ -114,18 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active nav link (use viewport middle so short sections still activate)
-let current = '';
-const y = window.scrollY || window.pageYOffset;
-const mid = y + window.innerHeight / 3; // adjust if you want earlier/later switch
-
-sections.forEach(sec => {
-  if (sec.offsetTop <= mid) current = sec.id;
-});
-navLinks.forEach(a => {
-  a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-});
-
+    // ✅ active nav link (use viewport middle so short sections still activate)
+    let current = '';
+    const mid = y + window.innerHeight / 3;
+    sections.forEach(sec => {
+      if (sec.offsetTop <= mid) current = sec.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
   // Mobile menu (hamburger)
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -186,9 +188,8 @@ navLinks.forEach(a => {
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       apply(next);
-
       // 🧩 Assistant trigger for theme change
-      showTip && showTip('themeToggle');
+      window.showTip && window.showTip('themeToggle');
     });
 
     const moveMatrixBtn = () => {
@@ -313,16 +314,15 @@ navLinks.forEach(a => {
       .then(json => { tips = json || {}; });
 
     // Show specific tip by key
-window.showTip = function(key){
-  if (!tips[key]) return;
-  textEl.textContent = tips[key];   // ✅ only text, no button
-  bubble.classList.add('show');
-  setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
-};
-
+    window.showTip = function(key){
+      if (!tips[key]) return;
+      textEl.textContent = tips[key];   // ✅ only text, no button
+      bubble.classList.add('show');
+      setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
+    };
 
     // Close button
-    closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
+    closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
 
     // Trigger 2: user scrolls into Projects section
     const projects = document.getElementById('projects');
@@ -330,7 +330,7 @@ window.showTip = function(key){
       const observer = new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
           if(entry.isIntersecting){
-            showTip('projectsSection');
+            window.showTip('projectsSection');
             observer.disconnect();
           }
         });
