@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Economics — JojoJubah</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Reuse site styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background -->
+  <div class="background-gradient"></div>
+
+  <!-- Nav (same structure/theme as home) -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-container">
+        <div class="logo-area">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="economics.html" class="nav-link active">Economics</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
+      <div class="container">
+        <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
+        <p class="hero-subtitle">Plain-English notes on money, markets, and decisions—made for creators.</p>
+      </div>
+    </section>
+
+    <!-- Starter content (matches your neumorphic cards) -->
+    <section id="notes">
+      <div class="container">
+        <h2 class="section-title fade-in">Starter Notes</h2>
+        <div class="projects-grid">
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Supply & Demand (Fast Intuition)</h3>
+              <p class="project-description">
+                Prices move where buyers and sellers agree. Shocks (news, scarcity) shift
+                those curves. Tip: always ask “what changed the balance?”
+              </p>
+              <a href="#" class="btn">Read mini-note</a>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Inflation vs. Deflation</h3>
+              <p class="project-description">
+                Inflation = rising prices, deflation = falling prices. Moderate inflation
+                motivates spending; deflation can stall it. Why it matters for creators:
+                pricing, contracts, and savings.
+              </p>
+              <a href="#" class="btn">Read mini-note</a>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Compounding & Time</h3>
+              <p class="project-description">
+                Tiny repeated edges beat big one-offs. Audience, skills, and cashflows
+                all compound when you keep the flywheel turning.
+              </p>
+              <a href="#" class="btn">Read mini-note</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-content" style="margin-top:2rem">
+          <div class="about-text">
+            <strong>Roadmap:</strong> short posts, simple charts, and a jargon-free glossary.
+            I’ll add sources and deeper dives later. Got a topic request? Ping me on socials.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#learn">Learn</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="economics.html">Economics</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts (reuse main behavior + consent/GA) -->
+  <script src="app.js" defer></script>
+
+  <!-- === Assistant (Jojo) — START === -->
+  <div id="jojoAssistant" class="assistant">
+    <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="assistant-avatar"/>
+    <div class="assistant-bubble" id="assistantBubble">
+      <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
+      <p id="assistantText">Need a hand?</p>
+    </div>
+  </div>
+  <!-- === Assistant (Jojo) — END === -->
+</body>
+</html>
