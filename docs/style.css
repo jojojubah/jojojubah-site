@@ -89,6 +89,8 @@ section{padding:8rem 0; position:relative}
   text-align:center;margin-bottom:3rem;font-weight:800;font-size:clamp(2rem,5vw,3rem);
   color:transparent;background:linear-gradient(90deg,#0f172a,var(--text));-webkit-background-clip:text;background-clip:text
 }
+/* Make in-page anchor jumps land below the fixed navbar */
+section { scroll-margin-top: 96px; }  /* tweak value if your navbar height changes */
 
 /* Hero */
 #home{min-height:100dvh; display:flex; align-items:center; overflow:hidden}
