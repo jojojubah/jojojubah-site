@@ -189,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       apply(next);
-      // 🔧 FIX: guard without ReferenceError
       window.showTip && window.showTip('themeToggle');
     });
 
@@ -201,20 +200,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(moveMatrixBtn, 0);
   })();
 
-  /* ===================== Accordion + Easter Egg Toast ================= */
-  const accContainer = document.getElementById('learnAccordion') || document.querySelector('.accordion');
-  const accButtons   = document.querySelectorAll('.acc-header');
-  const toastEl      = document.getElementById('learnToast');
+  /* ===================== Accordions & Page-Specific Rewards =========== */
 
-  const initialCount = accContainer ? accContainer.querySelectorAll('.acc-item').length : accButtons.length;
-  const OPENED = new Set();
-  let unlocked = false;
-
+  // Helpers
   function setPanelHeight(panel, open){
     panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
   }
-
-  function wireAccordionItem(item){
+  function wireAccordionItem(item, onToggle){
     const btn   = item.querySelector('.acc-header');
     const panel = item.querySelector('.acc-content');
     if (!btn || !panel) return;
@@ -225,12 +217,34 @@ document.addEventListener('DOMContentLoaded', () => {
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(isOpen));
       setPanelHeight(panel, isOpen);
+      if (typeof onToggle === 'function') onToggle(item, isOpen);
     });
   }
+  function showToastEl(el){
+    if (!el) return;
+    el.classList.add('show');
+    setTimeout(()=> el.classList.remove('show'), 6000);
+  }
 
-  function addBonusAccordion(){
-    if (!accContainer || document.getElementById('acc-item-bonus')) return;
-    accContainer.insertAdjacentHTML('beforeend', `
+  // Collect sets for targeted behaviors
+  const learnAcc = document.getElementById('learnAccordion');                 // home page only
+  const learnToastEl = document.getElementById('learnToast');                 // home toast
+
+  const econLeft  = document.getElementById('econGlossaryLeft');              // economics page
+  const econRight = document.getElementById('econGlossaryRight');
+  const econToastEl = document.getElementById('econToast');                   // economics toast
+
+  const learnItemsSet = new Set(learnAcc ? learnAcc.querySelectorAll('.acc-item') : []);
+  const econItemsSet  = new Set([
+    ...(econLeft  ? econLeft.querySelectorAll('.acc-item')  : []),
+    ...(econRight ? econRight.querySelectorAll('.acc-item') : [])
+  ]);
+
+  // Learn page bonus: ONLY on #learnAccordion
+  let learnUnlocked = false;
+  function addBonusAccordionToLearn(){
+    if (!learnAcc || document.getElementById('acc-item-bonus')) return;
+    learnAcc.insertAdjacentHTML('beforeend', `
       <div class="acc-item" id="acc-item-bonus">
         <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
           <span>Hmm... What's this?</span>
@@ -253,33 +267,37 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `);
+    // Wire the newly added item
     const bonusItem = document.getElementById('acc-item-bonus');
     if (bonusItem) wireAccordionItem(bonusItem);
   }
 
-  function showToast(){
-    if (!toastEl) return;
-    toastEl.classList.add('show');
-    setTimeout(()=>toastEl.classList.remove('show'), 6000);
-  }
+  // Sets to track opening progress
+  const LEARN_OPENED = new Set();
+  const ECON_OPENED  = new Set();
 
-  // ✅ BONUS UNLOCK (no persistence)
-  function unlockBonus(){
-    if (unlocked) return;
-    unlocked = true;
-    addBonusAccordion();
-    showToast();
-  }
+  // Wire all accordion items once; attach per-page callbacks
+  document.querySelectorAll('.acc-item').forEach((item) => {
+    const inLearn = learnItemsSet.has(item);
+    const inEcon  = econItemsSet.has(item);
 
-  // wire originals
-  document.querySelectorAll('.acc-item').forEach((item, i) => {
-    wireAccordionItem(item);
-    const btn = item.querySelector('.acc-header');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (item.classList.contains('open')) {
-        OPENED.add(i);
-        if (!unlocked && OPENED.size >= initialCount) unlockBonus();
+    wireAccordionItem(item, (it, isOpen) => {
+      if (!isOpen) return;
+
+      if (inLearn) {
+        LEARN_OPENED.add(it);
+        if (!learnUnlocked && LEARN_OPENED.size >= learnItemsSet.size) {
+          learnUnlocked = true;
+          addBonusAccordionToLearn();
+          showToastEl(learnToastEl);
+        }
+      }
+
+      if (inEcon) {
+        ECON_OPENED.add(it);
+        if (ECON_OPENED.size >= econItemsSet.size) {
+          showToastEl(econToastEl);  // 🎉 Congratulate on finishing glossary
+        }
       }
     });
   });
@@ -323,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(()=> bubble.classList.remove('show'), 9000);
     };
 
-    // Close button (optional chaining for safety)
+    // Close button
     closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
 
     // Trigger: user scrolls into Projects section (guarded)
@@ -332,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const observer = new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
           if (entry.isIntersecting){
-            window.showTip && window.showTip('projectsSection'); // 🔧 FIX
+            window.showTip && window.showTip('projectsSection');
             observer.disconnect();
           }
         });
