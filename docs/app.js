@@ -233,6 +233,43 @@
   }
 })();
 
+// === Reveal-on-scroll + active nav link ===
+(function () {
+  const navbar = document.getElementById('navbar');
+  const scrollIndicator = document.getElementById('scrollIndicator');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section');
+
+  function onScroll() {
+    const y = window.scrollY || window.pageYOffset;
+
+    // sticky/blur background cue
+    if (navbar) navbar.classList.toggle('scrolled', y > 20);
+
+    // progress bar
+    if (scrollIndicator) {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      scrollIndicator.style.width = (docH > 0 ? (y / docH) * 100 : 0) + '%';
+    }
+
+    // reveal .fade-in nodes
+    document.querySelectorAll('.fade-in').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 60) el.classList.add('visible');
+    });
+
+    // active link (section at ~1/3 viewport)
+    let current = '';
+    const mid = y + window.innerHeight / 3;
+    sections.forEach(sec => { if (sec.offsetTop <= mid) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // run once on load
+})();
+
+
 /* === Clippy Chat UI — START (minimal, reversible) === */
 /* Adds a small input + send button into your existing assistant bubble and
    streams replies into a scrollable log. */
