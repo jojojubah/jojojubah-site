@@ -1,0 +1,112 @@
+/* scripts/styles/assistant.css */
+/* Complete assistant styling - basic tooltip + chat interface */
+
+/* ============================== CSS Variables ============================== */
+:root {
+  --assistant-size: 64px;
+  --assistant-gap: 12px;
+  --assistant-z: 99999;
+  
+  /* Chat specific */
+  --chat-bg: var(--bg);
+  --chat-user-bg: #f1f5f9;
+  --chat-assistant-bg: #eef7ff;
+  --chat-border: #ddd;
+  --chat-text: var(--text);
+}
+
+/* Dark mode variables */
+body[data-theme="dark"] {
+  --chat-user-bg: rgba(255,255,255,0.1);
+  --chat-assistant-bg: rgba(34,197,94,0.1);
+  --chat-border: rgba(255,255,255,0.2);
+}
+
+/* ============================== Basic Assistant ============================== */
+
+/* Floating avatar container */
+.assistant {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: var(--assistant-z);
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  cursor: grab;
+  user-select: none;
+}
+
+.assistant:active { 
+  cursor: grabbing; 
+}
+
+/* Avatar image */
+.assistant-avatar {
+  width: var(--assistant-size);
+  height: var(--assistant-size);
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg);
+  border: 2px solid rgba(255,255,255,.7);
+  box-shadow: var(--neu-out);
+  transition: transform 0.2s ease;
+}
+
+.assistant-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* ============================== Basic Tooltip Bubble ============================== */
+
+#assistantBubble {
+  position: fixed;
+  bottom: calc(20px + var(--assistant-size) + var(--assistant-gap));
+  right: 20px;
+  max-width: min(360px, 80vw);
+  padding: 14px 44px 14px 18px; /* extra right padding for close button */
+  border-radius: 12px;
+  display: none;
+  z-index: var(--assistant-z);
+
+  background:
+    radial-gradient(140px 80px at 18% 26%, rgba(255,255,255,.18), transparent 60%),
+    linear-gradient(145deg, var(--bg), var(--bg-2));
+  color: var(--text);
+
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: var(--neu-out);
+  
+  /* Animation */
+  animation: assistantFadeIn 0.15s ease-out;
+}
+
+@keyframes assistantFadeIn {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Dark mode bubble adjustments */
+body[data-theme="dark"] #assistantBubble {
+  border-color: rgba(255,255,255,.10);
+}
+
+/* Show state */
+#assistantBubble.show { 
+  display: block !important; 
+}
+
+/* Speech bubble arrow pointing to avatar */
+#assistantBubble::after {
+  content: "";
+  position: absolute;
+  bottom: -16px;
+  right: calc((var(--assistant-size) / 2) - 8px);
+  border-width: 16px 12px 0;
+  border-style: solid;
+  border-color: var(--bg-2) transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 rgba(0,0,0,.12));
+}
+
+body[data-theme="dark"] #assistantBubble::after {
+  border-color
