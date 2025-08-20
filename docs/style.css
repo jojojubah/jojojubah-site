@@ -480,3 +480,15 @@ body[data-theme="dark"] #assistantClose:hover{ background: rgba(255,255,255,.18)
   margin: 0;           /* clean reset */
 }
 
+/* === Clippy chat styles (safe to remove) === */
+.assistant .clippy-form { display:flex; gap:8px; margin-top:8px; }
+.assistant .clippy-input { flex:1; padding:8px 10px; border:1px solid #ddd; border-radius:8px; }
+.assistant .clippy-send { padding:8px 12px; border:1px solid #ddd; background:#fff; border-radius:8px; cursor:pointer; }
+.assistant .clippy-log { max-height:180px; overflow:auto; margin-top:8px; display:flex; flex-direction:column; gap:6px; font-size:14px; }
+.assistant .clippy-log .line.you { align-self:flex-end; background:#f1f5f9; padding:6px 10px; border-radius:12px; }
+.assistant .clippy-log .line.clippy { align-self:flex-start; background:#eef7ff; padding:6px 10px; border-radius:12px; }
+
+/* Mobile tweak */
+@media (max-width: 600px){
+  .assistant .clippy-log { max-height:140px; }
+}
