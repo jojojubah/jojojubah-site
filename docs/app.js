@@ -24,19 +24,24 @@
     if (window.GA_LOADED) return;
     window.GA_LOADED = true;
 
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-    document.head.appendChild(s);
+    // Tag script
+    const s1 = document.createElement('script');
+    s1.async = true;
+    s1.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
 
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', MEASUREMENT_ID, { anonymize_ip: true, cookie_flags: 'secure;samesite=strict' });
+    // Config script
+    const s2 = document.createElement('script');
+    s2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date()); gtag('config', '${MEASUREMENT_ID}');
+    `;
+
+    document.head.appendChild(s1);
+    document.head.appendChild(s2);
   }
 
-  function showConsentBanner() {
+  function restoreConsentState() {
     ensureBanner();
     const consent = localStorage.getItem('cookieConsent');
     const banner = document.getElementById('cookieConsentBanner');
@@ -51,175 +56,59 @@
     const banner = document.getElementById('cookieConsentBanner');
 
     accept && (accept.onclick = function(){
-      localStorage.setItem('cookieConsent','accepted');
-      banner && (banner.style.display = 'none');
+      localStorage.setItem('cookieConsent', 'accepted');
       enableGoogleAnalytics();
+      banner.style.display = 'none';
     });
-
     decline && (decline.onclick = function(){
-      localStorage.setItem('cookieConsent','declined');
-      banner && (banner.style.display = 'none');
-      console.log('❌ Analytics declined by user');
+      localStorage.setItem('cookieConsent', 'declined');
+      banner.style.display = 'none';
     });
-
     learnMore && (learnMore.onclick = function(e){
       e.preventDefault();
-      const modal = document.createElement('div');
-      modal.id = 'modalOverlay';
-      modal.className = 'modal-overlay';
-      modal.innerHTML = `
-        <div class="learn-more-modal">
-          <button class="close-btn" id="closeModal">&times;</button>
-          <h3>🍪 Why Accept Cookies?</h3>
-          <p style="color: var(--text-dim); line-height: 1.6; margin-bottom: 1.5rem;">
-            We use Google Analytics to understand which content you love most, so we can create better tutorials and projects for you! 🎯<br><br>
-            ✅ Helps improve your experience<br>
-            ✅ Shows which tutorials are most helpful<br>
-            ✅ Anonymous — no personal data<br>
-            ✅ You can change your mind anytime
-          </p>
-        </div>`;
-      document.body.appendChild(modal);
-      const close = () => modal && modal.remove();
-      document.getElementById('closeModal')?.addEventListener('click', close);
-      modal.addEventListener('click', (ev)=>{ if (ev.target === modal) close(); });
+      alert('We use Google Analytics to understand aggregate usage. You can change your decision anytime by clearing site data.');
     });
   }
 
-  showConsentBanner();                               // safe before DOM ready
-  document.addEventListener('DOMContentLoaded', hookBannerButtons);
+  document.addEventListener('DOMContentLoaded', function(){
+    restoreConsentState();
+    hookBannerButtons();
+  });
 })();
 
-/* ========================= Main Site Interactions ===================== */
-document.addEventListener('DOMContentLoaded', () => {
-  // Sticky navbar, scroll progress, fade-ins, active link
-  const navbar = document.getElementById('navbar');
-  const scrollIndicator = document.getElementById('scrollIndicator');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section');
-
-  function onScroll() {
-    const y = window.scrollY || window.pageYOffset;
-
-    // sticky background
-    if (navbar) navbar.classList.toggle('scrolled', y > 20);
-
-    // scroll progress
-    if (scrollIndicator) {
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docH > 0 ? (y / docH) * 100 : 0;
-      scrollIndicator.style.width = pct + '%';
-    }
-
-    // reveal on scroll
-    document.querySelectorAll('.fade-in').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 60) el.classList.add('visible');
+/* ===================== Mobile nav (burger) ======================= */
+(function mobileNav(){
+  document.addEventListener('DOMContentLoaded', function(){
+    const toggle = document.querySelector('.nav-toggle');
+    const links  = document.querySelector('.nav-links');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', function(){
+      const open = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!open));
+      links.classList.toggle('open');
     });
+  });
+})();
 
-    // active nav link (viewport middle so short sections still activate)
-    let current = '';
-    const mid = y + window.innerHeight / 3;
-    sections.forEach(sec => {
-      if (sec.offsetTop <= mid) current = sec.id;
+/* ===================== Theme toggle (light/dark) ================= */
+(function themeToggle(){
+  document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+
+    const root = document.documentElement;
+    const current = localStorage.getItem('theme') || 'light';
+    if (current === 'dark') root.classList.add('dark');
+
+    btn.addEventListener('click', function(){
+      const isDark = root.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      // Optional toast cue:
+      const toast = document.getElementById('learnToast');
+      showToastEl(toast);
     });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  });
 
-  // Mobile menu (hamburger)
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const navLinksContainer = document.querySelector('.nav-links');
-  if (mobileMenuBtn && navLinksContainer) {
-    mobileMenuBtn.addEventListener('click', function(){
-      this.classList.toggle('active');
-      navLinksContainer.classList.toggle('active');
-    });
-  }
-
-  // Light cursor trails only on main page (skip if matrix exists)
-  if (!document.getElementById('matrix-canvas')) {
-    let trail = [], trailLength = 20;
-    document.addEventListener('mousemove', (e) => {
-      trail.push({ x: e.clientX, y: e.clientY });
-      if (trail.length > trailLength) trail.shift();
-      document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
-      const color = '59,130,246';
-      trail.forEach((p, i) => {
-        const dot = document.createElement('div');
-        dot.className = 'cursor-trail';
-        dot.style.cssText = `position:fixed;left:${p.x}px;top:${p.y}px;width:${4 - i*0.2}px;height:${4 - i*0.2}px;background:rgba(${color},${Math.max(0,0.5 - i*0.025)});border-radius:50%;pointer-events:none;z-index:9999;`;
-        document.body.appendChild(dot);
-        setTimeout(()=>dot.remove(), 40);
-      });
-    }, { passive: true });
-  }
-
-  /* ======================= Dark/Light Mode Toggle ===================== */
-  (function initThemeToggle(){
-    const body = document.body;
-    let group = document.querySelector('.toggle-group');
-    if (!group) {
-      group = document.createElement('div');
-      group.className = 'toggle-group';
-      document.body.appendChild(group);
-    }
-
-    let themeBtn = document.getElementById('themeToggle');
-    if (!themeBtn) {
-      themeBtn = document.createElement('button');
-      themeBtn.id = 'themeToggle';
-      group.appendChild(themeBtn);
-    }
-
-    function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
-    function apply(mode){
-      if (mode === 'dark') body.setAttribute('data-theme','dark');
-      else body.removeAttribute('data-theme');
-      setIcon(mode);
-    }
-
-    const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
-    const initial = isLabs ? 'dark' : 'light';
-    apply(initial);
-
-    themeBtn.addEventListener('click', () => {
-      const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      apply(next);
-      window.showTip && window.showTip('themeToggle');
-    });
-
-    const moveMatrixBtn = () => {
-      const m = document.getElementById('matrixToggle');
-      if (m && !group.contains(m)) group.appendChild(m);
-    };
-    moveMatrixBtn();
-    setTimeout(moveMatrixBtn, 0);
-  })();
-
-  /* ===================== Accordions & Page-Specific Rewards =========== */
-
-  // Helpers
-  function setPanelHeight(panel, open){
-    panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
-  }
-  function wireAccordionItem(item, onToggle){
-    const btn   = item.querySelector('.acc-header');
-    const panel = item.querySelector('.acc-content');
-    if (!btn || !panel) return;
-    item.classList.remove('open');
-    setPanelHeight(panel, false);
-    btn.setAttribute('aria-expanded','false');
-    btn.addEventListener('click', () => {
-      const isOpen = item.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(isOpen));
-      setPanelHeight(panel, isOpen);
-      if (typeof onToggle === 'function') onToggle(item, isOpen);
-    });
-  }
   function showToastEl(el){
     if (!el) return;
     el.classList.add('show');
@@ -231,90 +120,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const learnToastEl = document.getElementById('learnToast');                 // home toast
 
   const econLeft  = document.getElementById('econGlossaryLeft');              // economics page
-  const econRight = document.getElementById('econGlossaryRight');
-  const econToastEl = document.getElementById('econToast');                   // economics toast
+  const econRight = document.getElementById('econGlossaryRight');             // economics page
+  const econToast = document.getElementById('econToast');                     // economics toast
 
-  const learnItemsSet = new Set(learnAcc ? learnAcc.querySelectorAll('.acc-item') : []);
-  const econItemsSet  = new Set([
-    ...(econLeft  ? econLeft.querySelectorAll('.acc-item')  : []),
-    ...(econRight ? econRight.querySelectorAll('.acc-item') : [])
-  ]);
+  const projects  = document.getElementById('projects');                      // home page observer
 
-  // Learn page bonus: ONLY on #learnAccordion
-  let learnUnlocked = false;
-  function addBonusAccordionToLearn(){
-    if (!learnAcc || document.getElementById('acc-item-bonus')) return;
-    learnAcc.insertAdjacentHTML('beforeend', `
-      <div class="acc-item" id="acc-item-bonus">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
-          <span>Hmm... What's this?</span>
-          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
-          </svg>
-        </button>
-        <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
-          <div class="acc-inner">
-            <h3>Bonus Unlock!!</h3>
-            <p>Nice one! You explored every topic. Here’s a link to JubahLabs.</p>
-            <h4>Ideas to try next</h4>
-            <p>• Turn a prompt into JSON and attach it in chat.<br>
-               • Build a tiny agent in n8n.<br>
-               • Test an open-source model locally and compare.</p>
-            <div style="margin-top:1rem">
-              <a class="btn" href="jubah-labs.html">Open JubahLabs</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-    // Wire the newly added item
-    const bonusItem = document.getElementById('acc-item-bonus');
-    if (bonusItem) wireAccordionItem(bonusItem);
-  }
+  document.addEventListener('DOMContentLoaded', function(){
+    // Home "learn" accordion toast
+    if (learnAcc && learnToastEl){
+      learnAcc.addEventListener('toggle', function(e){
+        if (e.target && e.target.open) showToastEl(learnToastEl);
+      }, true);
+    }
 
-  // Sets to track opening progress
-  const LEARN_OPENED = new Set();
-  const ECON_OPENED  = new Set();
-
-  // Wire all accordion items once; attach per-page callbacks
-  document.querySelectorAll('.acc-item').forEach((item) => {
-    const inLearn = learnItemsSet.has(item);
-    const inEcon  = econItemsSet.has(item);
-
-    wireAccordionItem(item, (it, isOpen) => {
-      if (!isOpen) return;
-
-      if (inLearn) {
-        LEARN_OPENED.add(it);
-        if (!learnUnlocked && LEARN_OPENED.size >= learnItemsSet.size) {
-          learnUnlocked = true;
-          addBonusAccordionToLearn();
-          showToastEl(learnToastEl);
+    // Economics: show toast after 10 sections opened (progress-based)
+    if (econLeft && econRight && econToast){
+      let opened = new Set();
+      const handler = (e) => {
+        if (e.target && e.target.tagName === 'DETAILS' && e.target.open){
+          opened.add(e.target.id || e.target.textContent || Math.random().toString(36));
+          if (opened.size >= 10) showToastEl(econToast);
         }
-      }
+      };
+      econLeft.addEventListener('toggle', handler, true);
+      econRight.addEventListener('toggle', handler, true);
+    }
 
-      if (inEcon) {
-        ECON_OPENED.add(it);
-        if (ECON_OPENED.size >= econItemsSet.size) {
-          showToastEl(econToastEl);  // 🎉 Congratulate on finishing glossary
+    // Reveal assistant tip when projects enter view (legacy behavior kept)
+    if (projects){
+      const observer = new IntersectionObserver(entries => {
+        for (const en of entries){
+          if (en.isIntersecting){
+            if (typeof window.showTip === 'function') window.showTip('secretLab');
+          }
         }
-      }
-    });
-  });
-
-  // Footer year
-  const y = document.getElementById('secretYear');
-  if (y) y.textContent = new Date().getFullYear();
-
-  // Contact: reveal email
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('#revealEmail');
-    if (!btn) return;
-    const hiddenWrap   = document.getElementById('emailHidden');
-    const visibleEmail = document.getElementById('emailVisible');
-    if (hiddenWrap && visibleEmail) {
-      hiddenWrap.remove();
-      visibleEmail.hidden = false;
+      }, { threshold: 0.4 });
+      observer.observe(projects);
     }
   });
 
@@ -344,21 +185,53 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close button
     closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
 
-    // Trigger: user scrolls into Projects section (guarded)
-    const projects = document.getElementById('projects');
-    if (projects){
-      const observer = new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{
-          if (entry.isIntersecting){
-            window.showTip && window.showTip('projectsSection');
-            observer.disconnect();
-          }
-        });
-      }, { threshold: 0.4 });
-      observer.observe(projects);
+    // Open/close helpers
+    function openBubble() {
+      bubble.classList.add('show');
+      const input = document.getElementById('clippyInput');
+      if (input) setTimeout(() => input.focus(), 0);
     }
+    function closeBubble() {
+      bubble.classList.remove('show');
+    }
+
+    // Click avatar to toggle bubble (ignore clicks inside bubble)
+    const avatar = root.querySelector('.assistant-avatar');
+    avatar?.addEventListener('click', (e) => {
+      if (bubble.classList.contains('show')) closeBubble();
+      else openBubble();
+    });
+
+    // Allow clicking outside bubble to close
+    document.addEventListener('click', (e) => {
+      if (!bubble.classList.contains('show')) return;
+      const withinAssistant = e.target.closest('#assistantBubble') || e.target.closest('#jojoAssistant');
+      if (!withinAssistant) closeBubble();
+    });
+
+    // Drag = move assistant widget
+    (function enableDrag(){
+      let isDown = false, startX=0, startY=0, startLeft=0, startTop=0;
+      const container = document.getElementById('jojoAssistant');
+
+      container.addEventListener('mousedown', (e)=>{
+        if (e.target.closest('#assistantBubble')) return; // don't drag when interacting with bubble
+        isDown = true;
+        startX = e.clientX; startY = e.clientY;
+        const rect = container.getBoundingClientRect();
+        startLeft = rect.left; startTop = rect.top;
+        container.style.position = 'fixed';
+      });
+      window.addEventListener('mousemove', (e)=>{
+        if (!isDown) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        container.style.left = (startLeft + dx) + 'px';
+        container.style.top  = (startTop  + dy) + 'px';
+      });
+      window.addEventListener('mouseup', ()=> isDown = false);
+    })();
   }
-});
+})();
 
 /* === Clippy Chat UI — START (minimal, reversible) === */
 /* Adds a small input + send button into your existing assistant bubble and
@@ -371,9 +244,9 @@ document.addEventListener("DOMContentLoaded", () => {
   bubble.insertAdjacentHTML(
     "beforeend",
     `
-    <form id="clippyForm" class="clippy-form" autocomplete="off" aria-label="Clippy chat">
+    <form id="clippyForm" class="clippy-form" autocomplete="off">
       <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
-      <button id="clippySend" class="clippy-send" type="submit">Send</button>
+      <button id="clippySend" class="clippy-send" type="submit" aria-label="Send">➤</button>
     </form>
     <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
     `
@@ -388,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     const text = (input.value || "").trim();
     if (!text) return;
 
@@ -403,60 +277,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const tick = setInterval(() => {
       dots = (dots + 1) % 4;
       const el = log.querySelector(`[data-id="${thinkingId}"]`);
-      if (el) el.textContent = "…thinking" + ".".repeat(dots);
-    }, 300);
+      if (el) el.textContent = "…thinking".padEnd(10 + dots, ".");
+    }, 400);
 
     try {
-      const r = await window.askClippy(text, history);
-      const reply = (r && r.text) ? r.text : "(no response)";
-      clearInterval(tick);
-      replace(thinkingId, "clippy", reply);
-
-      // keep short history for context
+      // keep a short rolling history
       history.push({ role: "user", content: text });
-      history.push({ role: "model", content: reply });
-      if (history.length > MAX_TURNS) history.splice(0, history.length - MAX_TURNS);
-    } catch (err) {
-      console.error(err);
-      clearInterval(tick);
+      while (history.length > MAX_TURNS) history.shift();
 
-      let msg = "⚠️ Error talking to the server.";
-      // if backend returned JSON with {error:"..."}
-      try {
-        if (err && err.response && typeof err.response.json === "function") {
-          const p = await err.response.json();
-          if (p?.error) msg = `⚠️ ${p.error}`;
-        }
-      } catch {}
+      const reply = await window.askClippy(history);
+      const msg = (reply?.text || reply?.content || "Hmm, I didn’t catch that.").trim();
+
+      // store assistant turn too
+      history.push({ role: "assistant", content: msg });
+      while (history.length > MAX_TURNS) history.shift();
 
       replace(thinkingId, "clippy", msg);
-      toast(msg); // show user-friendly popup
+    } catch (err) {
+      replace(thinkingId, "clippy", "⚠️ Error talking to assistant. Try again.");
+      console.error(err);
     } finally {
+      clearInterval(tick);
       sendBtn.disabled = false;
-      input.focus();
     }
   });
-
-  // Simple toast (inline styles; no CSS changes needed)
-  function toast(message) {
-    let t = document.getElementById("clippyToast");
-    if (!t) {
-      t = document.createElement("div");
-      t.id = "clippyToast";
-      t.style.cssText = "position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:99999;font-size:14px;max-width:80vw;opacity:0;transform:translateY(10px);transition:all .25s ease";
-      document.body.appendChild(t);
-    }
-    t.textContent = message;
-    requestAnimationFrame(() => {
-      t.style.opacity = "1";
-      t.style.transform = "translateY(0)";
-    });
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => {
-      t.style.opacity = "0";
-      t.style.transform = "translateY(10px)";
-    }, 3500);
-  }
 
   function append(who, text) {
     const id = crypto.randomUUID();
