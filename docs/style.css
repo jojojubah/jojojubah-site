@@ -1,160 +1,191 @@
+/* === Global media clamp: prevent oversized images/SVGs/videos === */
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
 /* ================================
-   Neumorphism Theme — Light/Dark
+   Neumorphism Theme — Light / Dark
    ================================ */
 
+/* ---- Tokens (light defaults) ---- */
 :root{
-  --bg: #f5f7fb;
-  --fg: #1f2937;
-  --muted: #6b7280;
-  --brand: #0ea5e9;
+  --bg:#e9eef5; --bg-2:#edf2f8;
+  --text:#3a4252; --text-dim:#6b7280; --text-muted:#8a94a6;
+  --accent:#3b82f6;
 
-  --neu-out: 6px 6px 12px #cbd5e1, -6px -6px 12px #ffffff;
-  --neu-inset: inset 6px 6px 12px #cbd5e1, inset -6px -6px 12px #ffffff;
-
-  --card: #ffffff;
-  --border: #e5e7eb;
-
-  --assistant-size: 64px;
-  --assistant-gap: 10px;
-  --assistant-z: 1200;
+  --neu-light:#ffffff; --neu-dark:#cfd6e2; --neu-radius:16px;
+  --neu-inset: inset 6px 6px 12px var(--neu-dark), inset -6px -6px 12px var(--neu-light);
+  --neu-out:   10px 10px 20px var(--neu-dark), -10px -10px 20px var(--neu-light);
+  --t: all .25s cubic-bezier(.25,.1,.25,1);
+  --container-pad:2rem;
 }
 
+/* ---- Tokens (dark overrides) ---- */
 :root.dark{
-  --bg: #0f172a;
-  --fg: #e5e7eb;
-  --muted: #94a3b8;
-  --brand: #38bdf8;
+  --bg:#0f172a; --bg-2:#0b1222;
+  --text:#e5e7eb; --text-dim:#cbd5e1; --text-muted:#94a3b8;
+  --accent:#60a5fa;
 
-  --neu-out: 6px 6px 12px rgba(0,0,0,.6), -6px -6px 12px rgba(255,255,255,.06);
+  --neu-light:rgba(255,255,255,.08); --neu-dark:rgba(0,0,0,.6);
   --neu-inset: inset 6px 6px 12px rgba(0,0,0,.6), inset -6px -6px 12px rgba(255,255,255,.06);
-
-  --card: #0b1222;
-  --border: #162033;
+  --neu-out:   10px 10px 20px rgba(0,0,0,.6), -10px -10px 20px rgba(255,255,255,.06);
 }
 
 /* === Base === */
-*{ box-sizing: border-box; }
-html,body{ height: 100%; }
+*{box-sizing:border-box}
+html,body{height:100%}
 body{
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--fg);
-  background: var(--bg);
-  line-height: 1.6;
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text); background:var(--bg); line-height:1.6;
 }
+a{color:inherit}
 
 /* Containers */
-.container{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.container{max-width:1200px;margin:0 auto;padding:0 var(--container-pad)}
 
-/* === Navbar === */
+/* ---- Background helpers ---- */
+.background-gradient{
+  position:fixed; inset:0; z-index:-2;
+  /* Subtle on light, *not* pure white */
+  background:
+    radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,.50) 0%, transparent 60%),
+    linear-gradient(145deg, #f7f8fb, #eef2f8);
+}
+.particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+
+/* Scroll progress */
+.scroll-indicator{
+  position:fixed; top:80px; left:0; height:3px; width:0%;
+  background:linear-gradient(90deg,var(--accent),#60a5fa);
+  z-index:999; transition:width .12s ease-out;
+}
+
+/* ---- Neumorphic primitives ---- */
+.neu-plate{background:var(--bg);border-radius:16px;box-shadow:var(--neu-out)}
+.neu-plate:hover{transform:translateY(-2px)}
+.neu-press{box-shadow:var(--neu-inset)}
+.hr-neu{height:1px;border:0;margin:1.25rem 0;background:linear-gradient(90deg,transparent,#dbe3ef,transparent)}
+
+/* ================= NAV ================= */
 nav{
-  position: sticky; top: 0; z-index: 1000;
-  background: rgba(255,255,255,.6);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+  position:sticky; top:0; z-index:1000;
+  background:rgba(255,255,255,.55); backdrop-filter:blur(10px);
+  border-bottom:1px solid #dde6f3;
 }
 :root.dark nav{
-  background: rgba(15,23,42,.6);
-  border-bottom-color: #0b1222;
+  background:rgba(15,23,42,.55);
+  border-bottom-color:#0b1222;
 }
-.nav-container{
-  display: flex; align-items: center; justify-content: space-between;
-  height: 68px;
+.nav-container{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:700;letter-spacing:.02em}
+.site-avatar{
+  width:48px;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.6);
+  box-shadow:var(--neu-out);object-fit:cover;transition:var(--t)
 }
-.logo{ letter-spacing: 2px; font-weight: 600; }
-.nav-links{ list-style: none; display:flex; gap:22px; }
-.nav-links a{ color: var(--fg); text-decoration: none; opacity: .9; }
-.nav-links a:hover{ opacity: 1; }
+.site-avatar:hover{transform:scale(1.06) rotate(3deg)}
+.nav-links{list-style:none;display:flex;gap:22px}
+.nav-links a{text-decoration:none;opacity:.9}
+.nav-links a:hover{opacity:1}
 
-/* Mobile menu */
-.nav-toggle{ display:none; background:none; border:0; }
-.nav-toggle .bar{ display:block; width:24px; height:2px; background:var(--fg); margin:5px 0; }
-@media (max-width: 860px){
-  .nav-toggle{ display:block; }
+/* Burger */
+.nav-toggle{display:none;background:none;border:0}
+.nav-toggle .bar{display:block;width:24px;height:2px;background:var(--text);margin:5px 0}
+@media (max-width:860px){
+  .nav-toggle{display:block}
   .nav-links{
-    position: absolute; left:0; right:0; top:68px;
-    background: var(--bg);
-    display:none;
-    flex-direction: column;
-    padding: 14px 20px; gap: 10px;
-    border-bottom: 1px solid var(--border);
+    position:absolute; left:0; right:0; top:68px;
+    background:var(--bg); display:none; flex-direction:column;
+    padding:14px 20px; gap:10px; border-bottom:1px solid #e5edf8;
   }
-  .nav-links.open{ display:flex; }
+  .nav-links.open{display:flex}
 }
 
-/* === Footer === */
-footer{
-  border-top: 1px solid var(--border);
-  margin-top: 60px; padding: 24px 0;
-  color: var(--muted);
+/* ================= HERO ================= */
+#home{padding:56px 0}
+.hero-content{text-align:center; z-index:1}
+.hero-title{font-size:clamp(3rem,8vw,6rem);font-weight:900;letter-spacing:-.02em;margin-bottom:.5rem}
+.hero-subtitle{color:#6b7280; font-size:1.15rem; margin-bottom:1.75rem}
+.hero-socials{display:flex;justify-content:center;gap:1rem}
+.social-link{
+  width:54px;height:54px; display:flex; align-items:center; justify-content:center;
+  border-radius:14px; background:var(--bg); box-shadow:var(--neu-out); transition:var(--t);
 }
+.social-link:hover{ box-shadow:var(--neu-inset); color:#0f172a; transform:translateY(-2px)}
+.social-link svg{width:24px;height:24px;fill:currentColor}
 
-/* === Cards / Sections === */
-.section{ padding: 40px 0; }
-.card{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--neu-out);
-  padding: 20px;
+/* ================= SECTIONS ================= */
+.section{padding:40px 0}
+.section-title{font-size:clamp(1.8rem,3.5vw,2.4rem);letter-spacing:.01em;margin-bottom:1rem}
+
+/* ================= LEARN (accordion) ================= */
+.accordion{display:grid;gap:12px;margin-top:1rem}
+.acc-item{border-radius:14px;background:var(--bg);box-shadow:var(--neu-out);overflow:hidden}
+.acc-header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:16px 18px;background:transparent;border:0;cursor:pointer;font-weight:600;
 }
+.acc-icon{transform:rotate(-90deg);transition:transform .2s ease}
+.acc-header[aria-expanded="true"] .acc-icon{transform:rotate(0deg)}
+.acc-content{display:none;padding:0 18px 16px}
+.acc-item.open .acc-content{display:block}
+.acc-inner p{color:#6b7280}
 
-/* === Home specific bits (projects grid etc.) — trimmed for brevity === */
-/* ... your existing styles remain unchanged ... */
+/* ================= PROJECTS ================= */
+.projects-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin-top:2rem}
+.project-card{border-radius:16px; background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden}
+.project-card:hover{transform:translateY(-3px)}
+.project-image{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#f0f4fb,#e2e8f6);border-bottom:1px solid #e5edf8}
+.project-content{padding:1.75rem}
+.project-title{font-weight:700;font-size:1.25rem;color:#0f172a;margin-bottom:.5rem}
+.project-description{color:#6b7280;margin-bottom:1rem}
 
-/* === Assistant (avatar + bubble) ================= */
+/* keep embeds tidy */
+.project-video { width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.project-video iframe { width: 100%; height: 100%; display: block; }
+
+/* ================= FOOTER ================= */
+footer{border-top:1px solid #dde6f3;margin-top:60px;padding:24px 0;color:#8a94a6}
+
+/* ================= ASSISTANT ================= */
 .assistant{
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: var(--assistant-z);
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  cursor: grab;
-  user-select: none;
+  position:fixed; right:20px; bottom:20px; z-index:1200;
+  display:flex; align-items:flex-end; gap:10px; cursor:grab; user-select:none;
 }
-.assistant:active{ cursor: grabbing; }
+.assistant:active{cursor:grabbing}
 .assistant-avatar{
-  width: var(--assistant-size);
-  height: var(--assistant-size);
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--bg);
-  border: 2px solid rgba(255,255,255,.7);
-  box-shadow: var(--neu-out);
+  width:64px; height:64px; border-radius:50%;
+  object-fit:cover; background:var(--bg);
+  border:2px solid rgba(255,255,255,.7); box-shadow:var(--neu-out);
 }
+/* Hover cue */
+.assistant-avatar { transition: transform .15s ease; }
+.assistant-avatar:hover { transform: translateY(-2px); cursor: pointer; }
 
 /* Tooltip bubble */
 #assistantBubble{
   position: fixed;
-  bottom: calc(20px + var(--assistant-size) + var(--assistant-gap));
+  bottom: calc(20px + 64px + 10px);
   right: 20px;
   max-width: min(360px, 80vw);
   padding: 14px 44px 14px 18px; /* extra right padding for close × */
   border-radius: 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--bg);
+  border: 1px solid #e5edf8;
   box-shadow: var(--neu-out);
-  color: var(--fg);
+  color: var(--text);
   transform: translateY(8px);
   opacity: 0;
   pointer-events: none;
   transition: transform .18s ease, opacity .18s ease;
 }
-#assistantBubble.show{
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
+#assistantBubble.show{ transform: translateY(0); opacity:1; pointer-events:auto; }
 #assistantBubble .assistant-close{
   position: absolute; right: 10px; top: 8px;
   width: 28px; height: 28px; border-radius: 50%;
-  border: 0; background: transparent; color: var(--muted);
+  border: 0; background: transparent; color: #94a3b8;
   font-size: 20px; line-height: 28px; cursor: pointer;
 }
 
-/* === Tooltip Fix (no text overlap) === */
+/* Tooltip text spacing so it doesn’t overlap the × */
 #assistantText {
   display: block;
   margin-right: 28px; /* space so text doesn't hit the close X */
@@ -170,36 +201,15 @@ footer{
   margin: 0;           /* clean reset */
 }
 
-/* === Clippy chat styles (safe to remove) ============================ */
+/* === Clippy chat styles (safe to remove) === */
 .assistant .clippy-form { display:flex; gap:8px; margin-top:8px; }
-.assistant .clippy-input {
-  flex:1; padding:8px 10px;
-  border:1px solid var(--border);
-  border-radius:8px; background:var(--bg); color:var(--fg);
-}
-.assistant .clippy-send {
-  padding:8px 12px;
-  border:1px solid var(--border);
-  background:var(--card); color:var(--fg);
-  border-radius:8px; cursor:pointer;
-}
-.assistant .clippy-send:disabled{ opacity:.6; cursor:not-allowed; }
-.assistant .clippy-log {
-  max-height:180px; overflow:auto; margin-top:8px;
-  display:flex; flex-direction:column; gap:6px; font-size:14px;
-}
-.assistant .clippy-log .line.you {
-  align-self:flex-end; background:rgba(148,163,184,.18);
-  padding:6px 10px; border-radius:12px;
-}
-.assistant .clippy-log .line.clippy {
-  align-self:flex-start; background:rgba(56,189,248,.15);
-  padding:6px 10px; border-radius:12px;
-}
+.assistant .clippy-input { flex:1; padding:8px 10px; border:1px solid #ddd; border-radius:8px; }
+.assistant .clippy-send { padding:8px 12px; border:1px solid #ddd; background:#fff; border-radius:8px; cursor:pointer; }
+.assistant .clippy-log { max-height:180px; overflow:auto; margin-top:8px; display:flex; flex-direction:column; gap:6px; font-size:14px; }
+.assistant .clippy-log .line.you { align-self:flex-end; background:#f1f5f9; padding:6px 10px; border-radius:12px; }
+.assistant .clippy-log .line.clippy { align-self:flex-start; background:#eef7ff; padding:6px 10px; border-radius:12px; }
 
-/* Avatar hover cue */
-.assistant-avatar { transition: transform .15s ease; }
-.assistant-avatar:hover { transform: translateY(-2px); cursor: pointer; }
-
-/* === Toasts (home/economics) — unchanged from your existing file === */
-/* ... keep your existing toast styles here ... */
+/* Mobile tweak */
+@media (max-width: 600px){
+  .assistant .clippy-log { max-height:140px; }
+}
