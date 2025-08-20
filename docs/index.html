@@ -4,19 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JojoJubah – AI, Tech & YouTube Tutorials</title>
+  <!-- Y3JlYXRlZCBieSBKb2pvSnViYWggMjAyNQ== -->
 
-  <!-- Site icon -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- REMOVE THIS OLD GOOGLE ANALYTICS CODE - IT'S DELETED HERE -->
+  <!-- Google tag (gtag.js) -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZM44HTK32"></script> -->
+  <!-- This has been removed and moved to conditional loading below -->
 
-  <!-- Main styles (pairs with the new app.js behaviors) -->
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- This Links to MY Style.css file for main page) -->
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 <body>
-  <!-- Cookie Consent Banner (safe: app.js only creates one if missing) -->
+  <!-- Cookie Consent Banner - ADDED HERE -->
   <div id="cookieConsentBanner" style="display:none;">
     <p>🍪 This site uses cookies for analytics to improve your experience. <a href="#" id="learnMoreBtn">Learn more</a></p>
     <div class="cookie-buttons">
@@ -25,76 +30,69 @@
     </div>
   </div>
 
-  <!-- Background / particles / progress line -->
+  <!-- Animated Background -->
   <div class="background-gradient"></div>
+  
+  <!-- Floating Particles -->
   <div class="particles" id="particles"></div>
+  
+  <!-- Scroll Indicator -->
   <div class="scroll-indicator" id="scrollIndicator"></div>
 
-  <!-- ================= NAVBAR ================= -->
-  <!-- Tip: we keep id="navbar" for JS, but JS also falls back to <nav> -->
+  <!-- Navigation -->
   <nav id="navbar">
     <div class="container">
       <div class="nav-container">
-        <!-- Logo area -->
-        <div class="logo">
+        <div class="logo-area">
           <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
           <span class="logo-text">JojoJubah</span>
         </div>
-
-        <!-- Links: using .nav-link so CSS + JS highlight work -->
         <ul class="nav-links">
           <li><a href="#home" class="nav-link active">Home</a></li>
           <li><a href="#about" class="nav-link">About</a></li>
-          <li><a href="#learn" class="nav-link">Learn</a></li>
+          <li><a href="#learn" class="nav-link">Learn</a></li> <!-- new section -->
           <li><a href="#projects" class="nav-link">Projects</a></li>
-          <li><a href="#economics" class="nav-link">Economics</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
-
-        <!-- Mobile burger (old pattern) — supported by app.js + CSS -->
-        <button class="mobile-menu-button" id="mobileMenuBtn" aria-label="Open menu">
+        <button class="mobile-menu-button" id="mobileMenuBtn">
           <div class="hamburger"></div>
           <div class="hamburger"></div>
           <div class="hamburger"></div>
         </button>
-
-        <!-- If you add the new pattern too, it also works:
-             <button class="nav-toggle" aria-expanded="false" aria-label="Menu">
-               <span class="bar"></span>
-               <span class="bar"></span>
-               <span class="bar"></span>
-             </button>
-        -->
       </div>
     </div>
   </nav>
 
-  <!-- ================= MAIN ================= -->
+  <!-- Main Content -->
   <main>
-    <!-- Home -->
+    <!-- Home Section -->
     <section id="home">
       <div class="container">
         <div class="hero-content">
           <h1 class="hero-title">Welcome to <span class="gradient-text">JojoJubah</span></h1>
           <p class="hero-subtitle">AI, Tech & YouTube Tutorials – Learn, Build, and Create with me.</p>
-
-          <!-- Social icons -->
           <div class="hero-socials">
             <a href="https://youtube.com/@jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="YouTube">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
             </a>
             <a href="https://tiktok.com/@jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="TikTok">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+              </svg>
             </a>
             <a href="https://instagram.com/jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
             </a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- About -->
+    <!-- About Section -->
     <section id="about">
       <div class="container">
         <h2 class="section-title fade-in">About JojoJubah</h2>
@@ -108,184 +106,215 @@
       </div>
     </section>
 
-    <!-- Learn (Accordions work with restored JS) -->
-    <section id="learn">
-      <div class="container">
-        <h2 class="section-title fade-in">Learn</h2>
+    <!-- Learn Section (Accordion) -->
+<section id="learn">
+  <div class="container">
+    <h2 class="section-title fade-in">Learn</h2>
 
-        <div class="accordion fade-in" id="learnAccordion">
-          <!-- Prompting -->
-          <div class="acc-item">
-            <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-prompting" id="acc-button-prompting">
-              <span>What is Prompt Engineering?</span>
-              <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
-            </button>
-            <div class="acc-content" id="acc-panel-prompting" role="region" aria-labelledby="acc-button-prompting">
-              <div class="acc-inner">
-                <h3>What is Prompt Engineering?</h3>
-                <p>Prompt engineering is the craft of structuring inputs to get reliable outputs from AI models. It’s part instruction design, part debugging. Good prompts are clear, specific, and include examples.</p>
-                <h4>Follow-up prompting (why it works)</h4>
-                <p>LLMs refine answers when you add constraints or feedback. Ask the model to “improve this,” “explain your reasoning briefly,” or “compare options in a table.” Iteration > one-shot perfection.</p>
-                <h4>Few-shot examples (when to use)</h4>
-                <p>When your task has a pattern, show 1–3 short input→output examples. Keep style consistent and label clearly. This anchors the model and reduces randomness.</p>
-                <h4>Context windows & chunking</h4>
-                <p>Long inputs get truncated. Prioritize: brief instructions → constraints → examples → source snippets. If content is large, chunk it and summarize progressively.</p>
-              </div>
-            </div>
-          </div>
+    <div class="accordion fade-in" id="learnAccordion">
 
-          <!-- Context Engineering -->
-          <div class="acc-item">
-            <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-context" id="acc-button-context">
-              <span>What is Context Engineering?</span>
-              <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
-            </button>
-            <div class="acc-content" id="acc-panel-context" role="region" aria-labelledby="acc-button-context">
-              <div class="acc-inner">
-                <h3>What is Context Engineering?</h3>
-                <p>Context engineering is structuring the right info around your prompt so the model has what it needs (and nothing it doesn’t). Think: goal → constraints → key facts → examples → attachments.</p>
-                <h4>Core moves</h4>
-                <p>• Be explicit about the outcome and format.<br>
-                   • Include only the <em>relevant</em> facts (links/files beat giant pasted walls).<br>
-                   • Ask the model to ask you clarifying questions first if anything is ambiguous.<br>
-                   • For long sources, chunk + summarize rather than dumping everything.</p>
-              </div>
-            </div>
-          </div>
+      <!-- Prompting -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-prompting" id="acc-button-prompting">
+          <span>What is Prompt Engineering?</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-prompting" role="region" aria-labelledby="acc-button-prompting">
+          <div class="acc-inner">
+            <h3>What is Prompt Engineering?</h3>
+            <p>Prompt engineering is the craft of structuring inputs to get reliable outputs from AI models. It’s part instruction design, part debugging. Good prompts are clear, specific, and include examples.</p>
 
-          <!-- Agents -->
-          <div class="acc-item">
-            <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-agents" id="acc-button-agents">
-              <span>What are AI Agents?</span>
-              <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
-            </button>
-            <div class="acc-content" id="acc-panel-agents" role="region" aria-labelledby="acc-button-agents">
-              <div class="acc-inner">
-                <h3>What is an AI Agent?</h3>
-                <p>An agent is an LLM that can plan steps and use tools (like a browser, code runner, or files) to reach a goal. Think: “goal → plan → act → observe → iterate.”</p>
-                <h4>Tools, memory, planning</h4>
-                <p>Tools extend capabilities (search, code, APIs). Short-term memory tracks the session. Long-term memory can store facts or preferences. Planners break big tasks into small executable steps.</p>
-                <h4>Risks & guardrails</h4>
-                <p>Agents can loop, hallucinate, or act out of scope. Use sandboxing, confirmation prompts for risky actions, strict tool schemas, and time/step limits.</p>
-              </div>
-            </div>
+            <h4>Follow-up prompting (why it works)</h4>
+            <p>LLMs refine answers when you add constraints or feedback. Ask the model to “improve this,” “explain your reasoning briefly,” or “compare options in a table.” Iteration > one-shot perfection.</p>
+
+            <h4>Few-shot examples (when to use)</h4>
+            <p>When your task has a pattern, show 1–3 short input→output examples. Keep style consistent and label clearly. This anchors the model and reduces randomness.</p>
+
+            <h4>Context windows & chunking</h4>
+            <p>Long inputs get truncated. Prioritize: brief instructions → constraints → examples → source snippets. If content is large, chunk it and summarize progressively.</p>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Projects -->
-    <section id="projects">
-      <div class="container">
-        <h2 class="section-title fade-in">Featured Projects</h2>
-        <div class="projects-grid">
-          <!-- Project 1 -->
-          <div class="project-card fade-in">
-            <div class="project-video">
-              <iframe 
-                src="https://www.youtube.com/embed/TjYel8UL5aI" 
-                title="Build a Custom YouTube Download App (Easy Method)"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                loading="lazy"></iframe>
-            </div>
-            <div class="project-content">
-              <h3 class="project-title">Build a Custom Youtube Download App (Easy Method)</h3>
-              <p class="project-description">
-                Download YouTube MP3's in seconds using the power of AI - built with Batch and explained in a full tutorial!
-              </p>
-              <a href="https://www.youtube.com/watch?v=TjYel8UL5aI&t=46s" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Tutorial</a>
-            </div>
-          </div>
+            <!-- Context Engineering (NEW) -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-context" id="acc-button-context">
+          <span>What is Context Engineering?</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
+          </svg>
+        </button>
+        <div class="acc-content" id="acc-panel-context" role="region" aria-labelledby="acc-button-context">
+          <div class="acc-inner">
+            <h3>What is Context Engineering?</h3>
+            <p>Context engineering is structuring the right info around your prompt so the model has what it needs (and nothing it doesn’t). Think: goal → constraints → key facts → examples → attachments.</p>
 
-          <!-- Project 2 -->
-          <div class="project-card fade-in">
-            <div class="project-video">
-              <iframe 
-                src="https://www.youtube.com/embed/kXA6Ktdqzos" 
-                title="Improve Your LLM Responses With this trick"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                loading="lazy"></iframe>
-            </div>
-            <div class="project-content">
-              <h3 class="project-title">Improve Your LLM Responses With this trick</h3>
-              <p class="project-description">
-                Use this follow up prompting technique to Improve your responses from AI Step-by-step on my channel.
-              </p>
-              <a href="https://www.youtube.com/shorts/kXA6Ktdqzos" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
-            </div>
-          </div>
-
-          <!-- Project 3 -->
-          <div class="project-card fade-in">
-            <div class="project-video">
-              <iframe 
-                src="https://www.youtube.com/embed/bn2pKtWXi0w" 
-                title="This LLM AI App works offline!"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                loading="lazy"></iframe>
-            </div>
-            <div class="project-content">
-              <h3 class="project-title">This LLM AI App works offline!</h3>
-              <p class="project-description">
-                No Account needed, completely private LLM chats, works offline - large selection of models to choose from.
-              </p>
-              <a href="https://www.youtube.com/shorts/bn2pKtWXi0w" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
-            </div>
+            <h4>Core moves</h4>
+            <p>• Be explicit about the outcome and format.<br>
+               • Include only the <em>relevant</em> facts (links/files beat giant pasted walls).<br>
+               • Ask the model to ask you clarifying questions first if anything is ambiguous.<br>
+               • For long sources, chunk + summarize rather than dumping everything.</p>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Economics teaser -->
-    <section id="economics">
-      <div class="container">
-        <h2 class="section-title fade-in">Economics</h2>
-        <div class="about-content fade-in">
-          <div class="about-text">
-            I’m collecting practical economics notes: simple explanations, mental models, and
-            “why it matters” breakdowns for creators and builders. This will grow over time.
-            <br><br>
-            Want the deeper dives? Open the dedicated page.
-            <div style="margin-top:1rem">
-              <a class="btn" href="economics.html">Open Economics</a>
-            </div>
+
+      <!-- Agents -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-agents" id="acc-button-agents">
+          <span>What are AI Agents?</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-agents" role="region" aria-labelledby="acc-button-agents">
+          <div class="acc-inner">
+            <h3>What is an AI Agent?</h3>
+            <p>An agent is an LLM that can plan steps and use tools (like a browser, code runner, or files) to reach a goal. Think: “goal → plan → act → observe → iterate.”</p>
+
+            <h4>Tools, memory, planning</h4>
+            <p>Tools extend capabilities (search, code, APIs). Short-term memory tracks the session. Long-term memory can store facts or preferences. Planners break big tasks into small executable steps.</p>
+
+            <h4>Risks & guardrails</h4>
+            <p>Agents can loop, hallucinate, or act out of scope. Use sandboxing, confirmation prompts for risky actions, strict tool schemas, and time/step limits.</p>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Contact -->
+      <!-- Open-source -->
+      <div class="acc-item">
+        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-oss" id="acc-button-oss">
+          <span>What are Opensource Models?</span>
+          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/></svg>
+        </button>
+        <div class="acc-content" id="acc-panel-oss" role="region" aria-labelledby="acc-button-oss">
+          <div class="acc-inner">
+            <h3>What does “open-source LLM” mean?</h3>
+            <p>Weights + code are available under a license you can run locally. Great for privacy, customization, and cost control—trade-off: may need more setup/tuning.</p>
+
+            <h4>Popular local tools</h4>
+            <p><strong>Ollama</strong> (easy model pulls), <strong>LM Studio</strong> (GUI), <strong>Text-Gen WebUI</strong> (power user). Use GGUF quantized models for lower RAM.</p>
+
+            <h4>Running on modest hardware</h4>
+            <p>Start with 7B–8B models, use 4–8-bit quantization, prefer CPU-friendly backends, and keep context short. Cache prompts and chunk data for speed.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+    
+    <!-- Projects Section -->
+<section id="projects">
+  <div class="container">
+    <h2 class="section-title fade-in">Featured Projects</h2>
+    <div class="projects-grid">
+      
+      <!-- Project 1 -->
+      <div class="project-card fade-in">
+        <div class="project-video">
+          <iframe 
+            src="https://www.youtube.com/embed/TjYel8UL5aI" 
+            title="Build a Custom YouTube Download App (Easy Method)"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <div class="project-content">
+          <h3 class="project-title">Build a Custom Youtube Download App (Easy Method)</h3>
+          <p class="project-description">
+            Download YouTube MP3's in seconds using the power of AI - built with Batch and explained in a full tutorial!
+          </p>
+          <a href="https://www.youtube.com/watch?v=TjYel8UL5aI&t=46s" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Tutorial</a>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project-card fade-in">
+        <div class="project-video">
+          <iframe 
+            src="https://www.youtube.com/embed/kXA6Ktdqzos" 
+            title="Improve Your LLM Responses With this trick"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <div class="project-content">
+          <h3 class="project-title">Improve Your LLM Responses With this trick</h3>
+          <p class="project-description">
+            Use this follow up prompting technique to Improve your responses from AI Step-by-step on my channel.
+          </p>
+          <a href="https://www.youtube.com/shorts/kXA6Ktdqzos" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project-card fade-in">
+        <div class="project-video">
+          <iframe 
+            src="https://www.youtube.com/embed/bn2pKtWXi0w" 
+            title="This LLM AI App works offline!"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+        <div class="project-content">
+          <h3 class="project-title">This LLM AI App works offline!</h3>
+          <p class="project-description">
+            No Account needed, completely private LLM chats, works offline - large selection of models to choose from.
+          </p>
+          <a href="https://www.youtube.com/shorts/bn2pKtWXi0w" class="btn" target="_blank" rel="nofollow noopener noreferrer">Watch Short</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+    <!-- Contact Section -->
     <section id="contact">
       <div class="container">
         <h2 class="section-title fade-in">Contact & Socials</h2>
         <div class="contact-content fade-in">
           <div class="contact-info">
-            <div class="contact-item">
-              <strong>Email:</strong>
-              <span id="emailHidden">
-                <button id="revealEmail" class="reveal-inline-btn">Reveal</button>
-              </span>
-              <span id="emailVisible" hidden>hendrixjuba@gmail.com</span>
-              <span class="muted">(email me)</span>
-            </div>
+            <!-- Email with reveal -->
+    <div class="contact-item">
+      <strong>Email:</strong>
+      <span id="emailHidden">
+        <button id="revealEmail" class="reveal-inline-btn">Reveal</button>
+      </span>
+      <span id="emailVisible" hidden>
+        hendrixjuba@gmail.com
+      </span>
+      <span class="muted">(email me)</span>
+    </div>
             <div class="contact-item">
               <strong>Location:</strong> London, UK <span class="muted">(remote, open for collabs!)</span>
             </div>
             <div class="hero-socials">
               <a href="https://youtube.com/@jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="YouTube">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <svg viewBox="0 0 24 24">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
               </a>
               <a href="https://tiktok.com/@jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="TikTok">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                <svg viewBox="0 0 24 24">
+                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                </svg>
               </a>
               <a href="https://instagram.com/jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
               </a>
             </div>
           </div>
@@ -307,138 +336,27 @@
           <a href="#about">About</a>
           <a href="#learn">Learn</a>
           <a href="#projects">Projects</a>
-          <a href="#economics">Economics</a>
           <a href="#contact">Contact</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Toast (used by app.js when learn items opened) -->
-  <div id="learnToast" class="toast toast--left" role="status" aria-live="polite" aria-atomic="true">
-    🎉 Level up! You opened all topics.
+  <div id="learnToast" class="toast" role="status" aria-live="polite" aria-atomic="true">🎉 Level up! You opened all topics.</div>
+
+  <!-- i Have deleted everything under here because it should be in app.js  -->
+  <!-- Scripts -->
+<script src="app.js" defer></script>
+<!-- === Assistant (Jojo) — START === -->
+<div id="jojoAssistant" class="assistant">
+  <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="assistant-avatar"/>
+  <div class="assistant-bubble" id="assistantBubble">
+    <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
+    <p id="assistantText">Need a hand?</p>
   </div>
+</div>
+<!-- === Assistant (Jojo) — END === -->
 
-  <!-- ================= SCRIPTS ================= -->
-  <!-- Site logic (nav, theme, accordions, assistant bubble, fade-ins) -->
-  <script src="app.js" defer></script>
 
-  <!-- Firebase + Assistant backend glue -->
-  <script type="module">
-    /* === Firebase core === */
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-
-    /* === App Check (reCAPTCHA v3) === */
-    import {
-      initializeAppCheck,
-      ReCaptchaV3Provider,
-      getToken as getAppCheckToken
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-check.js";
-
-    // Public Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
-      authDomain: "jojojubah-f2996.firebaseapp.com",
-      projectId: "jojojubah-f2996",
-      storageBucket: "jojojubah-f2996.firebasestorage.app",
-      messagingSenderId: "160250947651",
-      appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
-      measurementId: "G-XC16XPJ48T"
-    };
-
-    // Init
-    const app = initializeApp(firebaseConfig);
-
-    // App Check — use your v3 SITE KEY (not secret)
-    const appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider("6LefpqwrAAAAAPFuxr81vcHfmg5d9Mje7ZpMXA3S"),
-      isTokenAutoRefreshEnabled: true,
-    });
-
-    // Optional analytics
-    const analytics = getAnalytics(app);
-
-    // Auth + Firestore
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Anonymous auth so each visitor has a UID
-    signInAnonymously(auth).catch(console.error);
-    onAuthStateChanged(auth, (user) => {
-      console.log("Signed in as:", user?.uid);
-      window.__clippyUser = user || null;
-    });
-
-    // Cloud Function endpoint (your Gemini proxy)
-    const FUNCTION_URL = "https://chat-dorm4odd6a-nw.a.run.app";
-
-    /* askClippy compatibility wrapper
-       - If called like askClippy(historyArray)  -> we send {history}
-       - If called like askClippy(message, historyArray) -> we send both
-       This keeps it compatible with both app.js versions.
-    */
-    window.askClippy = async function askClippy(arg1, arg2) {
-      let message = null;
-      let history = [];
-
-      if (Array.isArray(arg1)) {
-        // Old app.js style: askClippy(history)
-        history = arg1;
-        const last = history[history.length - 1];
-        if (last && last.role === "user") message = last.content || "";
-      } else {
-        // Newer style: askClippy(message, history)
-        message = String(arg1 || "");
-        history = Array.isArray(arg2) ? arg2 : (message ? [{ role: "user", content: message }] : []);
-      }
-
-      // Tokens to prove request is legit
-      const { token: appCheckToken } = await getAppCheckToken(appCheck, false);
-      const idToken = await (async () => {
-        const u = auth.currentUser;
-        return u ? u.getIdToken(true) : null;
-      })();
-
-      const resp = await fetch(FUNCTION_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(idToken ? { "Authorization": `Bearer ${idToken}` } : {}),
-          ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
-        },
-        body: JSON.stringify({ message, history }),
-      });
-      const data = await resp.json();
-
-      // (Optional) Log to Firestore — you can remove if not needed
-      try {
-        const uid = window.__clippyUser?.uid || "anon";
-        const sessionId = localStorage.getItem("clippySession") || crypto.randomUUID();
-        localStorage.setItem("clippySession", sessionId);
-        if (message) {
-          await addDoc(collection(db, "chats", sessionId, "messages"), {
-            uid, role: "user", content: message, ts: serverTimestamp(),
-          });
-        }
-        await addDoc(collection(db, "chats", sessionId, "messages"), {
-          uid: "assistant", role: "model", content: data?.text || "", ts: serverTimestamp(),
-        });
-      } catch (_) {}
-
-      return data;
-    };
-  </script>
-
-  <!-- Floating Assistant (avatar + bubble). app.js adds the chat form. -->
-  <div id="jojoAssistant" class="assistant">
-    <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="assistant-avatar"/>
-    <div class="assistant-bubble" id="assistantBubble">
-      <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
-      <p id="assistantText">Need a hand?</p>
-    </div>
-  </div>
 </body>
 </html>
