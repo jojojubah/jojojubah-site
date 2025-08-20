@@ -1,9 +1,14 @@
-/* app.js — shared site logic */
+/* app.js — shared site logic
+   Comments are "explain like I'm 12" style so it's easy to tweak. */
 
-/* ================= Cookie Consent + Google Analytics ================== */
+/* ==========================================================
+   COOKIE CONSENT + GOOGLE ANALYTICS
+   Think: "ask user once, only load GA if they say yes"
+   ========================================================== */
 (function cookieConsent(){
   const MEASUREMENT_ID = 'G-0ZM44HTK32';
 
+  // Make the banner if it's not already on the page
   function ensureBanner() {
     if (document.getElementById('cookieConsentBanner')) return;
     const banner = document.createElement('div');
@@ -20,16 +25,17 @@
     document.body.appendChild(banner);
   }
 
+  // Load GA only if allowed
   function enableGoogleAnalytics() {
     if (window.GA_LOADED) return;
     window.GA_LOADED = true;
 
-    // Tag script
+    // Load the GA script
     const s1 = document.createElement('script');
     s1.async = true;
     s1.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
 
-    // Config script
+    // Configure GA (basic, privacy-friendly)
     const s2 = document.createElement('script');
     s2.innerHTML = `
       window.dataLayer = window.dataLayer || [];
@@ -41,6 +47,7 @@
     document.head.appendChild(s2);
   }
 
+  // Show banner if we don't have a decision saved
   function restoreConsentState() {
     ensureBanner();
     const consent = localStorage.getItem('cookieConsent');
@@ -49,6 +56,7 @@
     else if (consent === 'accepted') enableGoogleAnalytics();
   }
 
+  // Wire the buttons on the banner
   function hookBannerButtons() {
     const accept = document.getElementById('acceptCookies');
     const decline = document.getElementById('declineCookies');
@@ -66,74 +74,91 @@
     });
     learnMore && (learnMore.onclick = function(e){
       e.preventDefault();
-      alert('We use Google Analytics to understand aggregate usage. You can change your decision anytime by clearing site data.');
+      alert('We use Google Analytics to understand what content helps most. You can clear site data to change your choice later.');
     });
   }
 
+  // Kick off
   document.addEventListener('DOMContentLoaded', function(){
     restoreConsentState();
     hookBannerButtons();
   });
 })();
 
-/* ===================== Mobile nav (burger) ======================= */
+/* ==========================================================
+   MOBILE NAV (hamburger)
+   Think: "make the menu open/close on phones"
+   Supports BOTH old (#mobileMenuBtn) and new (.nav-toggle)
+   ========================================================== */
 (function mobileNav(){
   document.addEventListener('DOMContentLoaded', function(){
-    const toggle = document.querySelector('.nav-toggle');
-    const links  = document.querySelector('.nav-links');
-    if (!toggle || !links) return;
-    toggle.addEventListener('click', function(){
-      const open = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', String(!open));
-      links.classList.toggle('open');
-    });
+    const links = document.querySelector('.nav-links');
+
+    // Newer button pattern: .nav-toggle (has 3 bars inside)
+    const toggleNew = document.querySelector('.nav-toggle');
+    if (toggleNew && links){
+      toggleNew.addEventListener('click', function(){
+        const open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        links.classList.toggle('open');    // CSS shows .nav-links.open
+      });
+    }
+
+    // Older button pattern: #mobileMenuBtn (also has 3 bars)
+    const toggleOld = document.getElementById('mobileMenuBtn');
+    if (toggleOld && links){
+      toggleOld.addEventListener('click', function(){
+        this.classList.toggle('active');   // animate the bars
+        links.classList.toggle('active');  // CSS shows .nav-links.active
+      });
+    }
   });
 })();
 
-/* ===================== Theme toggle (light/dark) ================= */
+/* ==========================================================
+   THEME TOGGLE (light/dark)
+   Think: "click sun/moon => switch theme, remember choice"
+   ========================================================== */
 (function themeToggle(){
   document.addEventListener('DOMContentLoaded', function(){
     const btn = document.getElementById('themeToggle');
     if (!btn) return;
 
-    const root = document.documentElement;
+    const root = document.documentElement;     // <html> element
     const current = localStorage.getItem('theme') || 'light';
     if (current === 'dark') root.classList.add('dark');
 
     btn.addEventListener('click', function(){
-      const isDark = root.classList.toggle('dark');
+      const isDark = root.classList.toggle('dark');     // add/remove class
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      // Optional toast cue:
-      const toast = document.getElementById('learnToast');
-      showToastEl(toast);
     });
   });
 
+  /* ---------- Page-specific toasts & observers ---------- */
   function showToastEl(el){
     if (!el) return;
     el.classList.add('show');
     setTimeout(()=> el.classList.remove('show'), 6000);
   }
 
-  // Collect sets for targeted behaviors
-  const learnAcc = document.getElementById('learnAccordion');                 // home page only
-  const learnToastEl = document.getElementById('learnToast');                 // home toast
+  const learnAcc  = document.getElementById('learnAccordion'); // on home page
+  const learnToastEl = document.getElementById('learnToast');
 
-  const econLeft  = document.getElementById('econGlossaryLeft');              // economics page
-  const econRight = document.getElementById('econGlossaryRight');             // economics page
-  const econToast = document.getElementById('econToast');                     // economics toast
+  const econLeft  = document.getElementById('econGlossaryLeft');  // economics page
+  const econRight = document.getElementById('econGlossaryRight');
+  const econToast = document.getElementById('econToast');
 
-  const projects  = document.getElementById('projects');                      // home page observer
+  const projects  = document.getElementById('projects');          // home page
 
   document.addEventListener('DOMContentLoaded', function(){
-    // Home "learn" accordion toast
+    // When a <details> inside #learnAccordion is opened, pop a toast
     if (learnAcc && learnToastEl){
       learnAcc.addEventListener('toggle', function(e){
         if (e.target && e.target.open) showToastEl(learnToastEl);
       }, true);
     }
 
-    // Economics: show toast after 10 sections opened (progress-based)
+    // Economics: when 10 glossary items opened, celebrate
     if (econLeft && econRight && econToast){
       let opened = new Set();
       const handler = (e) => {
@@ -146,7 +171,7 @@
       econRight.addEventListener('toggle', handler, true);
     }
 
-    // Reveal assistant tip when projects enter view (legacy behavior kept)
+    // When projects section enters the screen, show the "secret lab" tip
     if (projects){
       const observer = new IntersectionObserver(entries => {
         for (const en of entries){
@@ -159,7 +184,10 @@
     }
   });
 
-  /* ========================== Assistant (Jojo) ======================== */
+  /* ======================================================
+     FLOATING ASSISTANT ("Clippy")
+     Think: "click the avatar to open a chat bubble"
+     ====================================================== */
   const root = document.getElementById('jojoAssistant');
   if (root) {
     const bubble   = document.getElementById('assistantBubble');
@@ -168,13 +196,13 @@
 
     let tips = {};
 
-    // Load JSON tips (non-blocking)
+    // Load tiny tips from JSON (non-blocking). If it fails, no worries.
     fetch('data/tips.json', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : Promise.resolve({}))
       .then(json => { tips = json || {}; })
       .catch(() => { tips = {}; });
 
-    // Expose safe helper
+    // Helper so other code can ask the assistant to speak
     window.showTip = function(key){
       if (!tips[key]) return;
       textEl.textContent = tips[key];
@@ -182,40 +210,37 @@
       setTimeout(()=> bubble.classList.remove('show'), 9000);
     };
 
-    // Close button
+    // Close with the × button
     closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
 
-    // Open/close helpers
+    // Open/close when clicking the avatar (this is what you wanted)
     function openBubble() {
       bubble.classList.add('show');
       const input = document.getElementById('clippyInput');
-      if (input) setTimeout(() => input.focus(), 0);
+      if (input) setTimeout(() => input.focus(), 0);   // focus the text box
     }
     function closeBubble() {
       bubble.classList.remove('show');
     }
-
-    // Click avatar to toggle bubble (ignore clicks inside bubble)
     const avatar = root.querySelector('.assistant-avatar');
-    avatar?.addEventListener('click', (e) => {
+    avatar?.addEventListener('click', () => {
       if (bubble.classList.contains('show')) closeBubble();
       else openBubble();
     });
 
-    // Allow clicking outside bubble to close
+    // Click anywhere outside => close the bubble (feels natural)
     document.addEventListener('click', (e) => {
       if (!bubble.classList.contains('show')) return;
       const withinAssistant = e.target.closest('#assistantBubble') || e.target.closest('#jojoAssistant');
       if (!withinAssistant) closeBubble();
     });
 
-    // Drag = move assistant widget
+    // Drag to move the assistant around (fun + useful on mobile/TV)
     (function enableDrag(){
       let isDown = false, startX=0, startY=0, startLeft=0, startTop=0;
-      const container = document.getElementById('jojoAssistant');
-
+      const container = root;
       container.addEventListener('mousedown', (e)=>{
-        if (e.target.closest('#assistantBubble')) return; // don't drag when interacting with bubble
+        if (e.target.closest('#assistantBubble')) return; // don't drag when using chat
         isDown = true;
         startX = e.clientX; startY = e.clientY;
         const rect = container.getBoundingClientRect();
@@ -233,51 +258,88 @@
   }
 })();
 
-// === Reveal-on-scroll + active nav link ===
+/* ==========================================================
+   ACCORDIONS (.acc-item) — RESTORED
+   Think: "click a question => the answer box opens smoothly"
+   ========================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  function setPanelHeight(panel, open){
+    // If open, set height to content; if closed, set to 0 (so it can animate)
+    panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
+  }
+  function wireAccordionItem(item){
+    const btn   = item.querySelector('.acc-header');   // the clickable title
+    const panel = item.querySelector('.acc-content');  // the hidden content
+    if (!btn || !panel) return;
+
+    // Start closed
+    item.classList.remove('open');
+    setPanelHeight(panel, false);
+    btn.setAttribute('aria-expanded', 'false');
+
+    // Toggle open/close on click
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+      setPanelHeight(panel, isOpen);
+    });
+  }
+  document.querySelectorAll('.acc-item').forEach(wireAccordionItem);
+});
+
+/* ==========================================================
+   REVEAL-ON-SCROLL + ACTIVE NAV LINK
+   Think: "cards slide in; navbar highlights current section"
+   ========================================================== */
 (function () {
-  const navbar = document.getElementById('navbar');
+  const navbar = document.getElementById('navbar') || document.querySelector('nav');
   const scrollIndicator = document.getElementById('scrollIndicator');
-  const navLinks = document.querySelectorAll('.nav-link');
+  // Support both patterns: .nav-link (old) OR .nav-links a (new)
+  const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
   const sections = document.querySelectorAll('section');
 
   function onScroll() {
     const y = window.scrollY || window.pageYOffset;
 
-    // sticky/blur background cue
+    // Navbar style when scrolling a bit
     if (navbar) navbar.classList.toggle('scrolled', y > 20);
 
-    // progress bar
+    // Progress bar width
     if (scrollIndicator) {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       scrollIndicator.style.width = (docH > 0 ? (y / docH) * 100 : 0) + '%';
     }
 
-    // reveal .fade-in nodes
+    // Reveal ".fade-in" things when they are near the viewport
     document.querySelectorAll('.fade-in').forEach(el => {
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active link (section at ~1/3 viewport)
+    // Make the right navbar link glow
     let current = '';
-    const mid = y + window.innerHeight / 3;
+    const mid = y + window.innerHeight / 3; // "one third down the screen"
     sections.forEach(sec => { if (sec.offsetTop <= mid) current = sec.id; });
-    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    navLinks.forEach(a => {
+      const href = a.getAttribute('href') || '';
+      a.classList.toggle('active', href === '#' + current);
+    });
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // run once on load
+  onScroll(); // run once on load so first elements show up
 })();
 
-
-/* === Clippy Chat UI — START (minimal, reversible) === */
-/* Adds a small input + send button into your existing assistant bubble and
-   streams replies into a scrollable log. */
+/* ==========================================================
+   TINY CHAT UI INSIDE THE BUBBLE (input + send button)
+   Think: "type a question, click ➤, show reply"
+   Requires: window.askClippy(history) provided in index.js (your Firebase proxy)
+   ========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const bubble = document.getElementById("assistantBubble");
   if (!bubble || typeof window.askClippy !== "function") return;
 
-  // Inject UI (easy to remove later)
+  // Insert a simple form and a log area (easy to remove later)
   bubble.insertAdjacentHTML(
     "beforeend",
     `
@@ -293,8 +355,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("clippyInput");
   const sendBtn = document.getElementById("clippySend");
   const log = document.getElementById("clippyLog");
+
+  // Keep a short history so answers make sense, but don't get too long/expensive
   const history = [];
-  const MAX_TURNS = 16; // keep prompt short for cheaper/cleaner calls
+  const MAX_TURNS = 16;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -304,11 +368,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     append("you", text);
     input.value = "";
-
-    // disable send while waiting
     sendBtn.disabled = true;
 
-    // thinking indicator with animated dots
+    // Show a simple "thinking..." line with bouncing dots
     const thinkingId = append("clippy", "…thinking");
     let dots = 0;
     const tick = setInterval(() => {
@@ -318,14 +380,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 400);
 
     try {
-      // keep a short rolling history
+      // Add user message to history
       history.push({ role: "user", content: text });
       while (history.length > MAX_TURNS) history.shift();
 
+      // Ask your backend (Firebase proxy) for an answer
       const reply = await window.askClippy(history);
       const msg = (reply?.text || reply?.content || "Hmm, I didn’t catch that.").trim();
 
-      // store assistant turn too
+      // Add assistant message to history
       history.push({ role: "assistant", content: msg });
       while (history.length > MAX_TURNS) history.shift();
 
@@ -339,16 +402,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Helper to add a line to the log
   function append(who, text) {
     const id = crypto.randomUUID();
     const div = document.createElement("div");
     div.dataset.id = id;
     div.className = `line ${who}`;
-    div.textContent = text;              // textContent avoids HTML injection
+    div.textContent = text;            // textContent = safe (no HTML injection)
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
     return id;
   }
+  // Helper to replace a specific line (used for "thinking..." -> reply)
   function replace(id, who, text) {
     const el = log.querySelector(`[data-id="${id}"]`);
     if (!el) return append(who, text);
@@ -357,4 +422,3 @@ document.addEventListener("DOMContentLoaded", () => {
     log.scrollTop = log.scrollHeight;
   }
 });
-/* === Clippy Chat UI — END === */
