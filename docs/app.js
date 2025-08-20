@@ -23,7 +23,6 @@
   function enableGoogleAnalytics() {
     if (window.GA_LOADED) return;
     window.GA_LOADED = true;
-
     const s = document.createElement('script');
     s.async = true;
     s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
@@ -101,10 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function onScroll() {
     const y = window.scrollY || window.pageYOffset;
 
-    // sticky background
-    if (navbar) navbar.classList.toggle('scrolled', y > 20);
+    navbar && navbar.classList.toggle('scrolled', y > 20);
 
-    // scroll progress
     if (scrollIndicator) {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docH > 0 ? (y / docH) * 100 : 0;
@@ -117,15 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active nav link (viewport middle so short sections still activate)
+    // active nav link
     let current = '';
-    const mid = y + window.innerHeight / 3;
-    sections.forEach(sec => {
-      if (sec.offsetTop <= mid) current = sec.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+    sections.forEach(sec => { if (y >= sec.offsetTop - 120) current = sec.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -189,7 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       apply(next);
-      window.showTip && window.showTip('themeToggle');
+
+      // 🧩 Assistant trigger for theme change
+      showTip && showTip('themeToggle');
     });
 
     const moveMatrixBtn = () => {
@@ -200,13 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(moveMatrixBtn, 0);
   })();
 
-  /* ===================== Accordions & Page-Specific Rewards =========== */
+  /* ===================== Accordion + Easter Egg Toast ================= */
+  const accContainer = document.getElementById('learnAccordion') || document.querySelector('.accordion');
+  const accButtons   = document.querySelectorAll('.acc-header');
+  const toastEl      = document.getElementById('learnToast');
 
-  // Helpers
+  const initialCount = accContainer ? accContainer.querySelectorAll('.acc-item').length : accButtons.length;
+  const OPENED = new Set();
+  let unlocked = false;
+
   function setPanelHeight(panel, open){
     panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
   }
-  function wireAccordionItem(item, onToggle){
+
+  function wireAccordionItem(item){
     const btn   = item.querySelector('.acc-header');
     const panel = item.querySelector('.acc-content');
     if (!btn || !panel) return;
@@ -217,34 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(isOpen));
       setPanelHeight(panel, isOpen);
-      if (typeof onToggle === 'function') onToggle(item, isOpen);
     });
   }
-  function showToastEl(el){
-    if (!el) return;
-    el.classList.add('show');
-    setTimeout(()=> el.classList.remove('show'), 6000);
-  }
 
-  // Collect sets for targeted behaviors
-  const learnAcc = document.getElementById('learnAccordion');                 // home page only
-  const learnToastEl = document.getElementById('learnToast');                 // home toast
-
-  const econLeft  = document.getElementById('econGlossaryLeft');              // economics page
-  const econRight = document.getElementById('econGlossaryRight');
-  const econToastEl = document.getElementById('econToast');                   // economics toast
-
-  const learnItemsSet = new Set(learnAcc ? learnAcc.querySelectorAll('.acc-item') : []);
-  const econItemsSet  = new Set([
-    ...(econLeft  ? econLeft.querySelectorAll('.acc-item')  : []),
-    ...(econRight ? econRight.querySelectorAll('.acc-item') : [])
-  ]);
-
-  // Learn page bonus: ONLY on #learnAccordion
-  let learnUnlocked = false;
-  function addBonusAccordionToLearn(){
-    if (!learnAcc || document.getElementById('acc-item-bonus')) return;
-    learnAcc.insertAdjacentHTML('beforeend', `
+  function addBonusAccordion(){
+    if (!accContainer || document.getElementById('acc-item-bonus')) return;
+    accContainer.insertAdjacentHTML('beforeend', `
       <div class="acc-item" id="acc-item-bonus">
         <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
           <span>Hmm... What's this?</span>
@@ -267,37 +246,33 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `);
-    // Wire the newly added item
     const bonusItem = document.getElementById('acc-item-bonus');
     if (bonusItem) wireAccordionItem(bonusItem);
   }
 
-  // Sets to track opening progress
-  const LEARN_OPENED = new Set();
-  const ECON_OPENED  = new Set();
+  function showToast(){
+    if (!toastEl) return;
+    toastEl.classList.add('show');
+    setTimeout(()=>toastEl.classList.remove('show'), 6000);
+  }
 
-  // Wire all accordion items once; attach per-page callbacks
-  document.querySelectorAll('.acc-item').forEach((item) => {
-    const inLearn = learnItemsSet.has(item);
-    const inEcon  = econItemsSet.has(item);
+  // ✅ BONUS UNLOCK (no persistence)
+  function unlockBonus(){
+    if (unlocked) return;
+    unlocked = true;
+    addBonusAccordion();
+    showToast();
+  }
 
-    wireAccordionItem(item, (it, isOpen) => {
-      if (!isOpen) return;
-
-      if (inLearn) {
-        LEARN_OPENED.add(it);
-        if (!learnUnlocked && LEARN_OPENED.size >= learnItemsSet.size) {
-          learnUnlocked = true;
-          addBonusAccordionToLearn();
-          showToastEl(learnToastEl);
-        }
-      }
-
-      if (inEcon) {
-        ECON_OPENED.add(it);
-        if (ECON_OPENED.size >= econItemsSet.size) {
-          showToastEl(econToastEl);  // 🎉 Congratulate on finishing glossary
-        }
+  // wire originals
+  document.querySelectorAll('.acc-item').forEach((item, i) => {
+    wireAccordionItem(item);
+    const btn = item.querySelector('.acc-header');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      if (item.classList.contains('open')) {
+        OPENED.add(i);
+        if (!unlocked && OPENED.size >= initialCount) unlockBonus();
       }
     });
   });
@@ -319,38 +294,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ========================== Assistant (Jojo) ======================== */
-  const root = document.getElementById('jojoAssistant');
+  const root   = document.getElementById('jojoAssistant');
   if (root) {
-    const bubble   = document.getElementById('assistantBubble');
-    const textEl   = document.getElementById('assistantText');
+    const bubble = document.getElementById('assistantBubble');
+    const textEl = document.getElementById('assistantText');
     const closeBtn = document.getElementById('assistantClose');
 
     let tips = {};
 
-    // Load JSON tips (non-blocking)
+    // Load JSON tips
     fetch('data/tips.json', { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : Promise.resolve({}))
-      .then(json => { tips = json || {}; })
-      .catch(() => { tips = {}; });
+      .then(r => r.ok ? r.json() : {})
+      .then(json => { tips = json || {}; });
 
-    // Expose safe helper
-    window.showTip = function(key){
-      if (!tips[key]) return;
-      textEl.textContent = tips[key];
-      bubble.classList.add('show');
-      setTimeout(()=> bubble.classList.remove('show'), 9000);
-    };
+    // Show specific tip by key
+window.showTip = function(key){
+  if (!tips[key]) return;
+  textEl.textContent = tips[key];   // ✅ only text, no button
+  bubble.classList.add('show');
+  setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
+};
+
 
     // Close button
-    closeBtn?.addEventListener('click', ()=> bubble.classList.remove('show'));
+    closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
 
-    // Trigger: user scrolls into Projects section (guarded)
+    // Trigger 2: user scrolls into Projects section
     const projects = document.getElementById('projects');
     if (projects){
       const observer = new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
-          if (entry.isIntersecting){
-            window.showTip && window.showTip('projectsSection');
+          if(entry.isIntersecting){
+            showTip('projectsSection');
             observer.disconnect();
           }
         });
@@ -359,120 +334,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-/* === Clippy Chat UI — START (minimal, reversible) === */
-/* Adds a small input + send button into your existing assistant bubble and
-   streams replies into a scrollable log. */
-document.addEventListener("DOMContentLoaded", () => {
-  const bubble = document.getElementById("assistantBubble");
-  if (!bubble || typeof window.askClippy !== "function") return;
-
-  // Inject UI (easy to remove later)
-  bubble.insertAdjacentHTML(
-    "beforeend",
-    `
-    <form id="clippyForm" class="clippy-form" autocomplete="off" aria-label="Clippy chat">
-      <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
-      <button id="clippySend" class="clippy-send" type="submit">Send</button>
-    </form>
-    <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
-    `
-  );
-
-  const form = document.getElementById("clippyForm");
-  const input = document.getElementById("clippyInput");
-  const sendBtn = document.getElementById("clippySend");
-  const log = document.getElementById("clippyLog");
-  const history = [];
-  const MAX_TURNS = 16; // keep prompt short for cheaper/cleaner calls
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = (input.value || "").trim();
-    if (!text) return;
-
-    append("you", text);
-    input.value = "";
-
-    // disable send while waiting
-    sendBtn.disabled = true;
-
-    // thinking indicator with animated dots
-    const thinkingId = append("clippy", "…thinking");
-    let dots = 0;
-    const tick = setInterval(() => {
-      dots = (dots + 1) % 4;
-      const el = log.querySelector(`[data-id="${thinkingId}"]`);
-      if (el) el.textContent = "…thinking" + ".".repeat(dots);
-    }, 300);
-
-    try {
-      const r = await window.askClippy(text, history);
-      const reply = (r && r.text) ? r.text : "(no response)";
-      clearInterval(tick);
-      replace(thinkingId, "clippy", reply);
-
-      // keep short history for context
-      history.push({ role: "user", content: text });
-      history.push({ role: "model", content: reply });
-      if (history.length > MAX_TURNS) history.splice(0, history.length - MAX_TURNS);
-    } catch (err) {
-      console.error(err);
-      clearInterval(tick);
-
-      let msg = "⚠️ Error talking to the server.";
-      try {
-        if (err && err.response && typeof err.response.json === "function") {
-          const p = await err.response.json();
-          if (p?.error) msg = `⚠️ ${p.error}`;
-        }
-      } catch {}
-
-      replace(thinkingId, "clippy", msg);
-      toast(msg); // show user-friendly popup
-    } finally {
-      sendBtn.disabled = false;
-      input.focus();
-    }
-  });
-
-  // Simple toast (inline styles; no CSS changes needed)
-  function toast(message) {
-    let t = document.getElementById("clippyToast");
-    if (!t) {
-      t = document.createElement("div");
-      t.id = "clippyToast";
-      t.style.cssText = "position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:99999;font-size:14px;max-width:80vw;opacity:0;transform:translateY(10px);transition:all .25s ease";
-      document.body.appendChild(t);
-    }
-    t.textContent = message;
-    requestAnimationFrame(() => {
-      t.style.opacity = "1";
-      t.style.transform = "translateY(0)";
-    });
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => {
-      t.style.opacity = "0";
-      t.style.transform = "translateY(10px)";
-    }, 3500);
-  }
-
-  function append(who, text) {
-    const id = crypto.randomUUID();
-    const div = document.createElement("div");
-    div.dataset.id = id;
-    div.className = `line ${who}`;
-    div.textContent = text;              // textContent avoids HTML injection
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
-    return id;
-  }
-  function replace(id, who, text) {
-    const el = log.querySelector(`[data-id="${id}"]`);
-    if (!el) return append(who, text);
-    el.className = `line ${who}`;
-    el.textContent = text;
-    log.scrollTop = log.scrollHeight;
-  }
-});
-/* === Clippy Chat UI — END === */
