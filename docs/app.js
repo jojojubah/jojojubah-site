@@ -359,3 +359,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+/* === Clippy Chat UI — START (minimal, reversible) === */
+/* Adds a small input + send button into your existing assistant bubble and
+   streams replies into a scrollable log. */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const bubble = document.getElementById("assistantBubble");
+  if (!bubble || typeof window.askClippy !== "function") return;
+
+  // Inject UI (easy to remove later)
+  bubble.insertAdjacentHTML(
+    "beforeend",
+    `
+    <form id="clippyForm" class="clippy-form" autocomplete="off" aria-label="Clippy chat">
+      <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
+      <button class="clippy-send" type="submit">Send</button>
+    </form>
+    <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
+    `
+  );
+
+  const form = document.getElementById("clippyForm");
+  const input = document.getElementById("clippyInput");
+  const log = document.getElementById("clippyLog");
+  const history = [];
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = (input.value || "").trim();
+    if (!text) return;
+
+    append("you", text);
+    input.value = "";
+    const thinkingId = append("clippy", "…thinking");
+
+    try {
+      const r = await window.askClippy(text, history);
+      const reply = (r && r.text) ? r.text : "(no response)";
+      replace(thinkingId, "clippy", reply);
+
+      // keep short history for context
+      history.push({ role: "user", content: text });
+      history.push({ role: "model", content: reply });
+      if (history.length > 16) history.splice(0, history.length - 16);
+    } catch (err) {
+      console.error(err);
+      replace(thinkingId, "clippy", "⚠️ Error talking to the server.");
+    }
+  });
+
+  function append(who, text) {
+    const id = crypto.randomUUID();
+    const div = document.createElement("div");
+    div.dataset.id = id;
+    div.className = `line ${who}`;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return id;
+  }
+  function replace(id, who, text) {
+    const el = log.querySelector(`[data-id="${id}"]`);
+    if (!el) return append(who, text);
+    el.className = `line ${who}`;
+    el.textContent = text;
+    log.scrollTop = log.scrollHeight;
+  }
+});
+/* === Clippy Chat UI — END === */
+
+
