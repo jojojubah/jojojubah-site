@@ -1,10 +1,8 @@
 /* ==========================================================
-   app.js — fixed site logic
+   app.js — shared site logic (clean, minimal, reversible)
    ========================================================== */
 
-/* ==========================================================
-   1) COOKIE CONSENT + GOOGLE ANALYTICS
-   ========================================================== */
+/* 1) Cookie consent + Google Analytics (loads GA only if accepted) */
 (function cookieConsent(){
   const MEASUREMENT_ID = 'G-0ZM44HTK32';
 
@@ -36,14 +34,15 @@
     s2.innerHTML = `
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date()); gtag('config', '${MEASUREMENT_ID}');
+      gtag('js', new Date());
+      gtag('config', '${MEASUREMENT_ID}', { anonymize_ip: true, cookie_flags: 'secure;samesite=strict' });
     `;
 
     document.head.appendChild(s1);
     document.head.appendChild(s2);
   }
 
-  function restoreConsentState() {
+  function showConsentBanner() {
     ensureBanner();
     const consent = localStorage.getItem('cookieConsent');
     const banner = document.getElementById('cookieConsentBanner');
@@ -58,111 +57,199 @@
     const banner = document.getElementById('cookieConsentBanner');
 
     accept && (accept.onclick = function(){
-      localStorage.setItem('cookieConsent', 'accepted');
+      localStorage.setItem('cookieConsent','accepted');
+      banner && (banner.style.display = 'none');
       enableGoogleAnalytics();
-      banner.style.display = 'none';
     });
+
     decline && (decline.onclick = function(){
-      localStorage.setItem('cookieConsent', 'declined');
-      banner.style.display = 'none';
+      localStorage.setItem('cookieConsent','declined');
+      banner && (banner.style.display = 'none');
+      console.log('❌ Analytics declined by user');
     });
+
     learnMore && (learnMore.onclick = function(e){
       e.preventDefault();
       alert('We use Google Analytics to understand what helps most. Clear site data to change your choice later.');
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function(){
-    restoreConsentState();
-    hookBannerButtons();
-  });
+  showConsentBanner();
+  document.addEventListener('DOMContentLoaded', hookBannerButtons);
 })();
 
-/* ==========================================================
-   2) MOBILE NAV (HAMBURGER) - FIXED
-   ========================================================== */
+/* 2) Mobile nav (supports both .nav-toggle and #mobileMenuBtn) */
 (function mobileNav(){
   document.addEventListener('DOMContentLoaded', function(){
     const links = document.querySelector('.nav-links');
+
+    const toggleNew = document.querySelector('.nav-toggle');
+    if (toggleNew && links){
+      toggleNew.addEventListener('click', function(){
+        const open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        links.classList.toggle('open'); // CSS shows .nav-links.open
+      });
+    }
+
     const toggleOld = document.getElementById('mobileMenuBtn');
-    
     if (toggleOld && links){
-      toggleOld.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        
-        this.classList.toggle('active');
-        links.classList.toggle('active');
-      });
-      
-      // Close menu when clicking a nav link
-      links.addEventListener('click', function(e){
-        if (e.target.classList.contains('nav-link')){
-          toggleOld.classList.remove('active');
-          links.classList.remove('active');
-        }
+      toggleOld.addEventListener('click', function(){
+        this.classList.toggle('active');  // animate the bars
+        links.classList.toggle('active'); // CSS shows .nav-links.active
       });
     }
   });
 })();
 
-/* ==========================================================
-   3) EMAIL REVEAL FUNCTIONALITY
-   ========================================================== */
-(function emailReveal(){
+/* 3) Theme toggle (uses <html>.classList 'dark' to match CSS) + page helpers */
+(function themeAndHelpers(){
   document.addEventListener('DOMContentLoaded', function(){
-    const revealBtn = document.getElementById('revealEmail');
-    const hiddenSpan = document.getElementById('emailHidden');
-    const visibleSpan = document.getElementById('emailVisible');
-    
-    if (revealBtn && hiddenSpan && visibleSpan){
-      revealBtn.addEventListener('click', function(){
-        hiddenSpan.style.display = 'none';
-        visibleSpan.removeAttribute('hidden');
-        visibleSpan.style.display = 'inline';
+    const btn = document.getElementById('themeToggle');
+    if (btn){
+      const root = document.documentElement; // <html>
+      const current = localStorage.getItem('theme') || 'light';
+      if (current === 'dark') root.classList.add('dark');
+
+      btn.addEventListener('click', function(){
+        const isDark = root.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        window.showTip && window.showTip('themeToggle');
       });
     }
   });
+
+  // Tiny toast helper
+  function showToastEl(el){
+    if (!el) return;
+    el.classList.add('show');
+    setTimeout(()=> el.classList.remove('show'), 6000);
+  }
+
+  // Page-specific hooks
+  const learnAcc  = document.getElementById('learnAccordion');     // home
+  const learnToastEl = document.getElementById('learnToast');       // home
+  const econLeft  = document.getElementById('econGlossaryLeft');    // economics
+  const econRight = document.getElementById('econGlossaryRight');   // economics
+  const econToast = document.getElementById('econToast');           // economics
+  const projects  = document.getElementById('projects');            // home
+
+  document.addEventListener('DOMContentLoaded', function(){
+    if (learnAcc && learnToastEl){
+      learnAcc.addEventListener('toggle', function(e){
+        if (e.target && e.target.open) showToastEl(learnToastEl);
+      }, true);
+    }
+
+    if (econLeft && econRight && econToast){
+      let opened = new Set();
+      const handler = (e) => {
+        if (e.target && e.target.tagName === 'DETAILS' && e.target.open){
+          opened.add(e.target.id || e.target.textContent || Math.random().toString(36));
+          if (opened.size >= 10) showToastEl(econToast);
+        }
+      };
+      econLeft.addEventListener('toggle', handler, true);
+      econRight.addEventListener('toggle', handler, true);
+    }
+
+    if (projects){
+      const observer = new IntersectionObserver(entries => {
+        for (const en of entries){
+          if (en.isIntersecting){
+            if (typeof window.showTip === 'function') window.showTip('secretLab');
+          }
+        }
+      }, { threshold: 0.4 });
+      observer.observe(projects);
+    }
+  });
+
+  /* Assistant bubble open/close + drag */
+  const root = document.getElementById('jojoAssistant');
+  if (root) {
+    const bubble   = document.getElementById('assistantBubble');
+    const textEl   = document.getElementById('assistantText');
+    const closeBtn = document.getElementById('assistantClose');
+
+    let tips = {};
+    fetch('data/tips.json', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : Promise.resolve({}))
+      .then(json => { tips = json || {}; })
+      .catch(() => { tips = {}; });
+
+    window.showTip = function(key){
+      if (!tips[key]) return;
+      textEl.textContent = tips[key];
+      bubble.classList.add('show');
+      setTimeout(()=> bubble.classList.remove('show'), 9000);
+    };
+
+    function openBubble() {
+      bubble.classList.add('show');
+      const input = document.getElementById('clippyInput');
+      if (input) setTimeout(() => input.focus(), 0);
+    }
+    function closeBubble() { bubble.classList.remove('show'); }
+
+    const avatar = root.querySelector('.assistant-avatar');
+    avatar?.addEventListener('click', () => {
+      bubble.classList.contains('show') ? closeBubble() : openBubble();
+    });
+    closeBtn?.addEventListener('click', closeBubble);
+
+    // Click outside to close
+    document.addEventListener('click', (e) => {
+      if (!bubble.classList.contains('show')) return;
+      const within = e.target.closest('#assistantBubble') || e.target.closest('#jojoAssistant');
+      if (!within) closeBubble();
+    });
+
+    // Drag to move
+    (function enableDrag(){
+      let isDown = false, startX=0, startY=0, startLeft=0, startTop=0;
+      const container = root;
+      container.addEventListener('mousedown', (e)=>{
+        if (e.target.closest('#assistantBubble')) return;
+        isDown = true;
+        startX = e.clientX; startY = e.clientY;
+        const rect = container.getBoundingClientRect();
+        startLeft = rect.left; startTop = rect.top;
+        container.style.position = 'fixed';
+      });
+      window.addEventListener('mousemove', (e)=>{
+        if (!isDown) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        container.style.left = (startLeft + dx) + 'px';
+        container.style.top  = (startTop  + dy) + 'px';
+      });
+      window.addEventListener('mouseup', ()=> isDown = false);
+    })();
+  }
 })();
 
-/* ==========================================================
-   4) ACCORDIONS (.acc-item) - FIXED
-   ========================================================== */
+/* 4) Accordions (.acc-item) — click header toggles panel */
 document.addEventListener('DOMContentLoaded', () => {
+  function setPanelHeight(panel, open){
+    panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
+  }
   function wireAccordionItem(item){
-    const btn = item.querySelector('.acc-header');
+    const btn   = item.querySelector('.acc-header');
     const panel = item.querySelector('.acc-content');
     if (!btn || !panel) return;
-
-    // Start closed
     item.classList.remove('open');
-    btn.setAttribute('aria-expanded', 'false');
-
-    // Toggle open/close on click
+    setPanelHeight(panel, false);
+    btn.setAttribute('aria-expanded','false');
     btn.addEventListener('click', () => {
-      // Close other accordion items first (optional - remove if you want multiple open)
-      const accordion = item.closest('.accordion');
-      if (accordion) {
-        accordion.querySelectorAll('.acc-item.open').forEach(otherItem => {
-          if (otherItem !== item) {
-            otherItem.classList.remove('open');
-            const otherBtn = otherItem.querySelector('.acc-header');
-            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-      
-      // Toggle current item
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(isOpen));
+      setPanelHeight(panel, isOpen);
     });
   }
   document.querySelectorAll('.acc-item').forEach(wireAccordionItem);
 });
 
-/* ==========================================================
-   5) REVEAL-ON-SCROLL + ACTIVE NAV LINK + PROGRESS BAR
-   ========================================================== */
+/* 5) Reveal on scroll + active nav + progress (bug-fixed) */
 (function revealAndNav(){
   document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.getElementById('navbar') || document.querySelector('nav');
@@ -171,200 +258,97 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section');
 
     function onScroll() {
-      const y = window.scrollY || window.pageYOffset;
+      const y = window.scrollY || window.pageYOffset; // <-- single definition
 
-      // 1) Navbar background effect
       if (navbar) navbar.classList.toggle('scrolled', y > 20);
 
-      // 2) Progress bar width
       if (scrollIndicator) {
         const docH = document.documentElement.scrollHeight - window.innerHeight;
         scrollIndicator.style.width = (docH > 0 ? (y / docH) * 100 : 0) + '%';
       }
 
-      // 3) Reveal fade-in items
-      document.querySelectorAll('.fade-in:not(.visible)').forEach(el => {
+      document.querySelectorAll('.fade-in').forEach(el => {
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight - 60) el.classList.add('visible');
       });
 
-      // 4) Active nav link highlighting
       let current = '';
       const mid = y + window.innerHeight / 3;
-      sections.forEach(sec => { 
-        if (sec.offsetTop <= mid) current = sec.id; 
-      });
+      sections.forEach(sec => { if (sec.offsetTop <= mid) current = sec.id; });
       navLinks.forEach(a => {
         const href = a.getAttribute('href') || '';
         a.classList.toggle('active', href === '#' + current);
       });
     }
 
-    // Run once and on scroll
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
   });
 })();
 
-/* ==========================================================
-   6) TOAST NOTIFICATIONS
-   ========================================================== */
-function showToast(toastId, duration = 6000) {
-  const toast = document.getElementById(toastId);
-  if (!toast) return;
-  
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), duration);
-}
-
-/* ==========================================================
-   7) LEARN SECTION PROGRESS TRACKING
-   ========================================================== */
-(function learnProgress(){
-  document.addEventListener('DOMContentLoaded', function(){
-    const learnAccordion = document.getElementById('learnAccordion');
-    const learnToast = document.getElementById('learnToast');
-    
-    if (!learnAccordion || !learnToast) return;
-    
-    let openedItems = new Set();
-    
-    learnAccordion.addEventListener('click', function(e){
-      const button = e.target.closest('.acc-header');
-      if (!button) return;
-      
-      const item = button.closest('.acc-item');
-      if (!item) return;
-      
-      // Track when items are opened
-      setTimeout(() => {
-        if (item.classList.contains('open')) {
-          const itemId = button.textContent.trim();
-          openedItems.add(itemId);
-          
-          // Show toast when all items have been opened
-          const totalItems = learnAccordion.querySelectorAll('.acc-item').length;
-          if (openedItems.size >= totalItems) {
-            showToast('learnToast');
-          }
-        }
-      }, 100);
-    });
-  });
-})();
-
-/* ==========================================================
-   8) FLOATING ASSISTANT CHAT UI
-   ========================================================== */
+/* 6) Mini chat UI inside assistant bubble (calls window.askClippy) */
 document.addEventListener("DOMContentLoaded", () => {
   const bubble = document.getElementById("assistantBubble");
-  const assistant = document.getElementById("jojoAssistant");
-  
-  if (!bubble || !assistant) return;
+  if (!bubble || typeof window.askClippy !== "function") return;
 
-  // Inject chat form if not already present
-  if (!document.getElementById("clippyForm")) {
-    bubble.insertAdjacentHTML(
-      "beforeend",
-      `
-      <form id="clippyForm" class="clippy-form" autocomplete="off">
-        <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
-        <button id="clippySend" class="clippy-send" type="submit" aria-label="Send">➤</button>
-      </form>
-      <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
-      `
-    );
-  }
+  bubble.insertAdjacentHTML(
+    "beforeend",
+    `
+    <form id="clippyForm" class="clippy-form" autocomplete="off">
+      <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
+      <button id="clippySend" class="clippy-send" type="submit" aria-label="Send">➤</button>
+    </form>
+    <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
+    `
+  );
 
   const form = document.getElementById("clippyForm");
   const input = document.getElementById("clippyInput");
   const sendBtn = document.getElementById("clippySend");
   const log = document.getElementById("clippyLog");
-  const textEl = document.getElementById("assistantText");
-  const closeBtn = document.getElementById("assistantClose");
-  const avatar = assistant.querySelector('.assistant-avatar');
 
-  // Chat history
   const history = [];
   const MAX_TURNS = 16;
 
-  // Assistant interaction
-  function openBubble() {
-    bubble.classList.add('show');
-    setTimeout(() => input?.focus(), 100);
-  }
-  
-  function closeBubble() {
-    bubble.classList.remove('show');
-  }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = (input.value || "").trim();
+    if (!text) return;
 
-  // Avatar click toggles bubble
-  avatar?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (bubble.classList.contains('show')) {
-      closeBubble();
-    } else {
-      openBubble();
+    append("you", text);
+    input.value = "";
+    sendBtn.disabled = true;
+
+    const thinkingId = append("clippy", "…thinking");
+    let dots = 0;
+    const tick = setInterval(() => {
+      dots = (dots + 1) % 4;
+      const el = log.querySelector(`[data-id="${thinkingId}"]`);
+      if (el) el.textContent = "…thinking".padEnd(10 + dots, ".");
+    }, 400);
+
+    try {
+      // IMPORTANT: send current user text separately; history = previous turns only
+      const reply = await window.askClippy(text, history);
+      const msg = (reply?.text || reply?.content || "Hmm, I didn’t catch that.").trim();
+
+      // now store both turns
+      history.push({ role: "user", content: text });
+      history.push({ role: "model", content: msg });
+      if (history.length > MAX_TURNS) history.splice(0, history.length - MAX_TURNS);
+
+      replace(thinkingId, "clippy", msg);
+    } catch (err) {
+      replace(thinkingId, "clippy", "⚠️ Error talking to assistant. Try again.");
+      console.error(err);
+    } finally {
+      clearInterval(tick);
+      sendBtn.disabled = false;
+      input.focus();
     }
   });
 
-  // Close button
-  closeBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeBubble();
-  });
-
-  // Click outside to close
-  document.addEventListener('click', (e) => {
-    if (!bubble.classList.contains('show')) return;
-    const withinAssistant = e.target.closest('#assistantBubble') || e.target.closest('#jojoAssistant');
-    if (!withinAssistant) closeBubble();
-  });
-
-  // Chat form submission
-  if (form && typeof window.askClippy === "function") {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const text = (input.value || "").trim();
-      if (!text) return;
-
-      append("you", text);
-      input.value = "";
-      sendBtn.disabled = true;
-
-      const thinkingId = append("clippy", "…thinking");
-      let dots = 0;
-      const tick = setInterval(() => {
-        dots = (dots + 1) % 4;
-        const el = log.querySelector(`[data-id="${thinkingId}"]`);
-        if (el) el.textContent = "…thinking".padEnd(10 + dots, ".");
-      }, 400);
-
-      try {
-        history.push({ role: "user", content: text });
-        while (history.length > MAX_TURNS) history.shift();
-
-        const reply = await window.askClippy(history);
-        const msg = (reply?.text || reply?.content || "Hmm, I didn't catch that.").trim();
-
-        history.push({ role: "assistant", content: msg });
-        while (history.length > MAX_TURNS) history.shift();
-
-        replace(thinkingId, "clippy", msg);
-      } catch (err) {
-        replace(thinkingId, "clippy", "⚠️ Error talking to assistant. Try again.");
-        console.error('Chat error:', err);
-      } finally {
-        clearInterval(tick);
-        sendBtn.disabled = false;
-      }
-    });
-  }
-
-  // Chat log functions
   function append(who, text) {
-    if (!log) return null;
     const id = crypto.randomUUID();
     const div = document.createElement("div");
     div.dataset.id = id;
@@ -374,134 +358,11 @@ document.addEventListener("DOMContentLoaded", () => {
     log.scrollTop = log.scrollHeight;
     return id;
   }
-
   function replace(id, who, text) {
-    if (!log) return;
     const el = log.querySelector(`[data-id="${id}"]`);
     if (!el) return append(who, text);
     el.className = `line ${who}`;
     el.textContent = text;
     log.scrollTop = log.scrollHeight;
   }
-
-  // Drag functionality
-  (function enableDrag(){
-    let isDown = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-    
-    assistant.addEventListener('mousedown', (e) => {
-      if (e.target.closest('#assistantBubble')) return;
-      
-      isDown = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      const rect = assistant.getBoundingClientRect();
-      startLeft = rect.left;
-      startTop = rect.top;
-      assistant.style.position = 'fixed';
-      assistant.style.cursor = 'grabbing';
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      assistant.style.left = (startLeft + dx) + 'px';
-      assistant.style.top = (startTop + dy) + 'px';
-      assistant.style.right = 'auto';
-      assistant.style.bottom = 'auto';
-    });
-    
-    document.addEventListener('mouseup', () => {
-      isDown = false;
-      assistant.style.cursor = 'grab';
-    });
-  })();
 });
-
-/* ==========================================================
-   9) REVEAL-ON-SCROLL + ACTIVE NAV LINK + PROGRESS BAR
-   ========================================================== */
-(function revealAndNav(){
-  document.addEventListener('DOMContentLoaded', () => {
-    const navbar = document.getElementById('navbar') || document.querySelector('nav');
-    const scrollIndicator = document.getElementById('scrollIndicator');
-    const navLinks = document.querySelectorAll('.nav-link, .nav-links a');
-    const sections = document.querySelectorAll('section');
-
-    function onScroll() {
-      const y = window.scrollY || window.pageYOffset;
-
-      // 1) Navbar background effect
-      if (navbar) navbar.classList.toggle('scrolled', y > 20);
-
-      // 2) Progress bar width
-      if (scrollIndicator) {
-        const docH = document.documentElement.scrollHeight - window.innerHeight;
-        scrollIndicator.style.width = (docH > 0 ? (y / docH) * 100 : 0) + '%';
-      }
-
-      // 3) Reveal fade-in items
-      document.querySelectorAll('.fade-in:not(.visible)').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 60) el.classList.add('visible');
-      });
-
-      // 4) Active nav link highlighting
-      let current = '';
-      const mid = y + window.innerHeight / 3;
-      sections.forEach(sec => { 
-        if (sec.offsetTop <= mid) current = sec.id; 
-      });
-      navLinks.forEach(a => {
-        const href = a.getAttribute('href') || '';
-        a.classList.toggle('active', href === '#' + current);
-      });
-    }
-
-    // Run once and on scroll
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  });
-})();
-
-/* ==========================================================
-   10) TIPS SYSTEM
-   ========================================================== */
-(function tipsSystem(){
-  let tips = {};
-
-  // Load tips from JSON file
-  fetch('data/tips.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : Promise.resolve({}))
-    .then(json => { tips = json || {}; })
-    .catch(() => { tips = {}; });
-
-  // Make showTip available globally
-  window.showTip = function(key){
-    const textEl = document.getElementById('assistantText');
-    const bubble = document.getElementById('assistantBubble');
-    
-    if (!tips[key] || !textEl || !bubble) return;
-    
-    textEl.textContent = tips[key];
-    bubble.classList.add('show');
-    setTimeout(() => bubble.classList.remove('show'), 9000);
-  };
-
-  // Projects section tip trigger
-  document.addEventListener('DOMContentLoaded', function(){
-    const projects = document.getElementById('projects');
-    if (projects && typeof window.showTip === 'function') {
-      const observer = new IntersectionObserver(entries => {
-        for (const entry of entries){
-          if (entry.isIntersecting){
-            window.showTip('secretLab');
-          }
-        }
-      }, { threshold: 0.4 });
-      observer.observe(projects);
-    }
-  });
-})();
