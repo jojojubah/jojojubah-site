@@ -374,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `
     <form id="clippyForm" class="clippy-form" autocomplete="off" aria-label="Clippy chat">
       <input id="clippyInput" class="clippy-input" placeholder="Ask Clippy…" />
-      <button class="clippy-send" type="submit">Send</button>
+      <button id="clippySend" class="clippy-send" type="submit">Send</button>
     </form>
     <div id="clippyLog" class="clippy-log" aria-live="polite"></div>
     `
@@ -382,8 +382,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.getElementById("clippyForm");
   const input = document.getElementById("clippyInput");
+  const sendBtn = document.getElementById("clippySend");
   const log = document.getElementById("clippyLog");
   const history = [];
+  const MAX_TURNS = 16; // keep prompt short for cheaper/cleaner calls
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -392,20 +394,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     append("you", text);
     input.value = "";
+
+    // disable send while waiting
+    sendBtn.disabled = true;
+
+    // thinking indicator with animated dots
     const thinkingId = append("clippy", "…thinking");
+    let dots = 0;
+    const tick = setInterval(() => {
+      dots = (dots + 1) % 4;
+      const el = log.querySelector(`[data-id="${thinkingId}"]`);
+      if (el) el.textContent = "…thinking" + ".".repeat(dots);
+    }, 300);
+
+    // optional timeout guard to avoid hanging forever
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000); // 30s
 
     try {
-      const r = await window.askClippy(text, history);
+      const r = await window.askClippy(text, history, { signal: ctrl.signal });
       const reply = (r && r.text) ? r.text : "(no response)";
+      clearInterval(tick);
       replace(thinkingId, "clippy", reply);
 
       // keep short history for context
       history.push({ role: "user", content: text });
       history.push({ role: "model", content: reply });
-      if (history.length > 16) history.splice(0, history.length - 16);
+      if (history.length > MAX_TURNS) history.splice(0, history.length - MAX_TURNS);
     } catch (err) {
       console.error(err);
+      clearInterval(tick);
       replace(thinkingId, "clippy", "⚠️ Error talking to the server.");
+    } finally {
+      clearTimeout(timer);
+      sendBtn.disabled = false;
+      input.focus();
     }
   });
 
@@ -414,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const div = document.createElement("div");
     div.dataset.id = id;
     div.className = `line ${who}`;
-    div.textContent = text;
+    div.textContent = text;              // textContent avoids HTML injection
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
     return id;
@@ -428,5 +451,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 /* === Clippy Chat UI — END === */
-
-
