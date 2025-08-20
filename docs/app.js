@@ -363,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
 /* === Clippy Chat UI — START (minimal, reversible) === */
 /* Adds a small input + send button into your existing assistant bubble and
    streams replies into a scrollable log. */
-
 document.addEventListener("DOMContentLoaded", () => {
   const bubble = document.getElementById("assistantBubble");
   if (!bubble || typeof window.askClippy !== "function") return;
@@ -407,12 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (el) el.textContent = "…thinking" + ".".repeat(dots);
     }, 300);
 
-    // optional timeout guard to avoid hanging forever
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 30000); // 30s
-
     try {
-      const r = await window.askClippy(text, history, { signal: ctrl.signal });
+      const r = await window.askClippy(text, history);
       const reply = (r && r.text) ? r.text : "(no response)";
       clearInterval(tick);
       replace(thinkingId, "clippy", reply);
@@ -424,13 +419,44 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error(err);
       clearInterval(tick);
-      replace(thinkingId, "clippy", "⚠️ Error talking to the server.");
+
+      let msg = "⚠️ Error talking to the server.";
+      // if backend returned JSON with {error:"..."}
+      try {
+        if (err && err.response && typeof err.response.json === "function") {
+          const p = await err.response.json();
+          if (p?.error) msg = `⚠️ ${p.error}`;
+        }
+      } catch {}
+
+      replace(thinkingId, "clippy", msg);
+      toast(msg); // show user-friendly popup
     } finally {
-      clearTimeout(timer);
       sendBtn.disabled = false;
       input.focus();
     }
   });
+
+  // Simple toast (inline styles; no CSS changes needed)
+  function toast(message) {
+    let t = document.getElementById("clippyToast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "clippyToast";
+      t.style.cssText = "position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:99999;font-size:14px;max-width:80vw;opacity:0;transform:translateY(10px);transition:all .25s ease";
+      document.body.appendChild(t);
+    }
+    t.textContent = message;
+    requestAnimationFrame(() => {
+      t.style.opacity = "1";
+      t.style.transform = "translateY(0)";
+    });
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => {
+      t.style.opacity = "0";
+      t.style.transform = "translateY(10px)";
+    }, 3500);
+  }
 
   function append(who, text) {
     const id = crypto.randomUUID();
