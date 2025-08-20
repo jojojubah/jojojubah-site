@@ -1,4 +1,4 @@
-/* app.js — shared site logic */
+/* app.js — shared site logic with modular assistant */
 
 /* ================= Cookie Consent + Google Analytics ================== */
 (function cookieConsent(){
@@ -85,13 +85,25 @@
     });
   }
 
-  showConsentBanner();                               // safe before DOM ready
+  showConsentBanner();
   document.addEventListener('DOMContentLoaded', hookBannerButtons);
 })();
 
 /* ========================= Main Site Interactions ===================== */
-document.addEventListener('DOMContentLoaded', () => {
-  // Sticky navbar, scroll progress, fade-ins, active link
+document.addEventListener('DOMContentLoaded', async () => {
+  // Core site functionality
+  initializeNavigation();
+  initializeCursorTrails();
+  initializeThemeToggle();
+  initializeAccordions();
+  initializeContact();
+  updateFooterYear();
+
+  // Initialize assistant system
+  await initializeAssistant();
+});
+
+function initializeNavigation() {
   const navbar = document.getElementById('navbar');
   const scrollIndicator = document.getElementById('scrollIndicator');
   const navLinks = document.querySelectorAll('.nav-link');
@@ -100,34 +112,37 @@ document.addEventListener('DOMContentLoaded', () => {
   function onScroll() {
     const y = window.scrollY || window.pageYOffset;
 
-    navbar && navbar.classList.toggle('scrolled', y > 20);
+    // Sticky navbar background
+    if (navbar) navbar.classList.toggle('scrolled', y > 20);
 
+    // Scroll progress indicator
     if (scrollIndicator) {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docH > 0 ? (y / docH) * 100 : 0;
       scrollIndicator.style.width = pct + '%';
     }
 
-    // reveal on scroll
+    // Reveal on scroll animation
     document.querySelectorAll('.fade-in').forEach(el => {
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight - 60) el.classList.add('visible');
     });
 
-    // active nav link (use viewport middle so short sections still activate)
-let current = '';
-const y = window.scrollY || window.pageYOffset;
-const mid = y + window.innerHeight / 3; // adjust if you want earlier/later switch
+    // Active nav link highlighting
+    let current = '';
+    const mid = y + window.innerHeight / 3;
+    sections.forEach(sec => {
+      if (sec.offsetTop <= mid) current = sec.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
 
-sections.forEach(sec => {
-  if (sec.offsetTop <= mid) current = sec.id;
-});
-navLinks.forEach(a => {
-  a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-});
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // Initial call
 
-
-  // Mobile menu (hamburger)
+  // Mobile menu toggle
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const navLinksContainer = document.querySelector('.nav-links');
   if (mobileMenuBtn && navLinksContainer) {
@@ -136,99 +151,124 @@ navLinks.forEach(a => {
       navLinksContainer.classList.toggle('active');
     });
   }
+}
 
-  // Light cursor trails only on main page (skip if matrix exists)
-  if (!document.getElementById('matrix-canvas')) {
-    let trail = [], trailLength = 20;
-    document.addEventListener('mousemove', (e) => {
-      trail.push({ x: e.clientX, y: e.clientY });
-      if (trail.length > trailLength) trail.shift();
-      document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
-      const color = '59,130,246';
-      trail.forEach((p, i) => {
-        const dot = document.createElement('div');
-        dot.className = 'cursor-trail';
-        dot.style.cssText = `position:fixed;left:${p.x}px;top:${p.y}px;width:${4 - i*0.2}px;height:${4 - i*0.2}px;background:rgba(${color},${Math.max(0,0.5 - i*0.025)});border-radius:50%;pointer-events:none;z-index:9999;`;
-        document.body.appendChild(dot);
-        setTimeout(()=>dot.remove(), 40);
-      });
-    }, { passive: true });
+function initializeCursorTrails() {
+  // Only on pages without matrix canvas
+  if (document.getElementById('matrix-canvas')) return;
+
+  let trail = [], trailLength = 20;
+  document.addEventListener('mousemove', (e) => {
+    trail.push({ x: e.clientX, y: e.clientY });
+    if (trail.length > trailLength) trail.shift();
+    
+    // Clean up old trails
+    document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
+    
+    const color = '59,130,246';
+    trail.forEach((p, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'cursor-trail';
+      dot.style.cssText = `
+        position:fixed;left:${p.x}px;top:${p.y}px;
+        width:${4 - i*0.2}px;height:${4 - i*0.2}px;
+        background:rgba(${color},${Math.max(0,0.5 - i*0.025)});
+        border-radius:50%;pointer-events:none;z-index:9999;
+      `;
+      document.body.appendChild(dot);
+      setTimeout(()=>dot.remove(), 40);
+    });
+  }, { passive: true });
+}
+
+function initializeThemeToggle() {
+  const body = document.body;
+  let group = document.querySelector('.toggle-group');
+  if (!group) {
+    group = document.createElement('div');
+    group.className = 'toggle-group';
+    document.body.appendChild(group);
   }
 
-  /* ======================= Dark/Light Mode Toggle ===================== */
-  (function initThemeToggle(){
-    const body = document.body;
-    let group = document.querySelector('.toggle-group');
-    if (!group) {
-      group = document.createElement('div');
-      group.className = 'toggle-group';
-      document.body.appendChild(group);
+  let themeBtn = document.getElementById('themeToggle');
+  if (!themeBtn) {
+    themeBtn = document.createElement('button');
+    themeBtn.id = 'themeToggle';
+    group.appendChild(themeBtn);
+  }
+
+  function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
+  function apply(mode){
+    if (mode === 'dark') body.setAttribute('data-theme','dark');
+    else body.removeAttribute('data-theme');
+    setIcon(mode);
+  }
+
+  // Auto-detect if we're on labs page
+  const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
+  const initial = isLabs ? 'dark' : 'light';
+  apply(initial);
+
+  themeBtn.addEventListener('click', () => {
+    const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(next);
+    
+    // Trigger assistant tip if available
+    if (window.assistantUI && window.assistantUI.isReady()) {
+      window.assistantUI.triggerTip('themeToggle');
     }
+  });
 
-    let themeBtn = document.getElementById('themeToggle');
-    if (!themeBtn) {
-      themeBtn = document.createElement('button');
-      themeBtn.id = 'themeToggle';
-      group.appendChild(themeBtn);
-    }
+  // Move matrix button into toggle group if it exists
+  const moveMatrixBtn = () => {
+    const m = document.getElementById('matrixToggle');
+    if (m && !group.contains(m)) group.appendChild(m);
+  };
+  moveMatrixBtn();
+  setTimeout(moveMatrixBtn, 0);
+}
 
-    function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
-    function apply(mode){
-      if (mode === 'dark') body.setAttribute('data-theme','dark');
-      else body.removeAttribute('data-theme');
-      setIcon(mode);
-    }
-
-    const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
-    const initial = isLabs ? 'dark' : 'light';
-    apply(initial);
-
-    themeBtn.addEventListener('click', () => {
-      const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      apply(next);
-
-      // 🧩 Assistant trigger for theme change
-      showTip && showTip('themeToggle');
-    });
-
-    const moveMatrixBtn = () => {
-      const m = document.getElementById('matrixToggle');
-      if (m && !group.contains(m)) group.appendChild(m);
-    };
-    moveMatrixBtn();
-    setTimeout(moveMatrixBtn, 0);
-  })();
-
-  /* ===================== Accordion + Easter Egg Toast ================= */
-  const accContainer = document.getElementById('learnAccordion') || document.querySelector('.accordion');
-  const accButtons   = document.querySelectorAll('.acc-header');
-  const toastEl      = document.getElementById('learnToast');
-
-  const initialCount = accContainer ? accContainer.querySelectorAll('.acc-item').length : accButtons.length;
-  const OPENED = new Set();
-  let unlocked = false;
-
+function initializeAccordions() {
+  // Helper functions
   function setPanelHeight(panel, open){
     panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
   }
 
-  function wireAccordionItem(item){
-    const btn   = item.querySelector('.acc-header');
+  function wireAccordionItem(item, onToggle){
+    const btn = item.querySelector('.acc-header');
     const panel = item.querySelector('.acc-content');
     if (!btn || !panel) return;
+    
     item.classList.remove('open');
     setPanelHeight(panel, false);
     btn.setAttribute('aria-expanded','false');
+    
     btn.addEventListener('click', () => {
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(isOpen));
       setPanelHeight(panel, isOpen);
+      if (typeof onToggle === 'function') onToggle(item, isOpen);
     });
   }
 
-  function addBonusAccordion(){
-    if (!accContainer || document.getElementById('acc-item-bonus')) return;
-    accContainer.insertAdjacentHTML('beforeend', `
+  function showToastEl(el){
+    if (!el) return;
+    el.classList.add('show');
+    setTimeout(()=> el.classList.remove('show'), 6000);
+  }
+
+  // Get accordion containers
+  const learnAcc = document.getElementById('learnAccordion');
+  const learnToastEl = document.getElementById('learnToast');
+
+  // Track progress for learn accordion bonus
+  const learnItemsSet = new Set(learnAcc ? learnAcc.querySelectorAll('.acc-item') : []);
+  const LEARN_OPENED = new Set();
+  let learnUnlocked = false;
+
+  function addBonusAccordionToLearn(){
+    if (!learnAcc || document.getElementById('acc-item-bonus')) return;
+    learnAcc.insertAdjacentHTML('beforeend', `
       <div class="acc-item" id="acc-item-bonus">
         <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
           <span>Hmm... What's this?</span>
@@ -239,7 +279,7 @@ navLinks.forEach(a => {
         <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
           <div class="acc-inner">
             <h3>Bonus Unlock!!</h3>
-            <p>Nice one! You explored every topic. Here’s a link to JubahLabs.</p>
+            <p>Nice one! You explored every topic. Here's a link to JubahLabs.</p>
             <h4>Ideas to try next</h4>
             <p>• Turn a prompt into JSON and attach it in chat.<br>
                • Build a tiny agent in n8n.<br>
@@ -255,87 +295,118 @@ navLinks.forEach(a => {
     if (bonusItem) wireAccordionItem(bonusItem);
   }
 
-  function showToast(){
-    if (!toastEl) return;
-    toastEl.classList.add('show');
-    setTimeout(()=>toastEl.classList.remove('show'), 6000);
-  }
+  // Wire all accordion items
+  document.querySelectorAll('.acc-item').forEach((item) => {
+    const inLearn = learnItemsSet.has(item);
 
-  // ✅ BONUS UNLOCK (no persistence)
-  function unlockBonus(){
-    if (unlocked) return;
-    unlocked = true;
-    addBonusAccordion();
-    showToast();
-  }
+    wireAccordionItem(item, (it, isOpen) => {
+      if (!isOpen) return;
 
-  // wire originals
-  document.querySelectorAll('.acc-item').forEach((item, i) => {
-    wireAccordionItem(item);
-    const btn = item.querySelector('.acc-header');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (item.classList.contains('open')) {
-        OPENED.add(i);
-        if (!unlocked && OPENED.size >= initialCount) unlockBonus();
+      if (inLearn) {
+        LEARN_OPENED.add(it);
+        if (!learnUnlocked && LEARN_OPENED.size >= learnItemsSet.size) {
+          learnUnlocked = true;
+          addBonusAccordionToLearn();
+          showToastEl(learnToastEl);
+        }
       }
     });
   });
+}
 
-  // Footer year
-  const y = document.getElementById('secretYear');
-  if (y) y.textContent = new Date().getFullYear();
-
-  // Contact: reveal email
+function initializeContact() {
+  // Email reveal functionality
   document.addEventListener('click', function(e){
     const btn = e.target.closest('#revealEmail');
     if (!btn) return;
-    const hiddenWrap   = document.getElementById('emailHidden');
+    
+    const hiddenWrap = document.getElementById('emailHidden');
     const visibleEmail = document.getElementById('emailVisible');
     if (hiddenWrap && visibleEmail) {
       hiddenWrap.remove();
       visibleEmail.hidden = false;
     }
   });
+}
 
-  /* ========================== Assistant (Jojo) ======================== */
-  const root   = document.getElementById('jojoAssistant');
-  if (root) {
-    const bubble = document.getElementById('assistantBubble');
-    const textEl = document.getElementById('assistantText');
-    const closeBtn = document.getElementById('assistantClose');
+function updateFooterYear() {
+  const yearEl = document.getElementById('secretYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
 
-    let tips = {};
-
-    // Load JSON tips
-    fetch('data/tips.json', { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : {})
-      .then(json => { tips = json || {}; });
-
-    // Show specific tip by key
-window.showTip = function(key){
-  if (!tips[key]) return;
-  textEl.textContent = tips[key];   // ✅ only text, no button
-  bubble.classList.add('show');
-  setTimeout(()=> bubble.classList.remove('show'), 9000); // auto-hide after 9s
-};
-
-
-    // Close button
-    closeBtn.addEventListener('click', ()=> bubble.classList.remove('show'));
-
-    // Trigger 2: user scrolls into Projects section
-    const projects = document.getElementById('projects');
-    if (projects){
-      const observer = new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{
-          if(entry.isIntersecting){
-            showTip('projectsSection');
-            observer.disconnect();
-          }
-        });
-      }, { threshold: 0.4 });
-      observer.observe(projects);
-    }
+/* ========================== Assistant Initialization ======================== */
+async function initializeAssistant() {
+  const assistantRoot = document.getElementById('jojoAssistant');
+  if (!assistantRoot) {
+    console.log('Assistant not found on this page');
+    return;
   }
-});
+
+  try {
+    // Dynamically import assistant modules
+    const { AssistantUI } = await import('./scripts/assistant/assistant-ui.js');
+    
+    // Initialize basic assistant UI
+    const assistantUI = new AssistantUI();
+    const basicInitialized = await assistantUI.initialize();
+    
+    if (!basicInitialized) {
+      console.warn('Basic assistant initialization failed');
+      return;
+    }
+
+    // Make assistant UI globally available for theme toggle
+    window.assistantUI = assistantUI;
+    console.log('✅ Basic assistant initialized');
+
+    // Try to enable advanced features (Firebase + Chat)
+    try {
+      await enableAdvancedAssistantFeatures(assistantUI);
+    } catch (error) {
+      console.log('Advanced assistant features unavailable:', error.message);
+      // Basic assistant still works
+    }
+
+  } catch (error) {
+    console.error('Assistant initialization failed:', error);
+  }
+}
+
+async function enableAdvancedAssistantFeatures(assistantUI) {
+  // Import advanced modules
+  const { FirebaseService } = await import('./scripts/assistant/assistant-firebase.js');
+  const { AssistantAPI } = await import('./scripts/assistant/assistant-api.js');
+  const { AssistantChat } = await import('./scripts/assistant/assistant-chat.js');
+
+  // Initialize Firebase
+  const firebase = new FirebaseService();
+  const firebaseReady = await firebase.initialize();
+  
+  if (!firebaseReady) {
+    throw new Error('Firebase initialization failed');
+  }
+
+  // Initialize API
+  const api = new AssistantAPI(firebase);
+  
+  // Test API connection
+  const connectionTest = await api.testConnection();
+  if (!connectionTest.success) {
+    throw new Error(`API test failed: ${connectionTest.error}`);
+  }
+
+  // Initialize chat interface
+  const chat = new AssistantChat(assistantUI, api);
+  const chatEnabled = await chat.enableChat();
+
+  if (chatEnabled) {
+    console.log('✅ Advanced assistant features enabled');
+    
+    // Make globally available for debugging
+    window.assistantFirebase = firebase;
+    window.assistantAPI = api;
+    window.assistantChat = chat;
+  } else {
+    throw new Error('Chat interface initialization failed');
+  }
+}
