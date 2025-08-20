@@ -372,17 +372,20 @@
 <script src="app.js" defer></script>
 
 <script type="module">
-  // Core Firebase SDK
+  /* === Firebase core === */
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-  // Add the products you need
   import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-  // (Optional) Analytics – keep if you want usage tracking
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 
-  // Your Firebase config (keep the same one you pasted)
+  /* === App Check (reCAPTCHA v3) === */
+  import {
+    initializeAppCheck,
+    ReCaptchaV3Provider,
+    getToken as getAppCheckToken
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-check.js";
+
+  // Your Firebase config (public, not a secret)
   const firebaseConfig = {
     apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
     authDomain: "jojojubah-f2996.firebaseapp.com",
@@ -393,33 +396,69 @@
     measurementId: "G-XC16XPJ48T"
   };
 
-  // Initialize Firebase
+  // Init Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app); // optional
 
-  // Initialize Auth + Firestore
+  // 🔐 App Check — paste your **reCAPTCHA v3 SITE KEY** below (NOT the secret key)
+  const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider("6LefpqwrAAAAAPFuxr81vcHfmg5d9Mje7ZpMXA3S"),
+    isTokenAutoRefreshEnabled: true,
+  });
+
+  // Optional analytics
+  const analytics = getAnalytics(app);
+
+  // Auth + Firestore
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Anonymous login (so each visitor has a UID)
+  // Anonymous login so each visitor gets a UID
   signInAnonymously(auth).catch(console.error);
-
   onAuthStateChanged(auth, (user) => {
     console.log("Signed in as:", user?.uid);
     window.__clippyUser = user || null;
   });
 
-  // This is where we’ll connect to your backend Function later
+  // Your deployed Cloud Function endpoint
   const FUNCTION_URL = "https://chat-dorm4odd6a-nw.a.run.app";
 
-  // Helper for sending messages
+  // Helper to talk to your backend (sends App Check + ID token headers)
   window.askClippy = async function askClippy(message, history = []) {
+    // Get App Check token (proves this request comes from your real site)
+    const { token: appCheckToken } = await getAppCheckToken(appCheck, false);
+
+    // Get Firebase ID token for the current user (anon is fine)
+    const idToken = await (async () => {
+      const u = auth.currentUser;
+      if (!u) return null;
+      return await u.getIdToken(true);
+    })();
+
     const resp = await fetch(FUNCTION_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(idToken ? { "Authorization": `Bearer ${idToken}` } : {}),
+        ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
+      },
       body: JSON.stringify({ message, history }),
     });
-    return await resp.json();
+    const data = await resp.json();
+
+    // (Optional) Log to Firestore — safe to remove
+    try {
+      const uid = window.__clippyUser?.uid || "anon";
+      const sessionId = localStorage.getItem("clippySession") || crypto.randomUUID();
+      localStorage.setItem("clippySession", sessionId);
+      await addDoc(collection(db, "chats", sessionId, "messages"), {
+        uid, role: "user", content: message, ts: serverTimestamp(),
+      });
+      await addDoc(collection(db, "chats", sessionId, "messages"), {
+        uid: "assistant", role: "model", content: data?.text || "", ts: serverTimestamp(),
+      });
+    } catch (_) {}
+
+    return data;
   };
 </script>
 
