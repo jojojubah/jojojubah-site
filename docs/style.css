@@ -1,26 +1,28 @@
-/* === Global media clamp: prevent oversized images/SVGs/videos === */
+/* ==========================================================
+   GLOBAL SAFETY CLAMP (so images/SVGs don't blow up)
+   Think: "keep pictures inside the box"
+   ========================================================== */
 img, svg, video { max-width: 100%; height: auto; display: block; }
 
-/* ================================
-   Neumorphism Theme — Light / Dark
-   ================================ */
-
-/* ---- Tokens (light defaults) ---- */
+/* ==========================================================
+   DESIGN TOKENS (colors, shadows, sizes)
+   Think: "variables the whole site uses"
+   ========================================================== */
 :root{
-  --bg:#e9eef5; --bg-2:#edf2f8;
-  --text:#3a4252; --text-dim:#6b7280; --text-muted:#8a94a6;
-  --accent:#3b82f6;
+  --bg:#e9eef5; --bg-2:#edf2f8;      /* backgrounds (light mode) */
+  --text:#3a4252; --text-dim:#6b7280; --text-muted:#8a94a6;  /* text colors */
+  --accent:#3b82f6;                   /* buttons/lines accent */
 
   --neu-light:#ffffff; --neu-dark:#cfd6e2; --neu-radius:16px;
   --neu-inset: inset 6px 6px 12px var(--neu-dark), inset -6px -6px 12px var(--neu-light);
   --neu-out:   10px 10px 20px var(--neu-dark), -10px -10px 20px var(--neu-light);
-  --t: all .25s cubic-bezier(.25,.1,.25,1);
-  --container-pad:2rem;
+  --t: all .25s cubic-bezier(.25,.1,.25,1); /* smooth animations */
+  --container-pad:2rem;                         /* page padding */
 }
 
-/* ---- Tokens (dark overrides) ---- */
+/* Dark mode overrides — we add class "dark" on <html> (a.k.a. :root) */
 :root.dark{
-  --bg:#0f172a; --bg-2:#0b1222;
+  --bg:#0f172a; --bg-2:#0b1222;   /* backgrounds (dark mode) */
   --text:#e5e7eb; --text-dim:#cbd5e1; --text-muted:#94a3b8;
   --accent:#60a5fa;
 
@@ -29,144 +31,197 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
   --neu-out:   10px 10px 20px rgba(0,0,0,.6), -10px -10px 20px rgba(255,255,255,.06);
 }
 
-/* === Base === */
-*{box-sizing:border-box}
-html,body{height:100%}
+/* ==========================================================
+   BASE RESET (super important!)
+   Think: "wipe browser default spacing so layout isn't weird"
+   ========================================================== */
+*{ box-sizing:border-box; margin:0; padding:0; }
+html,body{ height:100%; }
 body{
-  margin:0;
-  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--text); background:var(--bg); line-height:1.6;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
 }
-a{color:inherit}
+a{ color: inherit; }
 
-/* Containers */
-.container{max-width:1200px;margin:0 auto;padding:0 var(--container-pad)}
+/* Simple centered content wrapper */
+.container{ max-width:1200px; margin:0 auto; padding:0 var(--container-pad); }
+@media (max-width:860px){ .container{ padding:0 1rem; } }
 
-/* ---- Background helpers ---- */
+/* Light background flare */
 .background-gradient{
   position:fixed; inset:0; z-index:-2;
-  /* Subtle on light, *not* pure white */
   background:
     radial-gradient(900px 600px at 20% 8%, rgba(255,255,255,.50) 0%, transparent 60%),
     linear-gradient(145deg, #f7f8fb, #eef2f8);
 }
-.particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+:root.dark .background-gradient{
+  background:
+    radial-gradient(900px 600px at 18% 6%, rgba(255,255,255,0.06) 0%, transparent 60%),
+    linear-gradient(145deg, var(--bg), var(--bg-2));
+}
+.particles{ position:fixed; inset:0; z-index:-1; pointer-events:none; }
 
-/* Scroll progress */
+/* Scroll progress line at the top */
 .scroll-indicator{
   position:fixed; top:80px; left:0; height:3px; width:0%;
   background:linear-gradient(90deg,var(--accent),#60a5fa);
   z-index:999; transition:width .12s ease-out;
 }
 
-/* ---- Neumorphic primitives ---- */
-.neu-plate{background:var(--bg);border-radius:16px;box-shadow:var(--neu-out)}
-.neu-plate:hover{transform:translateY(-2px)}
-.neu-press{box-shadow:var(--neu-inset)}
-.hr-neu{height:1px;border:0;margin:1.25rem 0;background:linear-gradient(90deg,transparent,#dbe3ef,transparent)}
+/* Neumorphic helpers (soft shadow look) */
+.neu-plate{ background:var(--bg); border-radius:var(--neu-radius); box-shadow:var(--neu-out); }
+.neu-plate:hover{ transform:translateY(-2px); }
+.neu-press{ box-shadow:var(--neu-inset); }
+.hr-neu{ height:1px; border:0; margin:1.25rem 0; background:linear-gradient(90deg,transparent,#dbe3ef,transparent); }
 
-/* ================= NAV ================= */
+/* ==========================================================
+   NAVBAR
+   ========================================================== */
 nav{
   position:sticky; top:0; z-index:1000;
-  background:rgba(255,255,255,.55); backdrop-filter:blur(10px);
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(10px);
   border-bottom:1px solid #dde6f3;
 }
 :root.dark nav{
   background:rgba(15,23,42,.55);
   border-bottom-color:#0b1222;
 }
-.nav-container{display:flex;align-items:center;justify-content:space-between;height:68px}
-.logo{display:flex;align-items:center;gap:.6rem;font-weight:700;letter-spacing:.02em}
-.site-avatar{
-  width:48px;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.6);
-  box-shadow:var(--neu-out);object-fit:cover;transition:var(--t)
-}
-.site-avatar:hover{transform:scale(1.06) rotate(3deg)}
-.nav-links{list-style:none;display:flex;gap:22px}
-.nav-links a{text-decoration:none;opacity:.9}
-.nav-links a:hover{opacity:1}
+.nav-container{ display:flex; align-items:center; justify-content:space-between; height:68px; }
 
-/* Burger */
-.nav-toggle{display:none;background:none;border:0}
-.nav-toggle .bar{display:block;width:24px;height:2px;background:var(--text);margin:5px 0}
+/* Logo + tiny avatar */
+.logo{ display:flex; align-items:center; gap:.6rem; font-weight:700; letter-spacing:.02em; }
+.site-avatar{
+  width:48px; height:48px; border-radius:12px; border:1px solid rgba(255,255,255,.6);
+  box-shadow:var(--neu-out); object-fit:cover; transition:var(--t);
+}
+.site-avatar:hover{ transform:scale(1.06) rotate(3deg); }
+
+/* The UL with the navbar links */
+.nav-links{
+  list-style:none; display:flex; gap:22px;
+  margin:0; padding:0; /* <- kill default UL spacing (prevents "messed up" navbar) */
+}
+/* Individual links (works with .nav-link class in your HTML) */
+.nav-link{
+  text-decoration:none; color:var(--text-dim); font-weight:600;
+  padding:.55rem .9rem; border-radius:12px;
+  background:var(--bg); box-shadow:var(--neu-out); transition:var(--t);
+}
+.nav-link:hover, .nav-link.active{ color:#0f172a; box-shadow:var(--neu-inset); }
+
+/* Mobile controls: support BOTH old (#mobileMenuBtn) and new (.nav-toggle) */
+.nav-toggle{ display:none; background:none; border:0; }
+.nav-toggle .bar{ display:block; width:24px; height:2px; background:var(--text); margin:5px 0; }
+
+.mobile-menu-button{ display:none; background:none; border:0; cursor:pointer; padding:.5rem; }
+.hamburger{ width:24px; height:3px; background:#0f172a; border-radius:2px; margin:4px 0; transition:var(--t); }
+:root.dark .hamburger{ background:#e5e7eb; }
+.mobile-menu-button.active .hamburger:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
+.mobile-menu-button.active .hamburger:nth-child(2){ opacity:0; }
+.mobile-menu-button.active .hamburger:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
+
+/* Small screens: show a dropdown menu
+   We support BOTH .open (new JS) and .active (old JS) */
 @media (max-width:860px){
-  .nav-toggle{display:block}
+  .nav-toggle{ display:block; }
+
   .nav-links{
     position:absolute; left:0; right:0; top:68px;
-    background:var(--bg); display:none; flex-direction:column;
-    padding:14px 20px; gap:10px; border-bottom:1px solid #e5edf8;
+    background:var(--bg);
+    display:none;                         /* hidden by default */
+    flex-direction:column;
+    padding:14px 20px; gap:10px;
+    border-bottom:1px solid #e5edf8;
   }
-  .nav-links.open{display:flex}
+  :root.dark .nav-links{ background:var(--bg); }
+
+  .nav-links.open,
+  .nav-links.active{                       /* <- old burger uses .active */
+    display:flex;                          /* show the menu */
+  }
 }
 
-/* ================= HERO ================= */
-#home{padding:56px 0}
-.hero-content{text-align:center; z-index:1}
-.hero-title{font-size:clamp(3rem,8vw,6rem);font-weight:900;letter-spacing:-.02em;margin-bottom:.5rem}
-.hero-subtitle{color:#6b7280; font-size:1.15rem; margin-bottom:1.75rem}
-.hero-socials{display:flex;justify-content:center;gap:1rem}
+/* Make anchor jumps not hide under the sticky nav */
+section{ scroll-margin-top: 96px; }
+
+/* ==========================================================
+   HERO (big title area)
+   ========================================================== */
+#home{ padding:56px 0; }
+.hero-content{ text-align:center; z-index:1; }
+.hero-title{ font-size:clamp(3rem,8vw,6rem); font-weight:900; letter-spacing:-.02em; margin-bottom:.5rem; }
+.hero-subtitle{ color:#6b7280; font-size:1.15rem; margin-bottom:1.75rem; }
+.hero-socials{ display:flex; justify-content:center; gap:1rem; }
+/* Social icon button */
 .social-link{
-  width:54px;height:54px; display:flex; align-items:center; justify-content:center;
+  width:54px; height:54px; display:flex; align-items:center; justify-content:center;
   border-radius:14px; background:var(--bg); box-shadow:var(--neu-out); transition:var(--t);
 }
-.social-link:hover{ box-shadow:var(--neu-inset); color:#0f172a; transform:translateY(-2px)}
-.social-link svg{width:24px;height:24px;fill:currentColor}
+.social-link:hover{ box-shadow:var(--neu-inset); color:#0f172a; transform:translateY(-2px); }
+.social-link svg{ width:24px; height:24px; fill:currentColor; }
 
-/* ================= SECTIONS ================= */
-.section{padding:40px 0}
-.section-title{font-size:clamp(1.8rem,3.5vw,2.4rem);letter-spacing:.01em;margin-bottom:1rem}
+/* ==========================================================
+   GENERIC SECTIONS / CARDS
+   ========================================================== */
+.section{ padding:40px 0; }
+.section-title{ font-size:clamp(1.8rem,3.5vw,2.4rem); letter-spacing:.01em; margin-bottom:1rem; }
 
-/* ================= LEARN (accordion) ================= */
-.accordion{display:grid;gap:12px;margin-top:1rem}
-.acc-item{border-radius:14px;background:var(--bg);box-shadow:var(--neu-out);overflow:hidden}
+/* Learn accordion */
+.accordion{ display:grid; gap:12px; margin-top:1rem; }
+.acc-item{ border-radius:14px; background:var(--bg); box-shadow:var(--neu-out); overflow:hidden; }
 .acc-header{
-  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:16px 18px;background:transparent;border:0;cursor:pointer;font-weight:600;
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:16px 18px; background:transparent; border:0; cursor:pointer; font-weight:600;
 }
-.acc-icon{transform:rotate(-90deg);transition:transform .2s ease}
-.acc-header[aria-expanded="true"] .acc-icon{transform:rotate(0deg)}
-.acc-content{display:none;padding:0 18px 16px}
-.acc-item.open .acc-content{display:block}
-.acc-inner p{color:#6b7280}
+.acc-icon{ transform:rotate(-90deg); transition:transform .2s ease; }
+.acc-header[aria-expanded="true"] .acc-icon{ transform:rotate(0deg); }
+.acc-content{ display:none; padding:0 18px 16px; }
+.acc-item.open .acc-content{ display:block; }
+.acc-inner p{ color:#6b7280; }
 
-/* ================= PROJECTS ================= */
-.projects-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin-top:2rem}
-.project-card{border-radius:16px; background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden}
-.project-card:hover{transform:translateY(-3px)}
-.project-image{height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#f0f4fb,#e2e8f6);border-bottom:1px solid #e5edf8}
-.project-content{padding:1.75rem}
-.project-title{font-weight:700;font-size:1.25rem;color:#0f172a;margin-bottom:.5rem}
-.project-description{color:#6b7280;margin-bottom:1rem}
+/* Projects grid + cards */
+.projects-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin-top:2rem; }
+.project-card{ border-radius:16px; background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden; }
+.project-card:hover{ transform:translateY(-3px); }
+.project-image{ height:200px; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#f0f4fb,#e2e8f6); border-bottom:1px solid #e5edf8; }
+.project-content{ padding:1.75rem; }
+.project-title{ font-weight:700; font-size:1.25rem; color:#0f172a; margin-bottom:.5rem; }
+.project-description{ color:#6b7280; margin-bottom:1rem; }
 
-/* keep embeds tidy */
-.project-video { width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-.project-video iframe { width: 100%; height: 100%; display: block; }
+/* Keep iframes/videos tidy (16:9 box) */
+.project-video{ width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.project-video iframe{ width:100%; height:100%; display:block; }
 
-/* ================= FOOTER ================= */
-footer{border-top:1px solid #dde6f3;margin-top:60px;padding:24px 0;color:#8a94a6}
+/* Footer */
+footer{ border-top:1px solid #dde6f3; margin-top:60px; padding:24px 0; color:#8a94a6; }
 
-/* ================= ASSISTANT ================= */
+/* ==========================================================
+   FLOATING ASSISTANT (avatar + speech bubble + chat)
+   ========================================================== */
 .assistant{
   position:fixed; right:20px; bottom:20px; z-index:1200;
   display:flex; align-items:flex-end; gap:10px; cursor:grab; user-select:none;
 }
-.assistant:active{cursor:grabbing}
+.assistant:active{ cursor:grabbing; }
 .assistant-avatar{
   width:64px; height:64px; border-radius:50%;
   object-fit:cover; background:var(--bg);
   border:2px solid rgba(255,255,255,.7); box-shadow:var(--neu-out);
 }
-/* Hover cue */
-.assistant-avatar { transition: transform .15s ease; }
-.assistant-avatar:hover { transform: translateY(-2px); cursor: pointer; }
+/* Tiny hover wiggle so users know it's clickable */
+.assistant-avatar{ transition: transform .15s ease; }
+.assistant-avatar:hover{ transform: translateY(-2px); cursor: pointer; }
 
-/* Tooltip bubble */
+/* Bubble that appears above the avatar */
 #assistantBubble{
   position: fixed;
   bottom: calc(20px + 64px + 10px);
   right: 20px;
   max-width: min(360px, 80vw);
-  padding: 14px 44px 14px 18px; /* extra right padding for close × */
+  padding: 14px 44px 14px 18px; /* extra space on right for the × button */
   border-radius: 14px;
   background: var(--bg);
   border: 1px solid #e5edf8;
@@ -185,36 +240,48 @@ footer{border-top:1px solid #dde6f3;margin-top:60px;padding:24px 0;color:#8a94a6
   font-size: 20px; line-height: 28px; cursor: pointer;
 }
 
-/* Tooltip text spacing so it doesn’t overlap the × */
-#assistantText {
-  display: block;
-  margin-right: 28px; /* space so text doesn't hit the close X */
-}
+/* Text in bubble: keep away from the × button */
+#assistantText{ display:block; margin-right:28px; padding-right:24px; }
 
-/* Safety: only hide stray buttons at top-level of bubble (not the chat form) */
-#assistantBubble > button:not(#assistantClose) {
-  display: none !important;
-}
-/* Prevent tooltip text overlapping close button */
-#assistantText {
-  padding-right: 24px; /* space so text doesn't run under the × */
-  margin: 0;           /* clean reset */
-}
+/* IMPORTANT: Only hide stray top-level buttons, NOT the chat form button */
+#assistantBubble > button:not(#assistantClose){ display:none !important; }
 
-/* === Clippy chat styles (safe to remove) === */
+/* Chat mini-UI (input + send button + log) */
 .assistant .clippy-form { display:flex; gap:8px; margin-top:8px; }
-.assistant .clippy-input { flex:1; padding:8px 10px; border:1px solid #ddd; border-radius:8px; }
-.assistant .clippy-send { padding:8px 12px; border:1px solid #ddd; background:#fff; border-radius:8px; cursor:pointer; }
-.assistant .clippy-log { max-height:180px; overflow:auto; margin-top:8px; display:flex; flex-direction:column; gap:6px; font-size:14px; }
-.assistant .clippy-log .line.you { align-self:flex-end; background:#f1f5f9; padding:6px 10px; border-radius:12px; }
-.assistant .clippy-log .line.clippy { align-self:flex-start; background:#eef7ff; padding:6px 10px; border-radius:12px; }
-
-/* Mobile tweak */
-@media (max-width: 600px){
-  .assistant .clippy-log { max-height:140px; }
+.assistant .clippy-input {
+  flex:1; padding:8px 10px;
+  border:1px solid #ddd; border-radius:8px;
+  background:#fff; color:#111;   /* simple readable input */
 }
+:root.dark .assistant .clippy-input{
+  background:#0b1222; color:#e5e7eb; border-color:#162033;
+}
+.assistant .clippy-send {
+  padding:8px 12px;
+  border:1px solid #ddd; background:#fff; color:#111;
+  border-radius:8px; cursor:pointer;
+}
+:root.dark .assistant .clippy-send{
+  background:#0b1222; color:#e5e7eb; border-color:#162033;
+}
+.assistant .clippy-send:disabled{ opacity:.6; cursor:not-allowed; }
+.assistant .clippy-log {
+  max-height:180px; overflow:auto; margin-top:8px;
+  display:flex; flex-direction:column; gap:6px; font-size:14px;
+}
+.assistant .clippy-log .line.you {
+  align-self:flex-end; background:rgba(148,163,184,.18);
+  padding:6px 10px; border-radius:12px;
+}
+.assistant .clippy-log .line.clippy {
+  align-self:flex-start; background:rgba(56,189,248,.15);
+  padding:6px 10px; border-radius:12px;
+}
+@media (max-width:600px){ .assistant .clippy-log{ max-height:140px; } }
 
-/* Fade-in helper */
-.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease, transform .6s ease}
-.fade-in.visible{opacity:1;transform:none}
-
+/* ==========================================================
+   FADE-IN ANIMATION (cards/sections slide up nicely)
+   Think: "hidden at first, then fade/slide in"
+   ========================================================== */
+.fade-in{ opacity:0; transform:translateY(30px); transition:opacity .6s ease, transform .6s ease; }
+.fade-in.visible{ opacity:1; transform:none; }
