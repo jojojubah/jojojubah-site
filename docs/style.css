@@ -213,3 +213,8 @@ footer{border-top:1px solid #dde6f3;margin-top:60px;padding:24px 0;color:#8a94a6
 @media (max-width: 600px){
   .assistant .clippy-log { max-height:140px; }
 }
+
+/* Fade-in helper */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease, transform .6s ease}
+.fade-in.visible{opacity:1;transform:none}
+
