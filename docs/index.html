@@ -370,6 +370,60 @@
   <!-- i Have deleted everything under here because it should be in app.js  -->
   <!-- Scripts -->
 <script src="app.js" defer></script>
+
+<script type="module">
+  // Core Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+  // Add the products you need
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  // (Optional) Analytics – keep if you want usage tracking
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+  // Your Firebase config (keep the same one you pasted)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+    authDomain: "jojojubah-f2996.firebaseapp.com",
+    projectId: "jojojubah-f2996",
+    storageBucket: "jojojubah-f2996.firebasestorage.app",
+    messagingSenderId: "160250947651",
+    appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
+    measurementId: "G-XC16XPJ48T"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app); // optional
+
+  // Initialize Auth + Firestore
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Anonymous login (so each visitor has a UID)
+  signInAnonymously(auth).catch(console.error);
+
+  onAuthStateChanged(auth, (user) => {
+    console.log("Signed in as:", user?.uid);
+    window.__clippyUser = user || null;
+  });
+
+  // This is where we’ll connect to your backend Function later
+  const FUNCTION_URL = "https://europe-west2-YOUR_PROJECT.cloudfunctions.net/chat";
+
+  // Helper for sending messages
+  window.askClippy = async function askClippy(message, history = []) {
+    const resp = await fetch(FUNCTION_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, history }),
+    });
+    return await resp.json();
+  };
+</script>
+
+  
 <!-- === Assistant (Jojo) — START === -->
 <div id="jojoAssistant" class="assistant">
   <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="assistant-avatar"/>
