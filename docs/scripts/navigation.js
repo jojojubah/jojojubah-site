@@ -226,3 +226,6 @@ export class NavigationService {
     this.initialScrollCheck();
   }
 }
+
+// Make available globally  
+window.NavigationService = NavigationService;
