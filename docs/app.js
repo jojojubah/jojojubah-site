@@ -1,382 +1,420 @@
-/* app.js — shared site logic with modular assistant */
+/* app.js — Main application with modular architecture */
 
-/* ================= Cookie Consent + Google Analytics ================== */
-(function cookieConsent(){
-  const MEASUREMENT_ID = 'G-0ZM44HTK32';
+// Global services container
+window.siteServices = {};
 
-  function ensureBanner() {
-    if (document.getElementById('cookieConsentBanner')) return;
-    const banner = document.createElement('div');
-    banner.id = 'cookieConsentBanner';
-    banner.style.display = 'none';
-    banner.innerHTML = `
-      <p>🍪 This site uses cookies for analytics to improve your experience.
-        <a href="#" id="learnMoreBtn">Learn more</a>
-      </p>
-      <div class="cookie-buttons">
-        <button id="acceptCookies" class="cookie-btn accept">Accept All Cookies</button>
-        <button id="declineCookies" class="cookie-btn decline">Decline</button>
-      </div>`;
-    document.body.appendChild(banner);
-  }
+/* ========================= Fallback Functions ============================ */
 
-  function enableGoogleAnalytics() {
-    if (window.GA_LOADED) return;
-    window.GA_LOADED = true;
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-    document.head.appendChild(s);
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', MEASUREMENT_ID, { anonymize_ip: true, cookie_flags: 'secure;samesite=strict' });
-  }
-
-  function showConsentBanner() {
-    ensureBanner();
-    const consent = localStorage.getItem('cookieConsent');
-    const banner = document.getElementById('cookieConsentBanner');
-    if (!consent) banner.style.display = 'block';
-    else if (consent === 'accepted') enableGoogleAnalytics();
-  }
-
-  function hookBannerButtons() {
-    const accept = document.getElementById('acceptCookies');
-    const decline = document.getElementById('declineCookies');
-    const learnMore = document.getElementById('learnMoreBtn');
-    const banner = document.getElementById('cookieConsentBanner');
-
-    accept && (accept.onclick = function(){
-      localStorage.setItem('cookieConsent','accepted');
-      banner && (banner.style.display = 'none');
-      enableGoogleAnalytics();
-    });
-
-    decline && (decline.onclick = function(){
-      localStorage.setItem('cookieConsent','declined');
-      banner && (banner.style.display = 'none');
-      console.log('❌ Analytics declined by user');
-    });
-
-    learnMore && (learnMore.onclick = function(e){
-      e.preventDefault();
-      const modal = document.createElement('div');
-      modal.id = 'modalOverlay';
-      modal.className = 'modal-overlay';
-      modal.innerHTML = `
-        <div class="learn-more-modal">
-          <button class="close-btn" id="closeModal">&times;</button>
-          <h3>🍪 Why Accept Cookies?</h3>
-          <p style="color: var(--text-dim); line-height: 1.6; margin-bottom: 1.5rem;">
-            We use Google Analytics to understand which content you love most, so we can create better tutorials and projects for you! 🎯<br><br>
-            ✅ Helps improve your experience<br>
-            ✅ Shows which tutorials are most helpful<br>
-            ✅ Anonymous — no personal data<br>
-            ✅ You can change your mind anytime
-          </p>
-        </div>`;
-      document.body.appendChild(modal);
-      const close = () => modal && modal.remove();
-      document.getElementById('closeModal')?.addEventListener('click', close);
-      modal.addEventListener('click', (ev)=>{ if (ev.target === modal) close(); });
-    });
-  }
-
-  showConsentBanner();
-  document.addEventListener('DOMContentLoaded', hookBannerButtons);
-})();
-
-/* ========================= Main Site Interactions ===================== */
-document.addEventListener('DOMContentLoaded', async () => {
-  // Core site functionality
-  initializeNavigation();
-  initializeCursorTrails();
-  initializeThemeToggle();
-  initializeAccordions();
-  initializeContact();
-  updateFooterYear();
-
-  // Initialize assistant system
-  await initializeAssistant();
-});
-
-function initializeNavigation() {
-  const navbar = document.getElementById('navbar');
-  const scrollIndicator = document.getElementById('scrollIndicator');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section');
-
-  function onScroll() {
-    const y = window.scrollY || window.pageYOffset;
-
-    // Sticky navbar background
-    if (navbar) navbar.classList.toggle('scrolled', y > 20);
-
-    // Scroll progress indicator
-    if (scrollIndicator) {
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docH > 0 ? (y / docH) * 100 : 0;
-      scrollIndicator.style.width = pct + '%';
+function setupBasicNavigation() {
+  console.log('Setting up basic navigation fallback...');
+  
+  // Basic scroll handler
+  let isScrolling = false;
+  window.addEventListener('scroll', () => {
+    if (!isScrolling) {
+      requestAnimationFrame(() => {
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+          navbar.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        isScrolling = false;
+      });
+      isScrolling = true;
     }
-
-    // Reveal on scroll animation
-    document.querySelectorAll('.fade-in').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 60) el.classList.add('visible');
-    });
-
-    // Active nav link highlighting
-    let current = '';
-    const mid = y + window.innerHeight / 3;
-    sections.forEach(sec => {
-      if (sec.offsetTop <= mid) current = sec.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // Initial call
-
-  // Mobile menu toggle
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const navLinksContainer = document.querySelector('.nav-links');
-  if (mobileMenuBtn && navLinksContainer) {
-    mobileMenuBtn.addEventListener('click', function(){
-      this.classList.toggle('active');
-      navLinksContainer.classList.toggle('active');
-    });
-  }
-}
-
-function initializeCursorTrails() {
-  // Only on pages without matrix canvas
-  if (document.getElementById('matrix-canvas')) return;
-
-  let trail = [], trailLength = 20;
-  document.addEventListener('mousemove', (e) => {
-    trail.push({ x: e.clientX, y: e.clientY });
-    if (trail.length > trailLength) trail.shift();
-    
-    // Clean up old trails
-    document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
-    
-    const color = '59,130,246';
-    trail.forEach((p, i) => {
-      const dot = document.createElement('div');
-      dot.className = 'cursor-trail';
-      dot.style.cssText = `
-        position:fixed;left:${p.x}px;top:${p.y}px;
-        width:${4 - i*0.2}px;height:${4 - i*0.2}px;
-        background:rgba(${color},${Math.max(0,0.5 - i*0.025)});
-        border-radius:50%;pointer-events:none;z-index:9999;
-      `;
-      document.body.appendChild(dot);
-      setTimeout(()=>dot.remove(), 40);
-    });
   }, { passive: true });
+
+  // Basic mobile menu
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.querySelector('.nav-links');
+  
+  if (mobileBtn && navLinks) {
+    mobileBtn.addEventListener('click', () => {
+      mobileBtn.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+  }
 }
 
-function initializeThemeToggle() {
+function setupBasicTheme() {
+  console.log('Setting up basic theme fallback...');
+  
   const body = document.body;
-  let group = document.querySelector('.toggle-group');
-  if (!group) {
-    group = document.createElement('div');
-    group.className = 'toggle-group';
-    document.body.appendChild(group);
-  }
-
   let themeBtn = document.getElementById('themeToggle');
+  
   if (!themeBtn) {
+    let group = document.querySelector('.toggle-group');
+    if (!group) {
+      group = document.createElement('div');
+      group.className = 'toggle-group';
+      document.body.appendChild(group);
+    }
+    
     themeBtn = document.createElement('button');
     themeBtn.id = 'themeToggle';
+    themeBtn.textContent = '☀️';
     group.appendChild(themeBtn);
   }
 
-  function setIcon(mode){ themeBtn.textContent = (mode === 'dark') ? '🌙' : '☀️'; }
-  function apply(mode){
-    if (mode === 'dark') body.setAttribute('data-theme','dark');
-    else body.removeAttribute('data-theme');
-    setIcon(mode);
-  }
-
-  // Auto-detect if we're on labs page
-  const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
-  const initial = isLabs ? 'dark' : 'light';
-  apply(initial);
-
   themeBtn.addEventListener('click', () => {
-    const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    apply(next);
-    
-    // Trigger assistant tip if available
-    if (window.assistantUI && window.assistantUI.isReady()) {
-      window.assistantUI.triggerTip('themeToggle');
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      body.removeAttribute('data-theme');
+      themeBtn.textContent = '☀️';
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '🌙';
     }
   });
-
-  // Move matrix button into toggle group if it exists
-  const moveMatrixBtn = () => {
-    const m = document.getElementById('matrixToggle');
-    if (m && !group.contains(m)) group.appendChild(m);
-  };
-  moveMatrixBtn();
-  setTimeout(moveMatrixBtn, 0);
 }
 
-function initializeAccordions() {
-  // Helper functions
-  function setPanelHeight(panel, open){
-    panel.style.maxHeight = open ? (panel.scrollHeight + 'px') : 0;
-  }
-
-  function wireAccordionItem(item, onToggle){
-    const btn = item.querySelector('.acc-header');
-    const panel = item.querySelector('.acc-content');
-    if (!btn || !panel) return;
+function setupBasicAccordions() {
+  console.log('Setting up basic accordion fallback...');
+  
+  document.querySelectorAll('.acc-item').forEach(item => {
+    const header = item.querySelector('.acc-header');
+    const content = item.querySelector('.acc-content');
     
-    item.classList.remove('open');
-    setPanelHeight(panel, false);
-    btn.setAttribute('aria-expanded','false');
+    if (!header || !content) return;
     
-    btn.addEventListener('click', () => {
+    content.style.maxHeight = '0';
+    header.setAttribute('aria-expanded', 'false');
+    
+    header.addEventListener('click', () => {
       const isOpen = item.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(isOpen));
-      setPanelHeight(panel, isOpen);
-      if (typeof onToggle === 'function') onToggle(item, isOpen);
+      header.setAttribute('aria-expanded', String(isOpen));
+      content.style.maxHeight = isOpen ? content.scrollHeight + 'px' : '0';
     });
-  }
+  });
+}
 
-  function showToastEl(el){
-    if (!el) return;
-    el.classList.add('show');
-    setTimeout(()=> el.classList.remove('show'), 6000);
-  }
+/* ========================= Global API & Debug Tools ====================== */
 
-  // Get accordion containers
-  const learnAcc = document.getElementById('learnAccordion');
-  const learnToastEl = document.getElementById('learnToast');
+// Global functions for external access and debugging
+window.siteAPI = {
+  // Get service status
+  getStatus() {
+    const status = {};
+    Object.keys(window.siteServices).forEach(serviceName => {
+      const service = window.siteServices[serviceName];
+      if (service && typeof service.getStatus === 'function') {
+        status[serviceName] = service.getStatus();
+      } else {
+        status[serviceName] = { available: !!service };
+      }
+    });
+    return status;
+  },
 
-  // Track progress for learn accordion bonus
-  const learnItemsSet = new Set(learnAcc ? learnAcc.querySelectorAll('.acc-item') : []);
-  const LEARN_OPENED = new Set();
-  let learnUnlocked = false;
-
-  function addBonusAccordionToLearn(){
-    if (!learnAcc || document.getElementById('acc-item-bonus')) return;
-    learnAcc.insertAdjacentHTML('beforeend', `
-      <div class="acc-item" id="acc-item-bonus">
-        <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus" id="acc-button-bonus">
-          <span>Hmm... What's this?</span>
-          <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
-          </svg>
-        </button>
-        <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
-          <div class="acc-inner">
-            <h3>Bonus Unlock!!</h3>
-            <p>Nice one! You explored every topic. Here's a link to JubahLabs.</p>
-            <h4>Ideas to try next</h4>
-            <p>• Turn a prompt into JSON and attach it in chat.<br>
-               • Build a tiny agent in n8n.<br>
-               • Test an open-source model locally and compare.</p>
-            <div style="margin-top:1rem">
-              <a class="btn" href="jubah-labs.html">Open JubahLabs</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-    const bonusItem = document.getElementById('acc-item-bonus');
-    if (bonusItem) wireAccordionItem(bonusItem);
-  }
-
-  // Wire all accordion items
-  document.querySelectorAll('.acc-item').forEach((item) => {
-    const inLearn = learnItemsSet.has(item);
-
-    wireAccordionItem(item, (it, isOpen) => {
-      if (!isOpen) return;
-
-      if (inLearn) {
-        LEARN_OPENED.add(it);
-        if (!learnUnlocked && LEARN_OPENED.size >= learnItemsSet.size) {
-          learnUnlocked = true;
-          addBonusAccordionToLearn();
-          showToastEl(learnToastEl);
+  // Refresh all services
+  async refresh() {
+    console.log('🔄 Refreshing all services...');
+    
+    Object.values(window.siteServices).forEach(service => {
+      if (service && typeof service.refresh === 'function') {
+        try {
+          service.refresh();
+        } catch (error) {
+          console.warn('Service refresh failed:', error);
         }
       }
     });
-  });
-}
-
-function initializeContact() {
-  // Email reveal functionality
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('#revealEmail');
-    if (!btn) return;
     
-    const hiddenWrap = document.getElementById('emailHidden');
-    const visibleEmail = document.getElementById('emailVisible');
-    if (hiddenWrap && visibleEmail) {
-      hiddenWrap.remove();
-      visibleEmail.hidden = false;
+    console.log('✅ Services refreshed');
+  },
+
+  // Debug mode toggle
+  enableDebugMode() {
+    window.DEBUG_MODE = true;
+    console.log('🐛 Debug mode enabled');
+    console.log('Available services:', Object.keys(window.siteServices));
+    console.log('Site status:', this.getStatus());
+  },
+
+  disableDebugMode() {
+    window.DEBUG_MODE = false;
+    console.log('🔇 Debug mode disabled');
+  },
+
+  // Service-specific shortcuts
+  navigation: {
+    scrollTo: (sectionId) => window.siteServices.navigation?.scrollToSection(sectionId),
+    getCurrentSection: () => window.siteServices.navigation?.getCurrentSection(),
+    openMobileMenu: () => window.siteServices.navigation?.openMobileMenu(),
+    closeMobileMenu: () => window.siteServices.navigation?.closeMobileMenu()
+  },
+
+  theme: {
+    toggle: () => window.siteServices.theme?.toggleTheme(),
+    setDark: () => window.siteServices.theme?.setTheme('dark'),
+    setLight: () => window.siteServices.theme?.setTheme('light'),
+    getCurrent: () => window.siteServices.theme?.getCurrentTheme()
+  },
+
+  accordion: {
+    openAll: (type) => window.siteServices.accordion?.openAllItems(type),
+    closeAll: (type) => window.siteServices.accordion?.closeAllItems(type),
+    getProgress: (type) => window.siteServices.accordion?.getProgress(type),
+    reset: (type) => window.siteServices.accordion?.resetProgress(type)
+  },
+
+  assistant: {
+    showTip: (key) => window.siteServices.assistantUI?.triggerTip(key),
+    getState: () => window.siteServices.assistantUI?.getState(),
+    enableChat: () => window.siteServices.assistantChat?.enableChat(),
+    disableChat: () => window.siteServices.assistantChat?.disableChat(),
+    testAPI: () => window.siteServices.assistantAPI?.testConnection()
+  },
+
+  effects: {
+    enableCursor: () => window.siteServices.effects?.enableCursorTrail(),
+    disableCursor: () => window.siteServices.effects?.disableCursorTrail(),
+    triggerFadeIn: (selector) => window.siteServices.effects?.triggerFadeIn(selector)
+  },
+
+  analytics: {
+    getStatus: () => window.siteServices.analytics?.getStatus(),
+    accept: () => window.siteServices.analytics?.forceAccept(),
+    decline: () => window.siteServices.analytics?.forceDecline(),
+    reset: () => window.siteServices.analytics?.resetConsent()
+  }
+};
+
+/* ========================= Error Handling & Recovery ==================== */
+
+// Global error handler
+window.addEventListener('error', (event) => {
+  if (window.DEBUG_MODE) {
+    console.error('Global error caught:', event.error);
+  }
+  
+  // Don't let JavaScript errors break the site
+  event.preventDefault();
+});
+
+// Unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  if (window.DEBUG_MODE) {
+    console.error('Unhandled promise rejection:', event.reason);
+  }
+  
+  // Don't let promise rejections break the site
+  event.preventDefault();
+});
+
+/* ========================= Performance Monitoring ==================== */
+
+// Optional performance monitoring
+if (window.performance && window.performance.mark) {
+  window.performance.mark('site-init-start');
+  
+  window.addEventListener('load', () => {
+    window.performance.mark('site-init-end');
+    window.performance.measure('site-init', 'site-init-start', 'site-init-end');
+    
+    if (window.DEBUG_MODE) {
+      const measure = window.performance.getEntriesByName('site-init')[0];
+      console.log(`📊 Site initialization took: ${measure.duration.toFixed(2)}ms`);
     }
   });
 }
 
-function updateFooterYear() {
-  const yearEl = document.getElementById('secretYear');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+/* ========================= Console Welcome Message ==================== */
+
+// Fun console message for developers
+console.log(`
+🎉 Welcome to JojoJubah's website!
+
+This site uses a modular architecture for better performance and maintainability.
+
+Available commands:
+- siteAPI.getStatus() - Get all service status
+- siteAPI.enableDebugMode() - Enable detailed logging
+- siteAPI.theme.toggle() - Toggle dark/light theme
+- siteAPI.assistant.showTip('key') - Show assistant tip
+
+Want to contribute? Check out the source code structure in the dev tools!
+
+Built with ❤️ by JojoJubah
+`);
+
+/* ========================= Backwards Compatibility ==================== */
+
+// For any external scripts that might expect these global functions
+window.showTip = (key) => window.siteServices.assistantUI?.triggerTip(key);
+window.assistantUI = window.siteServices.assistantUI; // Will be set after initialization
+
+// Export for ES6 modules (if needed)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { siteAPI: window.siteAPI, siteServices: window.siteServices };
+}= Application Initialization ===================== */
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 Initializing JojoJubah site...');
+  
+  try {
+    await initializeCore();
+    await initializeFeatures();
+    console.log('✅ Site initialization complete');
+  } catch (error) {
+    console.error('❌ Site initialization failed:', error);
+    // Continue with basic functionality even if some features fail
+  }
+});
+
+/* ========================= Core System Initialization ==================== */
+async function initializeCore() {
+  // Initialize analytics first (GDPR compliance)
+  await initializeAnalytics();
+  
+  // Initialize core UI services
+  await Promise.all([
+    initializeNavigation(),
+    initializeTheme(),
+    initializeUtils()
+  ]);
 }
 
-/* ========================== Assistant Initialization ======================== */
+async function initializeFeatures() {
+  // Initialize optional features that can fail gracefully
+  await Promise.all([
+    initializeEffects(),
+    initializeAccordions(),
+    initializeAssistant()
+  ]);
+}
+
+/* ========================= Service Initializers ========================== */
+
+async function initializeAnalytics() {
+  try {
+    const { AnalyticsService } = await import('./scripts/analytics.js');
+    const analytics = new AnalyticsService();
+    analytics.initialize();
+    
+    window.siteServices.analytics = analytics;
+    console.log('✅ Analytics service initialized');
+  } catch (error) {
+    console.warn('⚠️ Analytics service failed to load:', error);
+  }
+}
+
+async function initializeNavigation() {
+  try {
+    const { NavigationService } = await import('./scripts/navigation.js');
+    const navigation = new NavigationService();
+    navigation.initialize();
+    
+    window.siteServices.navigation = navigation;
+    console.log('✅ Navigation service initialized');
+  } catch (error) {
+    console.error('❌ Navigation service failed:', error);
+    // Fallback to basic navigation
+    setupBasicNavigation();
+  }
+}
+
+async function initializeTheme() {
+  try {
+    const { ThemeService } = await import('./scripts/theme.js');
+    const theme = new ThemeService();
+    theme.initialize();
+    
+    window.siteServices.theme = theme;
+    console.log('✅ Theme service initialized');
+  } catch (error) {
+    console.error('❌ Theme service failed:', error);
+    // Fallback to basic theme toggle
+    setupBasicTheme();
+  }
+}
+
+async function initializeUtils() {
+  try {
+    const { UtilsService } = await import('./scripts/utils.js');
+    const utils = new UtilsService();
+    utils.initialize();
+    
+    window.siteServices.utils = utils;
+    console.log('✅ Utils service initialized');
+  } catch (error) {
+    console.warn('⚠️ Utils service failed:', error);
+    // Most utils are optional
+  }
+}
+
+async function initializeEffects() {
+  try {
+    const { EffectsService } = await import('./scripts/effects.js');
+    const effects = new EffectsService();
+    effects.initialize();
+    
+    window.siteServices.effects = effects;
+    console.log('✅ Effects service initialized');
+  } catch (error) {
+    console.warn('⚠️ Effects service failed:', error);
+    // Effects are optional
+  }
+}
+
+async function initializeAccordions() {
+  try {
+    const { AccordionService } = await import('./scripts/accordion.js');
+    const accordion = new AccordionService();
+    accordion.initialize();
+    
+    window.siteServices.accordion = accordion;
+    console.log('✅ Accordion service initialized');
+  } catch (error) {
+    console.warn('⚠️ Accordion service failed:', error);
+    // Fallback to basic accordion
+    setupBasicAccordions();
+  }
+}
+
 async function initializeAssistant() {
   const assistantRoot = document.getElementById('jojoAssistant');
   if (!assistantRoot) {
-    console.log('Assistant not found on this page');
+    console.log('ℹ️ Assistant not found on this page');
     return;
   }
 
   try {
-    // Dynamically import assistant modules
+    // Initialize basic assistant UI first
     const { AssistantUI } = await import('./scripts/assistant/assistant-ui.js');
-    
-    // Initialize basic assistant UI
     const assistantUI = new AssistantUI();
     const basicInitialized = await assistantUI.initialize();
     
     if (!basicInitialized) {
-      console.warn('Basic assistant initialization failed');
+      console.warn('⚠️ Basic assistant initialization failed');
       return;
     }
 
-    // Make assistant UI globally available for theme toggle
-    window.assistantUI = assistantUI;
+    window.siteServices.assistantUI = assistantUI;
     console.log('✅ Basic assistant initialized');
 
-    // Try to enable advanced features (Firebase + Chat)
+    // Try to enable advanced features
     try {
-      await enableAdvancedAssistantFeatures(assistantUI);
+      await initializeAdvancedAssistant(assistantUI);
     } catch (error) {
-      console.log('Advanced assistant features unavailable:', error.message);
+      console.log('ℹ️ Advanced assistant features unavailable:', error.message);
       // Basic assistant still works
     }
 
   } catch (error) {
-    console.error('Assistant initialization failed:', error);
+    console.error('❌ Assistant initialization failed:', error);
   }
 }
 
-async function enableAdvancedAssistantFeatures(assistantUI) {
+async function initializeAdvancedAssistant(assistantUI) {
   // Import advanced modules
-  const { FirebaseService } = await import('./scripts/assistant/assistant-firebase.js');
-  const { AssistantAPI } = await import('./scripts/assistant/assistant-api.js');
-  const { AssistantChat } = await import('./scripts/assistant/assistant-chat.js');
+  const [
+    { FirebaseService },
+    { AssistantAPI },
+    { AssistantChat }
+  ] = await Promise.all([
+    import('./scripts/assistant/assistant-firebase.js'),
+    import('./scripts/assistant/assistant-api.js'),
+    import('./scripts/assistant/assistant-chat.js')
+  ]);
 
   // Initialize Firebase
   const firebase = new FirebaseService();
@@ -386,11 +424,10 @@ async function enableAdvancedAssistantFeatures(assistantUI) {
     throw new Error('Firebase initialization failed');
   }
 
-  // Initialize API
+  // Initialize API with connection test
   const api = new AssistantAPI(firebase);
-  
-  // Test API connection
   const connectionTest = await api.testConnection();
+  
   if (!connectionTest.success) {
     throw new Error(`API test failed: ${connectionTest.error}`);
   }
@@ -399,14 +436,16 @@ async function enableAdvancedAssistantFeatures(assistantUI) {
   const chat = new AssistantChat(assistantUI, api);
   const chatEnabled = await chat.enableChat();
 
-  if (chatEnabled) {
-    console.log('✅ Advanced assistant features enabled');
-    
-    // Make globally available for debugging
-    window.assistantFirebase = firebase;
-    window.assistantAPI = api;
-    window.assistantChat = chat;
-  } else {
+  if (!chatEnabled) {
     throw new Error('Chat interface initialization failed');
   }
+
+  // Store advanced services
+  window.siteServices.assistantFirebase = firebase;
+  window.siteServices.assistantAPI = api;
+  window.siteServices.assistantChat = chat;
+  
+  console.log('✅ Advanced assistant features enabled');
 }
+
+/* ========================
