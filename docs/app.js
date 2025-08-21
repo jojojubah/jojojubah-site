@@ -3,20 +3,125 @@
 // Global services container
 window.siteServices = {};
 
+/* ========================= Application Initialization ===================== */
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 Initializing JojoJubah site...');
+  
+  try {
+    await initializeCore();
+    await initializeFeatures();
+    setupGlobalAPI();
+    console.log('✅ Site initialization complete');
+  } catch (error) {
+    console.error('❌ Site initialization failed:', error);
+    // Continue with basic functionality even if some features fail
+    setupFallbacks();
+  }
+});
+
+/* ========================= Core System Initialization ==================== */
+async function initializeCore() {
+  // Check if modules are available (they should be loaded by now)
+  const coreModules = ['utils', 'analytics', 'theme', 'navigation'];
+  
+  for (const moduleName of coreModules) {
+    try {
+      await initializeModule(moduleName);
+    } catch (error) {
+      console.warn(`⚠️ Failed to initialize ${moduleName}:`, error);
+    }
+  }
+}
+
+async function initializeFeatures() {
+  const featureModules = ['effects', 'accordion'];
+  
+  for (const moduleName of featureModules) {
+    try {
+      await initializeModule(moduleName);
+    } catch (error) {
+      console.warn(`⚠️ Failed to initialize ${moduleName}:`, error);
+    }
+  }
+  
+  // Initialize assistant if present
+  await initializeAssistant();
+}
+
+async function initializeModule(moduleName) {
+  try {
+    // Check if the service class is available on window
+    const serviceClass = window[`${capitalize(moduleName)}Service`];
+    
+    if (serviceClass) {
+      const service = new serviceClass();
+      if (service.initialize) {
+        service.initialize();
+      }
+      window.siteServices[moduleName] = service;
+      console.log(`✅ ${moduleName} service initialized`);
+    } else {
+      console.warn(`⚠️ ${moduleName} service class not found`);
+    }
+  } catch (error) {
+    console.error(`❌ Failed to initialize ${moduleName}:`, error);
+    throw error;
+  }
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function initializeAssistant() {
+  const assistantRoot = document.getElementById('jojoAssistant');
+  if (!assistantRoot) {
+    console.log('ℹ️ Assistant not found on this page');
+    return;
+  }
+
+  try {
+    // Basic assistant setup would go here
+    console.log('✅ Basic assistant initialized');
+  } catch (error) {
+    console.error('❌ Assistant initialization failed:', error);
+  }
+}
+
 /* ========================= Fallback Functions ============================ */
+
+function setupFallbacks() {
+  console.log('Setting up fallback functions...');
+  
+  setupBasicNavigation();
+  setupBasicTheme();
+  setupBasicAccordions();
+}
 
 function setupBasicNavigation() {
   console.log('Setting up basic navigation fallback...');
+  
+  const navbar = document.getElementById('navbar');
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.querySelector('.nav-links');
   
   // Basic scroll handler
   let isScrolling = false;
   window.addEventListener('scroll', () => {
     if (!isScrolling) {
       requestAnimationFrame(() => {
-        const navbar = document.getElementById('navbar');
         if (navbar) {
           navbar.classList.toggle('scrolled', window.scrollY > 20);
         }
+        
+        // Update scroll progress
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        if (scrollIndicator) {
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const percentage = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+          scrollIndicator.style.width = `${Math.min(percentage, 100)}%`;
+        }
+        
         isScrolling = false;
       });
       isScrolling = true;
@@ -24,9 +129,6 @@ function setupBasicNavigation() {
   }, { passive: true });
 
   // Basic mobile menu
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const navLinks = document.querySelector('.nav-links');
-  
   if (mobileBtn && navLinks) {
     mobileBtn.addEventListener('click', () => {
       mobileBtn.classList.toggle('active');
@@ -39,36 +141,76 @@ function setupBasicTheme() {
   console.log('Setting up basic theme fallback...');
   
   const body = document.body;
+  let toggleGroup = document.querySelector('.toggle-group');
   let themeBtn = document.getElementById('themeToggle');
   
+  // Create toggle group if it doesn't exist
+  if (!toggleGroup) {
+    toggleGroup = document.createElement('div');
+    toggleGroup.className = 'toggle-group';
+    document.body.appendChild(toggleGroup);
+  }
+  
+  // Create theme button if it doesn't exist
   if (!themeBtn) {
-    let group = document.querySelector('.toggle-group');
-    if (!group) {
-      group = document.createElement('div');
-      group.className = 'toggle-group';
-      document.body.appendChild(group);
-    }
-    
     themeBtn = document.createElement('button');
     themeBtn.id = 'themeToggle';
-    themeBtn.textContent = '☀️';
-    group.appendChild(themeBtn);
+    themeBtn.setAttribute('aria-label', 'Toggle theme');
+    themeBtn.setAttribute('title', 'Switch between light and dark theme');
+    toggleGroup.appendChild(themeBtn);
   }
 
+  // Detect initial theme
+  const storedTheme = localStorage.getItem('preferred-theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+  
+  // Set initial theme
+  if (initialTheme === 'dark') {
+    body.setAttribute('data-theme', 'dark');
+    themeBtn.textContent = '🌙';
+  } else {
+    body.removeAttribute('data-theme');
+    themeBtn.textContent = '☀️';
+  }
+
+  // Theme toggle handler
   themeBtn.addEventListener('click', () => {
     const isDark = body.getAttribute('data-theme') === 'dark';
     if (isDark) {
       body.removeAttribute('data-theme');
       themeBtn.textContent = '☀️';
+      localStorage.setItem('preferred-theme', 'light');
     } else {
       body.setAttribute('data-theme', 'dark');
       themeBtn.textContent = '🌙';
+      localStorage.setItem('preferred-theme', 'dark');
     }
   });
 }
 
 function setupBasicAccordions() {
   console.log('Setting up basic accordion fallback...');
+  
+  const accordionTrackers = new Map();
+  
+  // Setup learn accordion tracking
+  const learnAccordion = document.getElementById('learnAccordion');
+  if (learnAccordion) {
+    const learnItems = Array.from(learnAccordion.querySelectorAll('.acc-item'));
+    accordionTrackers.set('learn', { items: learnItems, opened: new Set() });
+  }
+  
+  // Setup economics accordion tracking
+  const econLeft = document.getElementById('econGlossaryLeft');
+  const econRight = document.getElementById('econGlossaryRight');
+  if (econLeft || econRight) {
+    const econItems = [
+      ...(econLeft ? econLeft.querySelectorAll('.acc-item') : []),
+      ...(econRight ? econRight.querySelectorAll('.acc-item') : [])
+    ];
+    accordionTrackers.set('economics', { items: econItems, opened: new Set() });
+  }
   
   document.querySelectorAll('.acc-item').forEach(item => {
     const header = item.querySelector('.acc-header');
@@ -83,369 +225,152 @@ function setupBasicAccordions() {
       const isOpen = item.classList.toggle('open');
       header.setAttribute('aria-expanded', String(isOpen));
       content.style.maxHeight = isOpen ? content.scrollHeight + 'px' : '0';
+      
+      if (isOpen) {
+        // Track progress
+        for (const [type, tracker] of accordionTrackers) {
+          if (tracker.items.includes(item)) {
+            tracker.opened.add(item);
+            
+            // Check if all items opened
+            if (tracker.opened.size >= tracker.items.length) {
+              handleAccordionComplete(type);
+            }
+            break;
+          }
+        }
+      }
     });
   });
+  
+  function handleAccordionComplete(type) {
+    console.log(`🎉 ${type} accordion completed!`);
+    
+    if (type === 'learn') {
+      // Add bonus section
+      const learnContainer = document.getElementById('learnAccordion');
+      if (learnContainer && !document.getElementById('acc-item-bonus')) {
+        const bonusHTML = `
+          <div class="acc-item" id="acc-item-bonus">
+            <button class="acc-header" aria-expanded="false" aria-controls="acc-panel-bonus">
+              <span>Hmm... What's this?</span>
+              <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M12 15.5l-7-7 1.4-1.4L12 12.7l5.6-5.6L19 8.5z"/>
+              </svg>
+            </button>
+            <div class="acc-content" id="acc-panel-bonus" role="region" aria-labelledby="acc-button-bonus">
+              <div class="acc-inner">
+                <h3>Bonus Unlock!!</h3>
+                <p>Nice one! You explored every topic. Here's a link to JubahLabs.</p>
+                <div style="margin-top:1rem">
+                  <a class="btn" href="jubah-labs.html">Open JubahLabs</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        learnContainer.insertAdjacentHTML('beforeend', bonusHTML);
+        
+        // Wire the new item
+        const bonusItem = document.getElementById('acc-item-bonus');
+        const bonusHeader = bonusItem.querySelector('.acc-header');
+        const bonusContent = bonusItem.querySelector('.acc-content');
+        
+        bonusContent.style.maxHeight = '0';
+        bonusHeader.addEventListener('click', () => {
+          const isOpen = bonusItem.classList.toggle('open');
+          bonusHeader.setAttribute('aria-expanded', String(isOpen));
+          bonusContent.style.maxHeight = isOpen ? bonusContent.scrollHeight + 'px' : '0';
+        });
+      }
+    }
+    
+    // Show toast
+    const toastId = type === 'learn' ? 'learnToast' : 'econToast';
+    const toast = document.getElementById(toastId);
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 6000);
+    }
+  }
 }
 
 /* ========================= Global API & Debug Tools ====================== */
 
-// Global functions for external access and debugging
-window.siteAPI = {
-  // Get service status
-  getStatus() {
-    const status = {};
-    Object.keys(window.siteServices).forEach(serviceName => {
-      const service = window.siteServices[serviceName];
-      if (service && typeof service.getStatus === 'function') {
-        status[serviceName] = service.getStatus();
-      } else {
-        status[serviceName] = { available: !!service };
-      }
-    });
-    return status;
-  },
-
-  // Refresh all services
-  async refresh() {
-    console.log('🔄 Refreshing all services...');
-    
-    Object.values(window.siteServices).forEach(service => {
-      if (service && typeof service.refresh === 'function') {
-        try {
-          service.refresh();
-        } catch (error) {
-          console.warn('Service refresh failed:', error);
+function setupGlobalAPI() {
+  // Global functions for external access and debugging
+  window.siteAPI = {
+    // Get service status
+    getStatus() {
+      const status = {};
+      Object.keys(window.siteServices).forEach(serviceName => {
+        const service = window.siteServices[serviceName];
+        if (service && typeof service.getStatus === 'function') {
+          status[serviceName] = service.getStatus();
+        } else {
+          status[serviceName] = { available: !!service };
         }
+      });
+      return status;
+    },
+
+    // Debug mode toggle
+    enableDebugMode() {
+      window.DEBUG_MODE = true;
+      console.log('🐛 Debug mode enabled');
+      console.log('Available services:', Object.keys(window.siteServices));
+      console.log('Site status:', this.getStatus());
+    },
+
+    disableDebugMode() {
+      window.DEBUG_MODE = false;
+      console.log('🔇 Debug mode disabled');
+    },
+
+    // Service-specific shortcuts
+    navigation: {
+      scrollTo: (sectionId) => window.siteServices.navigation?.scrollToSection(sectionId),
+      getCurrentSection: () => window.siteServices.navigation?.getCurrentSection()
+    },
+
+    theme: {
+      toggle: () => {
+        const themeBtn = document.getElementById('themeToggle');
+        if (themeBtn) themeBtn.click();
+      },
+      getCurrent: () => {
+        return document.body.getAttribute('data-theme') || 'light';
       }
-    });
-    
-    console.log('✅ Services refreshed');
-  },
+    }
+  };
+}
 
-  // Debug mode toggle
-  enableDebugMode() {
-    window.DEBUG_MODE = true;
-    console.log('🐛 Debug mode enabled');
-    console.log('Available services:', Object.keys(window.siteServices));
-    console.log('Site status:', this.getStatus());
-  },
-
-  disableDebugMode() {
-    window.DEBUG_MODE = false;
-    console.log('🔇 Debug mode disabled');
-  },
-
-  // Service-specific shortcuts
-  navigation: {
-    scrollTo: (sectionId) => window.siteServices.navigation?.scrollToSection(sectionId),
-    getCurrentSection: () => window.siteServices.navigation?.getCurrentSection(),
-    openMobileMenu: () => window.siteServices.navigation?.openMobileMenu(),
-    closeMobileMenu: () => window.siteServices.navigation?.closeMobileMenu()
-  },
-
-  theme: {
-    toggle: () => window.siteServices.theme?.toggleTheme(),
-    setDark: () => window.siteServices.theme?.setTheme('dark'),
-    setLight: () => window.siteServices.theme?.setTheme('light'),
-    getCurrent: () => window.siteServices.theme?.getCurrentTheme()
-  },
-
-  accordion: {
-    openAll: (type) => window.siteServices.accordion?.openAllItems(type),
-    closeAll: (type) => window.siteServices.accordion?.closeAllItems(type),
-    getProgress: (type) => window.siteServices.accordion?.getProgress(type),
-    reset: (type) => window.siteServices.accordion?.resetProgress(type)
-  },
-
-  assistant: {
-    showTip: (key) => window.siteServices.assistantUI?.triggerTip(key),
-    getState: () => window.siteServices.assistantUI?.getState(),
-    enableChat: () => window.siteServices.assistantChat?.enableChat(),
-    disableChat: () => window.siteServices.assistantChat?.disableChat(),
-    testAPI: () => window.siteServices.assistantAPI?.testConnection()
-  },
-
-  effects: {
-    enableCursor: () => window.siteServices.effects?.enableCursorTrail(),
-    disableCursor: () => window.siteServices.effects?.disableCursorTrail(),
-    triggerFadeIn: (selector) => window.siteServices.effects?.triggerFadeIn(selector)
-  },
-
-  analytics: {
-    getStatus: () => window.siteServices.analytics?.getStatus(),
-    accept: () => window.siteServices.analytics?.forceAccept(),
-    decline: () => window.siteServices.analytics?.forceDecline(),
-    reset: () => window.siteServices.analytics?.resetConsent()
-  }
-};
-
-/* ========================= Error Handling & Recovery ==================== */
+/* ========================= Error Handling ==================== */
 
 // Global error handler
 window.addEventListener('error', (event) => {
   if (window.DEBUG_MODE) {
     console.error('Global error caught:', event.error);
   }
-  
-  // Don't let JavaScript errors break the site
   event.preventDefault();
 });
 
-// Unhandled promise rejection handler
 window.addEventListener('unhandledrejection', (event) => {
   if (window.DEBUG_MODE) {
     console.error('Unhandled promise rejection:', event.reason);
   }
-  
-  // Don't let promise rejections break the site
   event.preventDefault();
 });
 
-/* ========================= Performance Monitoring ==================== */
-
-// Optional performance monitoring
-if (window.performance && window.performance.mark) {
-  window.performance.mark('site-init-start');
-  
-  window.addEventListener('load', () => {
-    window.performance.mark('site-init-end');
-    window.performance.measure('site-init', 'site-init-start', 'site-init-end');
-    
-    if (window.DEBUG_MODE) {
-      const measure = window.performance.getEntriesByName('site-init')[0];
-      console.log(`📊 Site initialization took: ${measure.duration.toFixed(2)}ms`);
-    }
-  });
-}
-
 /* ========================= Console Welcome Message ==================== */
 
-// Fun console message for developers
 console.log(`
 🎉 Welcome to JojoJubah's website!
-
-This site uses a modular architecture for better performance and maintainability.
 
 Available commands:
 - siteAPI.getStatus() - Get all service status
 - siteAPI.enableDebugMode() - Enable detailed logging
 - siteAPI.theme.toggle() - Toggle dark/light theme
-- siteAPI.assistant.showTip('key') - Show assistant tip
-
-Want to contribute? Check out the source code structure in the dev tools!
 
 Built with ❤️ by JojoJubah
 `);
-
-/* ========================= Backwards Compatibility ==================== */
-
-// For any external scripts that might expect these global functions
-window.showTip = (key) => window.siteServices.assistantUI?.triggerTip(key);
-window.assistantUI = window.siteServices.assistantUI; // Will be set after initialization
-
-// Export for ES6 modules (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { siteAPI: window.siteAPI, siteServices: window.siteServices };
-}= Application Initialization ===================== */
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log('🚀 Initializing JojoJubah site...');
-  
-  try {
-    await initializeCore();
-    await initializeFeatures();
-    console.log('✅ Site initialization complete');
-  } catch (error) {
-    console.error('❌ Site initialization failed:', error);
-    // Continue with basic functionality even if some features fail
-  }
-});
-
-/* ========================= Core System Initialization ==================== */
-async function initializeCore() {
-  // Initialize analytics first (GDPR compliance)
-  await initializeAnalytics();
-  
-  // Initialize core UI services
-  await Promise.all([
-    initializeNavigation(),
-    initializeTheme(),
-    initializeUtils()
-  ]);
-}
-
-async function initializeFeatures() {
-  // Initialize optional features that can fail gracefully
-  await Promise.all([
-    initializeEffects(),
-    initializeAccordions(),
-    initializeAssistant()
-  ]);
-}
-
-/* ========================= Service Initializers ========================== */
-
-async function initializeAnalytics() {
-  try {
-    const { AnalyticsService } = await import('./scripts/analytics.js');
-    const analytics = new AnalyticsService();
-    analytics.initialize();
-    
-    window.siteServices.analytics = analytics;
-    console.log('✅ Analytics service initialized');
-  } catch (error) {
-    console.warn('⚠️ Analytics service failed to load:', error);
-  }
-}
-
-async function initializeNavigation() {
-  try {
-    const { NavigationService } = await import('./scripts/navigation.js');
-    const navigation = new NavigationService();
-    navigation.initialize();
-    
-    window.siteServices.navigation = navigation;
-    console.log('✅ Navigation service initialized');
-  } catch (error) {
-    console.error('❌ Navigation service failed:', error);
-    // Fallback to basic navigation
-    setupBasicNavigation();
-  }
-}
-
-async function initializeTheme() {
-  try {
-    const { ThemeService } = await import('./scripts/theme.js');
-    const theme = new ThemeService();
-    theme.initialize();
-    
-    window.siteServices.theme = theme;
-    console.log('✅ Theme service initialized');
-  } catch (error) {
-    console.error('❌ Theme service failed:', error);
-    // Fallback to basic theme toggle
-    setupBasicTheme();
-  }
-}
-
-async function initializeUtils() {
-  try {
-    const { UtilsService } = await import('./scripts/utils.js');
-    const utils = new UtilsService();
-    utils.initialize();
-    
-    window.siteServices.utils = utils;
-    console.log('✅ Utils service initialized');
-  } catch (error) {
-    console.warn('⚠️ Utils service failed:', error);
-    // Most utils are optional
-  }
-}
-
-async function initializeEffects() {
-  try {
-    const { EffectsService } = await import('./scripts/effects.js');
-    const effects = new EffectsService();
-    effects.initialize();
-    
-    window.siteServices.effects = effects;
-    console.log('✅ Effects service initialized');
-  } catch (error) {
-    console.warn('⚠️ Effects service failed:', error);
-    // Effects are optional
-  }
-}
-
-async function initializeAccordions() {
-  try {
-    const { AccordionService } = await import('./scripts/accordion.js');
-    const accordion = new AccordionService();
-    accordion.initialize();
-    
-    window.siteServices.accordion = accordion;
-    console.log('✅ Accordion service initialized');
-  } catch (error) {
-    console.warn('⚠️ Accordion service failed:', error);
-    // Fallback to basic accordion
-    setupBasicAccordions();
-  }
-}
-
-async function initializeAssistant() {
-  const assistantRoot = document.getElementById('jojoAssistant');
-  if (!assistantRoot) {
-    console.log('ℹ️ Assistant not found on this page');
-    return;
-  }
-
-  try {
-    // Initialize basic assistant UI first
-    const { AssistantUI } = await import('./scripts/assistant/assistant-ui.js');
-    const assistantUI = new AssistantUI();
-    const basicInitialized = await assistantUI.initialize();
-    
-    if (!basicInitialized) {
-      console.warn('⚠️ Basic assistant initialization failed');
-      return;
-    }
-
-    window.siteServices.assistantUI = assistantUI;
-    console.log('✅ Basic assistant initialized');
-
-    // Try to enable advanced features
-    try {
-      await initializeAdvancedAssistant(assistantUI);
-    } catch (error) {
-      console.log('ℹ️ Advanced assistant features unavailable:', error.message);
-      // Basic assistant still works
-    }
-
-  } catch (error) {
-    console.error('❌ Assistant initialization failed:', error);
-  }
-}
-
-async function initializeAdvancedAssistant(assistantUI) {
-  // Import advanced modules
-  const [
-    { FirebaseService },
-    { AssistantAPI },
-    { AssistantChat }
-  ] = await Promise.all([
-    import('./scripts/assistant/assistant-firebase.js'),
-    import('./scripts/assistant/assistant-api.js'),
-    import('./scripts/assistant/assistant-chat.js')
-  ]);
-
-  // Initialize Firebase
-  const firebase = new FirebaseService();
-  const firebaseReady = await firebase.initialize();
-  
-  if (!firebaseReady) {
-    throw new Error('Firebase initialization failed');
-  }
-
-  // Initialize API with connection test
-  const api = new AssistantAPI(firebase);
-  const connectionTest = await api.testConnection();
-  
-  if (!connectionTest.success) {
-    throw new Error(`API test failed: ${connectionTest.error}`);
-  }
-
-  // Initialize chat interface
-  const chat = new AssistantChat(assistantUI, api);
-  const chatEnabled = await chat.enableChat();
-
-  if (!chatEnabled) {
-    throw new Error('Chat interface initialization failed');
-  }
-
-  // Store advanced services
-  window.siteServices.assistantFirebase = firebase;
-  window.siteServices.assistantAPI = api;
-  window.siteServices.assistantChat = chat;
-  
-  console.log('✅ Advanced assistant features enabled');
-}
-
-/* ========================
