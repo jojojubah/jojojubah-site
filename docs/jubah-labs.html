@@ -134,21 +134,9 @@
   </footer>
 
   <!-- ============ MODULAR JAVASCRIPT ARCHITECTURE ============ -->
-  <!-- Core utilities and helpers -->
-  <script src="scripts/utils.js" defer></script>
-  
-  <!-- Feature modules (load in dependency order) -->
-  <script src="scripts/analytics.js" defer></script>
-  <script src="scripts/theme.js" defer></script>
-  <script src="scripts/navigation.js" defer></script>
-  <script src="scripts/accordion.js" defer></script>
-  <script src="scripts/effects.js" defer></script>
-  
-  <!-- Labs-specific script (loads before main app) -->
-  <script src="labs.js" defer></script>
-  
-  <!-- Main application orchestrator (loads last) -->
-  <script src="app.js" defer></script>
+  <!-- Main application (ES Modules) -->
+<script type="module" src="app.js"></script>
+
 
   <!-- === Assistant (Jojo) — START === -->
   <div id="jojoAssistant" class="assistant">
