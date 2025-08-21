@@ -246,7 +246,18 @@
     </div>
   </footer>
 
-  <!-- Scripts (reuse main behavior + consent/GA + accordion wiring) -->
+  <!-- ============ MODULAR JAVASCRIPT ARCHITECTURE ============ -->
+  <!-- Core utilities and helpers -->
+  <script src="scripts/utils.js" defer></script>
+  
+  <!-- Feature modules (load in dependency order) -->
+  <script src="scripts/analytics.js" defer></script>
+  <script src="scripts/theme.js" defer></script>
+  <script src="scripts/navigation.js" defer></script>
+  <script src="scripts/accordion.js" defer></script>
+  <script src="scripts/effects.js" defer></script>
+  
+  <!-- Main application orchestrator (loads last) -->
   <script src="app.js" defer></script>
 
   <!-- === Assistant (Jojo) — START === -->
