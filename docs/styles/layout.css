@@ -1,0 +1,64 @@
+/* styles/layout.css */
+/* Layout systems, sections, and responsive grids */
+
+/* ============================== Navigation Layout ============================== */
+
+nav {
+  position: fixed;
+  inset: 0 auto auto 0;
+  right: 0;
+  z-index: var(--z-header);
+  backdrop-filter: saturate(1.1) blur(10px);
+  background: rgba(233, 238, 245, 0.55);
+  border-bottom: 1px solid #dde6f2;
+  transition: background 0.3s ease;
+}
+
+nav.scrolled {
+  background: rgba(233, 238, 245, 0.8);
+}
+
+.nav-container {
+  height: var(--navbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.site-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius);
+  border: 2px solid #eaf0f8;
+  box-shadow: 6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
+  object-fit: cover;
+  transition: var(--t);
+}
+
+.site-avatar:hover {
+  transform: scale(1.06) rotate(3deg);
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: var(--text-2xl);
+  color: transparent;
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+}
+
+/* Mobile navigation */
+@media (
