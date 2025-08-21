@@ -61,4 +61,406 @@ nav.scrolled {
 }
 
 /* Mobile navigation */
-@media (
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: var(--navbar-height);
+    left: -100%;
+    width: 100%;
+    height: calc(100dvh - var(--navbar-height));
+    backdrop-filter: blur(8px);
+    background: rgba(233, 238, 245, 0.95);
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.25rem;
+    transition: left 0.25s ease;
+    z-index: 999;
+  }
+  
+  .nav-links.active {
+    left: 0;
+  }
+}
+
+/* ============================== Section Layout ============================== */
+
+section {
+  padding: var(--space-3xl) 0;
+  position: relative;
+  scroll-margin-top: calc(var(--navbar-height) + 16px);
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: transparent;
+  background: linear-gradient(90deg, #0f172a, var(--text));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ============================== Hero Section ============================== */
+
+#home {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-content {
+  text-align: center;
+  z-index: var(--z-content);
+  width: 100%;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-sm);
+  line-height: 1.1;
+}
+
+.gradient-text {
+  color: transparent;
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  color: var(--text-dim);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-xl);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-socials {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+/* ============================== Content Sections ============================== */
+
+.about-content,
+.contact-content {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-text {
+  padding: 2.25rem;
+  border-radius: var(--neu-radius);
+  background: var(--bg);
+  box-shadow: var(--neu-out);
+  color: var(--text-dim);
+  font-size: var(--text-lg);
+  line-height: 1.7;
+}
+
+.contact-content {
+  max-width: 620px;
+}
+
+.contact-info {
+  padding: var(--space-xl);
+  border-radius: var(--neu-radius);
+  background: var(--bg);
+  box-shadow: var(--neu-out);
+}
+
+.contact-item {
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-lg);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ============================== Grid Systems ============================== */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 640px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+@media (min-width: 1200px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Two column grid for economics/glossary pages */
+.two-column-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+@media (max-width: 768px) {
+  .two-column-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+/* ============================== Footer Layout ============================== */
+
+footer {
+  padding: var(--space-2xl) 0;
+  border-top: 1px solid #e1e8f4;
+  background: linear-gradient(145deg, #e8edf4, #f4f7fb);
+  margin-top: var(--space-3xl);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  background: var(--bg);
+  box-shadow: var(--neu-out);
+  transition: var(--t);
+  font-size: var(--text-sm);
+}
+
+.footer-links a:hover {
+  box-shadow: var(--neu-inset);
+  color: #0f172a;
+}
+
+/* Mobile footer adjustments */
+@media (max-width: 768px) {
+  .footer-content {
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+  
+  .footer-links {
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: nowrap;
+  }
+  
+  .footer-links a {
+    font-size: var(--text-xs);
+    padding: 0.35rem 0.55rem;
+  }
+}
+
+/* ============================== Accordion Layout ============================== */
+
+.accordion {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ============================== Responsive Layout Adjustments ============================== */
+
+/* Container responsive padding */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-lg);
+  }
+  
+  section {
+    padding: var(--space-2xl) 0;
+  }
+  
+  .hero-socials {
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+  
+  section {
+    padding: var(--space-xl) 0;
+  }
+}
+
+/* ============================== Content Width Constraints ============================== */
+
+/* Prevent very wide content on large screens */
+.content-wrapper {
+  max-width: 65ch; /* Optimal reading width */
+  margin: 0 auto;
+}
+
+.wide-content {
+  max-width: 80ch;
+  margin: 0 auto;
+}
+
+/* ============================== Scroll Margin for Fixed Header ============================== */
+
+/* Ensure all anchor links account for fixed navbar */
+section[id],
+.scroll-target {
+  scroll-margin-top: calc(var(--navbar-height) + var(--space-lg));
+}
+
+/* ============================== Layout Utilities ============================== */
+
+/* Aspect ratio containers */
+.aspect-video {
+  aspect-ratio: 16/9;
+}
+
+.aspect-square {
+  aspect-ratio: 1/1;
+}
+
+.aspect-portrait {
+  aspect-ratio: 3/4;
+}
+
+/* Sticky positioning */
+.sticky-top {
+  position: sticky;
+  top: var(--navbar-height);
+}
+
+/* Full width sections */
+.section-full-width {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* Content spacing */
+.content-spacing > * + * {
+  margin-top: var(--space-lg);
+}
+
+.tight-spacing > * + * {
+  margin-top: var(--space-sm);
+}
+
+.loose-spacing > * + * {
+  margin-top: var(--space-xl);
+}
+
+/* ============================== Print Layout ============================== */
+
+@media print {
+  nav,
+  footer,
+  .toggle-group,
+  .scroll-indicator {
+    display: none !important;
+  }
+  
+  section {
+    padding: var(--space-lg) 0;
+    page-break-inside: avoid;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  
+  .project-card {
+    break-inside: avoid;
+  }
+}
+
+/* ============================== Layout Animations ============================== */
+
+/* Smooth transitions for layout changes */
+.nav-container,
+.footer-content,
+.projects-grid {
+  transition: all 0.3s ease;
+}
+
+/* Layout shift prevention */
+.layout-stable {
+  contain: layout style;
+}
+
+/* ============================== Accessibility Layout ============================== */
+
+/* Focus management for skip links */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--bg);
+  color: var(--text);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  z-index: var(--z-modal);
+  transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+  top: 6px;
+}
+
+/* Reduced motion layout adjustments */
+@media (prefers-reduced-motion: reduce) {
+  .nav-container,
+  .footer-content,
+  .projects-grid,
+  .site-avatar {
+    transition: none;
+  }
+  
+  .site-avatar:hover {
+    transform: none;
+  }
+}
