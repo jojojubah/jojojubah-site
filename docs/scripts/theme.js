@@ -221,3 +221,6 @@ export class ThemeService {
     };
   }
 }
+
+// Make available globally
+window.ThemeService = ThemeService;
