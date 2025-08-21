@@ -234,3 +234,6 @@ export class AccordionService {
     }
     return false;
   }
+
+// Make available globally
+window.AccordionService = AccordionService;
