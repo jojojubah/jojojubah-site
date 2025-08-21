@@ -324,3 +324,6 @@ export class UtilsService {
     };
   }
 }
+
+// Make available globally
+window.UtilsService = UtilsService;
