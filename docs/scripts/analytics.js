@@ -204,3 +204,6 @@ export class AnalyticsService {
     location.reload();
   }
 }
+
+// Make available globally
+window.AnalyticsService = AnalyticsService;
