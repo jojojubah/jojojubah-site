@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jubah Labs – Secret Page</title>
+  <title>Jubah Labs — Secret Page</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -58,14 +58,14 @@
       <div class="container">
         <h2 class="section-title fade-in">Lab Experiments</h2>
         <p class="muted" style="text-align:center;margin-top:.25rem">
-          Quick demos & WIP ideas I’m playing with.
+          Quick demos & WIP ideas I'm playing with.
         </p>
 
         <div class="projects-grid" style="margin-top:1.5rem">
           <div class="project-card fade-in">
             <div class="project-content">
               <h3 class="project-title">Prompt Pack Builder</h3>
-              <p class="project-description">Draft a clean “context pack” for tasks: goal → constraints → key facts → examples → attachments.</p>
+              <p class="project-description">Draft a clean "context pack" for tasks: goal → constraints → key facts → examples → attachments.</p>
               <a href="#" class="btn">Open Builder</a>
             </div>
           </div>
@@ -105,7 +105,7 @@
           <div class="project-card fade-in">
             <div class="project-content">
               <h3 class="project-title">Consent UX Tester</h3>
-              <p class="project-description">Compare “accept/decline/learn more” flows and copy—opt for clarity without nagging.</p>
+              <p class="project-description">Compare "accept/decline/learn more" flows and copy—opt for clarity without nagging.</p>
               <a href="#" class="btn">Run Test</a>
             </div>
           </div>
@@ -133,8 +133,21 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- ============ MODULAR JAVASCRIPT ARCHITECTURE ============ -->
+  <!-- Core utilities and helpers -->
+  <script src="scripts/utils.js" defer></script>
+  
+  <!-- Feature modules (load in dependency order) -->
+  <script src="scripts/analytics.js" defer></script>
+  <script src="scripts/theme.js" defer></script>
+  <script src="scripts/navigation.js" defer></script>
+  <script src="scripts/accordion.js" defer></script>
+  <script src="scripts/effects.js" defer></script>
+  
+  <!-- Labs-specific script (loads before main app) -->
   <script src="labs.js" defer></script>
+  
+  <!-- Main application orchestrator (loads last) -->
   <script src="app.js" defer></script>
 
   <!-- === Assistant (Jojo) — START === -->
