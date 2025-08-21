@@ -296,3 +296,6 @@ export class EffectsService {
     this.initialize();
   }
 }
+
+// Make available globally
+window.EffectsService = EffectsService;
