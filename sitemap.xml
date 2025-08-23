@@ -10,14 +10,14 @@
 
   <!-- Economics Page (educational content with AI integration) -->
   <url>
-    <loc>https://jojojubah.com/economics-complete.html</loc>
+    <loc>https://jojojubah.com/economics.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Jubah Labs (Matrix-themed experimental page with AI) -->
   <url>
-    <loc>https://jojojubah.com/jubah-labs-complete.html</loc>
+    <loc>https://jojojubah.com/labs.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
