@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                • Build a tiny agent in n8n.<br>
                • Test an open-source model locally and compare.</p>
             <div style="margin-top:1rem">
-              <a class="btn" href="jubah-labs-complete.html">Open JubahLabs</a>
+              <a class="btn" href="labs.html">Open JubahLabs</a>
             </div>
           </div>
         </div>
