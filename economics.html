@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Economics — JojoJubah</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Use complete site styles with AI chatbot integration -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Background -->
+  <div class="background-gradient"></div>
+
+  <!-- Nav (updated links to main website) -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-container">
+        <div class="logo-area">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="index.html#economics" class="nav-link">Economics</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
+      <div class="container">
+        <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
+        <p class="hero-subtitle">Plain-English notes on money, markets, and decisions—made for creators.</p>
+        <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
+      </div>
+    </section>
+
+    <!-- Starter content (enhanced with AI integration) -->
+    <section id="notes">
+      <div class="container">
+        <h2 class="section-title fade-in">Starter Notes</h2>
+        <div class="projects-grid">
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Supply & Demand (Fast Intuition)</h3>
+              <p class="project-description">
+                Prices move where buyers and sellers agree. Shocks (news, scarcity) shift
+                those curves. Tip: always ask "what changed the balance?"
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('Explain supply and demand in simple terms')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Inflation vs. Deflation</h3>
+              <p class="project-description">
+                Inflation = rising prices, deflation = falling prices. Moderate inflation
+                motivates spending; deflation can stall it. Why it matters for creators:
+                pricing, contracts, and savings.
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('How does inflation affect content creators and online businesses?')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Compounding & Time</h3>
+              <p class="project-description">
+                Tiny repeated edges beat big one-offs. Audience, skills, and cashflows
+                all compound when you keep the flywheel turning.
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('Explain the power of compounding for creators and skill building')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- New AI-Enhanced Cards -->
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Market Psychology</h3>
+              <p class="project-description">
+                Fear and greed drive cycles. Understanding crowd behavior helps creators
+                time launches, spot trends, and avoid panic decisions.
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('How can creators use market psychology to time their launches and content?')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Network Effects</h3>
+              <p class="project-description">
+                Products become more valuable as more people use them. Think social media,
+                communities, and creator ecosystems—each new member benefits everyone.
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('Explain network effects and how creators can leverage them')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card fade-in">
+            <div class="project-content">
+              <h3 class="project-title">Opportunity Cost</h3>
+              <p class="project-description">
+                Every choice has a hidden cost: what you gave up. For creators, time spent
+                on one project means less time for another. Always ask: "What am I not doing?"
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                <a href="#" class="btn">Read mini-note</a>
+                <button class="btn" onclick="askAI('How should creators think about opportunity cost when choosing projects?')">Ask AI</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-content" style="margin-top:2rem">
+          <div class="about-text">
+            <strong>Roadmap:</strong> short posts, simple charts, and a jargon-free glossary.
+            I'll add sources and deeper dives later. Got a topic request? Ask the AI assistant or ping me on socials!
+            <br><br>
+            <strong>💡 Pro tip:</strong> Use the "Ask AI" buttons above to get instant explanations, examples, and practical applications of these economic concepts.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (updated links) -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#learn">Learn</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="index.html#economics">Economics</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK for AI Assistant -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
+    
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+        authDomain: "jojojubah-f2996.firebaseapp.com",
+        projectId: "jojojubah-f2996",
+        storageBucket: "jojojubah-f2996.firebasestorage.app",
+        messagingSenderId: "160250947651",
+        appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
+        measurementId: "G-XC16XPJ48T"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const functions = getFunctions(app);
+    
+    // Make Firebase services available globally
+    window.app = app;
+    window.db = db;
+    window.getAIResponse = httpsCallable(functions, 'getAIResponse');
+  </script>
+
+  <!-- Scripts (complete versions with AI integration) -->
+  <script src="js/app.js" defer></script>
+  <script src="js/assistant-chat.js" defer></script>
+
+  <!-- Helper function for Ask AI buttons -->
+  <script>
+    function askAI(question) {
+      // Open the AI chat and pre-fill with the question
+      const assistantAvatar = document.getElementById('assistantAvatar');
+      const chatInput = document.getElementById('chatInput');
+      
+      if (assistantAvatar) {
+        assistantAvatar.click();
+        
+        setTimeout(() => {
+          if (chatInput) {
+            chatInput.value = question;
+            chatInput.focus();
+          }
+        }, 500);
+      }
+    }
+  </script>
+
+  <!-- === AI Assistant (Jojo) with Chat — START === -->
+  <div id="jojoAssistant" class="assistant">
+    <div class="assistant-avatar" id="assistantAvatar">
+      <img src="assets/jojo-assistant.png" alt="Jojo Assistant"/>
+      <div class="assistant-status-dot"></div>
+    </div>
+    
+    <!-- Chat Interface -->
+    <div class="assistant-chat" id="assistantChat">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="chat-avatar"/>
+          <div>
+            <h3>Jojo AI Assistant</h3>
+            <span class="chat-status">Online</span>
+          </div>
+        </div>
+        <button class="chat-close" id="chatClose" aria-label="Close chat">×</button>
+      </div>
+      
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+          <div class="message-content">
+            Welcome to Economics! 📈 I can help explain economic concepts in simple terms.<br><br>
+            Try asking me about:<br>
+            💰 Supply & demand, inflation, market psychology<br>
+            🚀 How economics applies to creators and businesses<br>
+            📊 Investment strategies and compounding<br>
+            🎯 Decision-making and opportunity costs<br><br>
+            What economic topic interests you?
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Ask about economics..." autofocus>
+        <button id="chatSend" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Original assistant bubble for tips -->
+    <div class="assistant-bubble" id="assistantBubble">
+      <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
+      <p id="assistantText">Need a hand?</p>
+    </div>
+  </div>
+  <!-- === AI Assistant (Jojo) — END === -->
+
+</body>
+</html>
