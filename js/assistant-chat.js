@@ -70,11 +70,17 @@ class JojoAssistant {
         
         // Click outside to close
         document.addEventListener('click', (e) => {
+            // Don't close if clicking the assistant bubble or its close button
+            const assistantBubble = document.getElementById('assistantBubble');
+            const assistantClose = document.getElementById('assistantClose');
+            
             if (this.isOpen && 
                 this.assistantChat && 
                 this.assistantAvatar &&
                 !this.assistantChat.contains(e.target) && 
-                !this.assistantAvatar.contains(e.target)) {
+                !this.assistantAvatar.contains(e.target) &&
+                !(assistantBubble && assistantBubble.contains(e.target)) &&
+                e.target !== assistantClose) {
                 this.closeChat();
             }
         });
