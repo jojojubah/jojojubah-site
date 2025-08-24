@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Jubah Labs – Secret Page</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -204,11 +204,22 @@
     window.app = app;
     window.db = db;
     window.getAIResponse = httpsCallable(functions, 'getAIResponse');
+    
+    // Ensure Firebase is ready before other scripts
+    console.log('Firebase initialized for Labs page');
   </script>
 
   <script src="js/app.js" defer></script>
   <script src="js/labs.js" defer></script>
-  <script src="js/assistant-chat.js" defer></script>
+  <!-- Add small delay to ensure Firebase is fully ready -->
+  <script>
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = 'js/assistant-chat.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    }, 100);
+  </script>
 
   <!-- === AI Assistant (Jojo) with Chat — START === -->
   <div id="jojoAssistant" class="assistant">
