@@ -38,12 +38,14 @@
       height: 100%;
       overflow: hidden;
       position: relative;
+      display: flex;
+      align-items: center;
     }
 
     .ticker-wrapper {
       display: flex;
       width: max-content;
-      animation: ticker-scroll 20s linear infinite;
+      animation: ticker-scroll 30s linear infinite;
       will-change: transform;
     }
 
@@ -57,14 +59,17 @@
       font-weight: 500;
       white-space: nowrap;
       color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @keyframes ticker-scroll {
       0% {
-        transform: translateX(0);
+        transform: translateX(100%);
       }
       100% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
       }
     }
 
@@ -127,14 +132,29 @@
         margin: 1rem 0;
       }
       
+      .ticker-wrapper {
+        animation: ticker-scroll-mobile 25s linear infinite;
+      }
+      
       .ticker-item {
         font-size: 0.85rem;
         padding: 0 1rem;
+        justify-content: center;
       }
       
       .ticker-refresh {
         padding: 6px 8px;
         font-size: 0.8rem;
+      }
+      
+      /* Faster mobile animation */
+      @keyframes ticker-scroll-mobile {
+        0% {
+          transform: translateX(100%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
       }
     }
   </style>
@@ -469,8 +489,10 @@
           const track1 = document.getElementById('tickerTrack1');
           const track2 = document.getElementById('tickerTrack2');
           if (track1 && track2) {
-            track1.innerHTML = `<span class="ticker-item">${result.data.banner}</span>`;
-            track2.innerHTML = `<span class="ticker-item">${result.data.banner}</span>`;
+            // Split the banner into individual items
+            const items = result.data.banner.split("   •   ").map(txt => `<span class="ticker-item">${txt.trim()}</span>`).join("");
+            track1.innerHTML = items;
+            track2.innerHTML = items;
           }
         } else {
           console.warn('No banner data in result:', result);
