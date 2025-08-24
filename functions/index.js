@@ -187,27 +187,46 @@ Return only the ticker text, no quotes or extra formatting.`;
       contents: [{role: "user", parts: [{text: prompt}]}],
     };
 
-    // Call Gemini API
-    const geminiResponse = await axios.post(
-        `${GOOGLE_AI_API_URL}?key=${GOOGLE_AI_API_KEY}`,
-        requestBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
+    // Try Gemini API with fallback for rate limiting
+    try {
+      const geminiResponse = await axios.post(
+          `${GOOGLE_AI_API_URL}?key=${GOOGLE_AI_API_KEY}`,
+          requestBody,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        },
-    );
+      );
 
-    if (geminiResponse.data.candidates && geminiResponse.data.candidates[0] &&
-        geminiResponse.data.candidates[0].content) {
-      const banner = geminiResponse.data.candidates[0].content.parts[0].text;
-      logger.info("Market banner generated successfully");
+      if (geminiResponse.data.candidates && geminiResponse.data.candidates[0] &&
+          geminiResponse.data.candidates[0].content) {
+        const banner = geminiResponse.data.candidates[0].content.parts[0].text;
+        logger.info("Market banner generated successfully");
+
+        return {
+          banner: banner.trim(),
+        };
+      } else {
+        throw new Error("Invalid response from Gemini API");
+      }
+    } catch (geminiError) {
+      // If Gemini API fails (rate limit, etc.), create fallback banner
+      logger.warn("Gemini API failed, creating fallback banner:",
+          geminiError.message);
+
+      const fallbackBanner = `📊 BTC ${formatCryptoPrice(bitcoin)}   •   ` +
+        `ETH ${formatCryptoPrice(ethereum)}   •   ` +
+        `DOGE ${formatCryptoPrice(dogecoin)}   •   ` +
+        `Gold ${formatPrice(gold)}   •   ` +
+        `Silver ${formatPrice(silver)}   •   ` +
+        `NVDA ${formatPrice(nvidia)}   •   ` +
+        `TSLA ${formatPrice(tesla)}   •   ` +
+        `AAPL ${formatPrice(apple)}`;
 
       return {
-        banner: banner.trim(),
+        banner: fallbackBanner,
       };
-    } else {
-      throw new Error("Invalid response from Gemini API");
     }
   } catch (error) {
     logger.error("Error generating market banner:", error);
