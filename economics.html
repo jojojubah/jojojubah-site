@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Economics — JojoJubah</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -56,7 +56,8 @@
       font-weight: 500;
       color: var(--text-primary);
       white-space: nowrap;
-      padding-right: 3rem;
+      padding-right: 5rem;
+      min-width: 100%;
     }
 
     @keyframes ticker-scroll {
@@ -128,6 +129,8 @@
       
       .ticker-item {
         font-size: 0.9rem;
+        min-width: 100vw;
+        padding-right: 3rem;
       }
       
       .ticker-refresh {
@@ -135,12 +138,19 @@
         font-size: 0.8rem;
       }
       
-      /* Force animation to work on mobile */
+      /* Ensure smooth animation on mobile */
       .ticker-wrapper {
         animation: ticker-scroll 30s linear infinite !important;
         -webkit-animation: ticker-scroll 30s linear infinite !important;
-        animation-duration: 30s !important;
-        animation-iteration-count: infinite !important;
+        will-change: transform;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+      }
+      
+      /* Prevent animation glitches */
+      .ticker-content {
+        -webkit-overflow-scrolling: touch;
+        will-change: transform;
       }
     }
   </style>
