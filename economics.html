@@ -27,26 +27,20 @@
 
     .ticker-container {
       width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
+      overflow: hidden;
       position: relative;
     }
 
     .ticker-content {
-      flex: 1;
-      height: 100%;
-      overflow: hidden;
-      position: relative;
       display: flex;
       align-items: center;
+      height: 50px;
     }
 
     .ticker-wrapper {
       display: flex;
-      width: max-content;
+      width: max-content; /* important for seamless scroll */
       animation: ticker-scroll 30s linear infinite;
-      will-change: transform;
     }
 
     .ticker-track {
@@ -64,127 +58,79 @@
       justify-content: center;
     }
 
-    @keyframes ticker-scroll {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
+    /* Seamless scroll: move half-width so track2 hands off to track1 with no gap */
+    @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
     .ticker-refresh {
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 6px;
-      padding: 8px 10px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 999px;
+      color: #065f46;
+      padding: 6px 10px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 0.9rem;
-      z-index: 10;
+      transition: all 0.2s ease;
+      z-index: 2;
     }
 
-    .ticker-refresh:hover:not(:disabled) {
-      background: rgba(34, 197, 94, 0.2);
-      border-color: rgba(34, 197, 94, 0.5);
-      transform: translateY(-50%) scale(1.05);
+    .ticker-refresh:hover {
+      background: rgba(16, 185, 129, 0.25);
+      transform: translateY(-50%) scale(1.02);
     }
-
-    .ticker-refresh:disabled {
+    
+    .ticker-refresh.loading {
       opacity: 0.6;
-      cursor: not-allowed;
+      cursor: wait;
     }
-
+    
+    .refresh-icon {
+      display: inline-block;
+      transform-origin: center;
+    }
+    
     .ticker-refresh.loading .refresh-icon {
-      animation: spin 1s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
-
+    
     @keyframes spin {
-      from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
 
-    /* Pause animation on hover */
-    #market-banner:hover .ticker-wrapper {
-      animation-play-state: paused;
-      -webkit-animation-play-state: paused;
-    }
-
-    /* Dark mode support */
-    body[data-theme="dark"] #market-banner {
-      background: linear-gradient(90deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
-      border-color: rgba(34, 197, 94, 0.4);
-    }
-
-    body[data-theme="dark"] .ticker-refresh {
-      background: rgba(34, 197, 94, 0.15);
-      border-color: rgba(34, 197, 94, 0.4);
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-      #market-banner {
-        height: 40px;
-        margin: 1rem 0;
-      }
-      
-      .ticker-wrapper {
-        animation: ticker-scroll-mobile 25s linear infinite;
-      }
-      
-      .ticker-item {
-        font-size: 0.85rem;
-        padding: 0 1rem;
-        justify-content: center;
-      }
-      
-      .ticker-refresh {
-        padding: 6px 8px;
-        font-size: 0.8rem;
-      }
-      
-      /* Faster mobile animation */
-      @keyframes ticker-scroll-mobile {
-        0% {
-          transform: translateX(100%);
-        }
-        100% {
-          transform: translateX(-100%);
-        }
-      }
+    /* Mobile tweaks */
+    @media (max-width: 640px) {
+      #market-banner { height: 44px; }
+      .ticker-item { padding: 0 1rem; font-size: 0.95rem; }
+      .ticker-refresh { font-size: 0.85rem; padding: 5px 9px; right: 8px; }
     }
   </style>
 </head>
-<body>
-  <!-- Background -->
-  <div class="background-gradient"></div>
 
-  <!-- Nav (updated links to main website) -->
-  <nav id="navbar">
-    <div class="container">
-      <div class="nav-container">
-        <div class="logo-area">
-          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+<body>
+  <!-- Header/Nav -->
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
           <span class="logo-text">JojoJubah</span>
+        </a>
+
+        <button class="menu-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="economics.html" class="active">Economics</a>
+          <a href="labs.html">Labs</a>
+          <a href="https://www.youtube.com/@jojojubah" target="_blank" rel="noopener">YouTube</a>
         </div>
-        <ul class="nav-links">
-          <li><a href="index.html#home" class="nav-link">Home</a></li>
-          <li><a href="index.html#about" class="nav-link">About</a></li>
-          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
-          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
-          <li><a href="index.html#economics" class="nav-link">Economics</a></li>
-          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
-        </ul>
-        <button class="mobile-menu-button" id="mobileMenuBtn">
-          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
-        </button>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
   <main>
     <!-- Hero -->
@@ -192,7 +138,7 @@
       <div class="container">
         <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
         <p class="hero-subtitle">Plain-English notes on money, markets, and decisions—made for creators.</p>
-        <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
+        <p class="hero-subtitle" style="font-size:1rem;margin-top:0.75rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
       </div>
     </section>
 
@@ -216,246 +162,127 @@
       </div>
     </section>
 
-    <!-- Starter content (enhanced with AI integration) -->
-    <section id="notes">
-      <div class="container">
-        <h2 class="section-title fade-in">Starter Notes</h2>
-        <div class="projects-grid">
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Supply & Demand (Fast Intuition)</h3>
-              <p class="project-description">
-                Prices move where buyers and sellers agree. Shocks (news, scarcity) shift
-                those curves. Tip: always ask "what changed the balance?"
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain supply and demand in simple terms')">Ask AI</button>
-              </div>
-            </div>
-          </div>
+    <!-- Starter content (enhanced with AI assistant & links) -->
+    <section class="projects container" id="projects" style="margin-top:2rem">
+      <h2 class="section-title">Quick Economics Notes</h2>
 
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Inflation vs. Deflation</h3>
-              <p class="project-description">
-                Inflation = rising prices, deflation = falling prices. Moderate inflation
-                motivates spending; deflation can stall it. Why it matters for creators:
-                pricing, contracts, and savings.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How does inflation affect content creators and online businesses?')">Ask AI</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Compounding & Time</h3>
-              <p class="project-description">
-                Tiny repeated edges beat big one-offs. Audience, skills, and cashflows
-                all compound when you keep the flywheel turning.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain the power of compounding for creators and skill building')">Ask AI</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- New AI-Enhanced Cards -->
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Market Psychology</h3>
-              <p class="project-description">
-                Fear and greed drive cycles. Understanding crowd behavior helps creators
-                time launches, spot trends, and avoid panic decisions.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How can creators use market psychology to time their launches and content?')">Ask AI</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Network Effects</h3>
-              <p class="project-description">
-                Products become more valuable as more people use them. Think social media,
-                communities, and creator ecosystems—each new member benefits everyone.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain network effects and how creators can leverage them')">Ask AI</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Opportunity Cost</h3>
-              <p class="project-description">
-                Every choice has a hidden cost: what you gave up. For creators, time spent
-                on one project means less time for another. Always ask: "What am I not doing?"
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How should creators think about opportunity cost when choosing projects?')">Ask AI</button>
-              </div>
+      <div class="projects-grid">
+        <div class="project-card fade-in">
+          <div class="project-content">
+            <h3 class="project-title">Inflation Basics</h3>
+            <p class="project-description">
+              Inflation is the general rise in prices over time, which reduces your purchasing power. If your money grows
+              slower than prices rise, you can buy less with the same pound. We'll cover CPI, core inflation, and how
+              central banks respond.
+            </p>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+              <a href="#" class="btn">Read mini-note</a>
+              <button class="btn" onclick="askAI('Explain UK CPI vs core inflation in simple terms, with a 2-sentence example')">Ask AI</button>
             </div>
           </div>
         </div>
 
-        <div class="about-content" style="margin-top:2rem">
-          <div class="about-text">
-            <strong>Roadmap:</strong> short posts, simple charts, and a jargon-free glossary.
-            I'll add sources and deeper dives later. Got a topic request? Ask the AI assistant or ping me on socials!
-            <br><br>
-            <strong>💡 Pro tip:</strong> Use the "Ask AI" buttons above to get instant explanations, examples, and practical applications of these economic concepts.
+        <div class="project-card fade-in">
+          <div class="project-content">
+            <h3 class="project-title">Compounding</h3>
+            <p class="project-description">
+              Compounding lets your returns earn returns. Small, consistent gains (in skills, money, or habits)
+              all compound when you keep the flywheel turning.
+            </p>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+              <a href="#" class="btn">Read mini-note</a>
+              <button class="btn" onclick="askAI('Explain the power of compounding for creators and skill building')">Ask AI</button>
+            </div>
           </div>
+        </div>
+
+        <!-- New AI-Enhanced Cards -->
+        <div class="project-card fade-in">
+          <div class="project-content">
+            <h3 class="project-title">Market Psychology</h3>
+            <p class="project-description">
+              Fear and greed drive the market in the short run. Long-term returns depend more on fundamentals and your behavior.
+            </p>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+              <a href="#" class="btn">Read mini-note</a>
+              <button class="btn" onclick="askAI('Give a short example of how fear and greed affect stock prices in the short term')">Ask AI</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Assistant Section -->
+    <section class="assistant container" id="assistant">
+      <h2 class="section-title">Ask the Assistant</h2>
+      <div class="chat-container">
+        <div id="chatMessages" class="chat-messages">
+          <div class="message bot-message">
+            <div class="message-content">Hi! I’m your economics assistant. Ask me anything—monetary policy, inflation, investing basics, and more.</div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input id="messageInput" type="text" placeholder="Type your question…" autocomplete="off"/>
+          <button id="sendButton" class="btn">Send</button>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer (updated links) -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
-          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
-        </div>
-        <div class="footer-links">
-          <a href="index.html#home">Home</a>
-          <a href="index.html#about">About</a>
-          <a href="index.html#learn">Learn</a>
-          <a href="index.html#projects">Projects</a>
-          <a href="index.html#economics">Economics</a>
-          <a href="index.html#contact">Contact</a>
-        </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>JojoJubah</h4>
+        <p>Notes and tools to make economics clearer for creators.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="economics.html">Economics</a></li>
+          <li><a href="labs.html">Labs</a></li>
+          <li><a href="https://www.youtube.com/@jojojubah" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Social</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.youtube.com/@jojojubah" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
       </div>
     </div>
+    <div class="footer-bottom">© <span id="year"></span> JojoJubah. All rights reserved.</div>
   </footer>
 
-  <!-- Firebase SDK for AI Assistant -->
+  <!-- Scripts -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
-    
-    // Firebase configuration
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
+
+    // Your Firebase config (public)
     const firebaseConfig = {
-        apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
-        authDomain: "jojojubah-f2996.firebaseapp.com",
-        projectId: "jojojubah-f2996",
-        storageBucket: "jojojubah-f2996.firebasestorage.app",
-        messagingSenderId: "160250947651",
-        appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
-        measurementId: "G-XC16XPJ48T"
+      apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+      authDomain: "jojojubah-f2996.firebaseapp.com",
+      projectId: "jojojubah-f2996",
+      storageBucket: "jojojubah-f2996.appspot.com",
+      messagingSenderId: "657950730640",
+      appId: "1:657950730640:web:0b1b0c7ebd1b24b6f1f3ab"
     };
 
-    // Initialize Firebase
+    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const functions = getFunctions(app);
-    
-    // Make Firebase services available globally
+
+    // Expose for other scripts if needed
     window.app = app;
     window.db = db;
-    window.getAIResponse = httpsCallable(functions, 'getAIResponse');
-    
-    // Mark Firebase as ready
-    window.firebaseReady = true;
-    console.log('Firebase initialized for Economics page');
-  </script>
 
-  <!-- Scripts (complete versions with AI integration) -->
-  <script src="js/app.js" defer></script>
-  <script src="js/assistant-chat.js" defer></script>
-
-  <!-- Helper function for Ask AI buttons -->
-  <script>
-    function askAI(question) {
-      // Open the AI chat and pre-fill with the question
-      const assistantAvatar = document.getElementById('assistantAvatar');
-      const chatInput = document.getElementById('chatInput');
-      
-      if (assistantAvatar) {
-        assistantAvatar.click();
-        
-        setTimeout(() => {
-          if (chatInput) {
-            chatInput.value = question;
-            chatInput.focus();
-          }
-        }, 500);
-      }
-    }
-  </script>
-
-  <!-- === AI Assistant (Jojo) with Chat — START === -->
-  <div id="jojoAssistant" class="assistant">
-    <div class="assistant-avatar" id="assistantAvatar">
-      <img src="assets/jojo-assistant.png" alt="Jojo Assistant"/>
-      <div class="assistant-status-dot"></div>
-    </div>
-    
-    <!-- Chat Interface -->
-    <div class="assistant-chat" id="assistantChat">
-      <div class="chat-header">
-        <div class="chat-header-info">
-          <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="chat-avatar"/>
-          <div>
-            <h3>Jojo AI Assistant</h3>
-            <span class="chat-status">Online</span>
-          </div>
-        </div>
-        <button class="chat-close" id="chatClose" aria-label="Close chat">×</button>
-      </div>
-      
-      <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">
-          <div class="message-content">
-            Welcome to Economics! 📈 I can help explain economic concepts in simple terms.<br><br>
-            Try asking me about:<br>
-            💰 Supply & demand, inflation, market psychology<br>
-            🚀 How economics applies to creators and businesses<br>
-            📊 Investment strategies and compounding<br>
-            🎯 Decision-making and opportunity costs<br><br>
-            What economic topic interests you?
-          </div>
-        </div>
-      </div>
-      
-      <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Ask about economics..." autofocus>
-        <button id="chatSend" aria-label="Send message">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Original assistant bubble for tips -->
-    <div class="assistant-bubble" id="assistantBubble">
-      <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
-      <p id="assistantText">Need a hand?</p>
-    </div>
-  </div>
-  <!-- === AI Assistant (Jojo) — END === -->
-
-  <!-- Market Banner Functionality -->
-  <script type="module">
-    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
-    
-    // Use the existing Firebase app
-    const functions = getFunctions(window.app);
-    const getMarketBanner = httpsCallable(functions, 'getMarketBanner');
-
+    // ---------- Market banner logic ----------
     let isLoading = false;
 
     async function loadMarketBanner(showStatus = false) {
@@ -474,31 +301,34 @@
         return;
       }
 
+      // status UI
+      if (refreshButton && showStatus) {
+        refreshButton.setAttribute('disabled', 'true');
+        refreshButton.classList.add('loading');
+      }
+      
+      isLoading = true;
+      
       try {
-        isLoading = true;
-        console.log('Setting loading state...');
-        refreshButton?.setAttribute('disabled', 'true');
-        refreshButton?.classList.add('loading');
-        
-        console.log('Calling getMarketBanner function...');
+        // Call your Cloud Function that returns { banner: string }
+        const getMarketBanner = httpsCallable(functions, 'getMarketBanner');
         const result = await getMarketBanner();
-        console.log('getMarketBanner result:', result);
-        
-        if (result.data && result.data.banner) {
-          console.log('Setting banner text:', result.data.banner);
-          const track1 = document.getElementById('tickerTrack1');
-          const track2 = document.getElementById('tickerTrack2');
+        console.log('Banner result:', result?.data);
+
+        if (result?.data?.banner) {
+          // Split into items regardless of spacing around the bullet and re-add bullets between items
+          const items = result.data.banner
+            .split(/•/g)
+            .map((txt, i, arr) => `<span class="ticker-item">${txt.trim()}${i < arr.length - 1 ? " •" : ""}</span>`)
+            .join("");
+
           if (track1 && track2) {
-            // Split the banner into individual items
-            const items = result.data.banner.split("   •   ").map(txt => `<span class="ticker-item">${txt.trim()}</span>`).join("");
             track1.innerHTML = items;
             track2.innerHTML = items;
           }
         } else {
           console.warn('No banner data in result:', result);
           const fallbackText = '📊 No market data received';
-          const track1 = document.getElementById('tickerTrack1');
-          const track2 = document.getElementById('tickerTrack2');
           if (track1 && track2) {
             track1.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
             track2.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
@@ -526,32 +356,65 @@
       console.log('Market banner script initialized');
       
       const refreshButton = document.getElementById('refreshBanner');
-      const bannerElement = document.getElementById('marketBannerText');
-      
-      console.log('Banner element found:', !!bannerElement);
-      console.log('Refresh button found:', !!refreshButton);
-      console.log('Firebase app available:', !!window.app);
-      
-      // Load banner on page load (with a small delay to ensure Firebase is ready)
-      setTimeout(() => {
-        console.log('Attempting to load market banner...');
-        loadMarketBanner(false);
-      }, 2000); // Increased delay to ensure Firebase is fully ready
-      
-      // Add refresh functionality
-      refreshButton?.addEventListener('click', () => {
-        console.log('Refresh button clicked');
-        loadMarketBanner(true);
-      });
-      
-      // Auto-refresh every 5 minutes
-      setInterval(() => {
-        if (!document.hidden) {
-          console.log('Auto-refreshing market banner');
-          loadMarketBanner(false);
-        }
-      }, 5 * 60 * 1000);
+      if (refreshButton) {
+        refreshButton.addEventListener('click', () => loadMarketBanner(true));
+      }
+
+      // Initial load
+      loadMarketBanner(false);
+
+      // Optional: refresh every 5 minutes (comment out to disable)
+      // setInterval(() => loadMarketBanner(false), 5 * 60 * 1000);
     });
+
+    // ---------- Chat/Assistant logic ----------
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    sendButton?.addEventListener('click', sendMessage);
+    messageInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    async function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      messageInput.disabled = true;
+      sendButton.disabled = true;
+
+      displayMessage(text, true);
+      
+      try {
+        const getAIResponse = httpsCallable(functions, 'getAIResponse');
+        const result = await getAIResponse({ message: text });
+        const reply = result?.data?.reply || "Sorry, I encountered an error. Please try again in a moment.";
+        displayMessage(reply, false);
+      } catch (err) {
+        console.error(err);
+        displayMessage("Sorry, I encountered an error. Please try again in a moment.", false);
+      } finally {
+        messageInput.value = "";
+        messageInput.disabled = false;
+        sendButton.disabled = false;
+        messageInput.focus();
+      }
+    }
+
+    function displayMessage(text, isUser) {
+      const div = document.createElement('div');
+      div.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+      const content = document.createElement('div');
+      content.className = 'message-content';
+      content.textContent = text;
+      div.appendChild(content);
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
 
     // Fix iOS Safari viewport height and scroll issues
     function fixIOSViewport() {
