@@ -41,14 +41,17 @@
       align-items: center;
       white-space: nowrap;
       position: relative;
+      mask: linear-gradient(90deg, transparent, white 20px, white calc(100% - 20px), transparent);
+      -webkit-mask: linear-gradient(90deg, transparent, white 20px, white calc(100% - 20px), transparent);
     }
 
     .ticker-wrapper {
       display: flex;
-      animation: ticker-scroll 20s linear infinite;
+      animation: ticker-scroll 25s linear infinite;
       /* Ensure animation works on mobile */
-      -webkit-animation: ticker-scroll 20s linear infinite;
+      -webkit-animation: ticker-scroll 25s linear infinite;
       will-change: transform;
+      width: 200%; /* Double width to accommodate duplicate */
     }
 
     .ticker-item {
@@ -57,12 +60,12 @@
       font-weight: 500;
       color: var(--text-primary);
       white-space: nowrap;
-      padding-right: 0;
-      width: 100%;
+      width: 50%; /* Each item takes half the wrapper width */
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding-left: 2rem;
+      justify-content: center;
+      padding: 0 2rem;
+      box-sizing: border-box;
     }
 
     @keyframes ticker-scroll {
@@ -110,8 +113,9 @@
     }
 
     /* Pause animation on hover */
-    .ticker-content:hover .ticker-text {
+    .ticker-content:hover .ticker-wrapper {
       animation-play-state: paused;
+      -webkit-animation-play-state: paused;
     }
 
     /* Dark mode support */
@@ -134,7 +138,7 @@
       
       .ticker-item {
         font-size: 0.9rem;
-        padding-left: 1rem;
+        padding: 0 1rem;
       }
       
       .ticker-refresh {
@@ -144,8 +148,8 @@
       
       /* Ensure smooth animation on mobile */
       .ticker-wrapper {
-        animation: ticker-scroll 20s linear infinite !important;
-        -webkit-animation: ticker-scroll 20s linear infinite !important;
+        animation: ticker-scroll 25s linear infinite !important;
+        -webkit-animation: ticker-scroll 25s linear infinite !important;
         will-change: transform;
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
