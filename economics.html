@@ -13,12 +13,7 @@
   <!-- Market Ticker Styles -->
   <style>
     #market-banner {
-      background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
-      border-top: 2px solid rgba(34, 197, 94, 0.3);
-      border-bottom: 2px solid rgba(34, 197, 94, 0.3);
-      padding: 0;
       margin: 2rem 0;
-      overflow: hidden;
       height: 50px;
       display: flex;
       align-items: center;
@@ -26,27 +21,20 @@
     }
 
     .ticker-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
-
-    .ticker-content {
-      flex: 1;
-      height: 100%;
       overflow: hidden;
+      white-space: nowrap;
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
+      border-top: 2px solid rgba(34, 197, 94, 0.3);
+      border-bottom: 2px solid rgba(34, 197, 94, 0.3);
+      color: var(--text-primary);
+      padding: 0.5rem 0;
       position: relative;
-      display: flex;
-      align-items: center;
     }
 
     .ticker-wrapper {
       display: flex;
       width: max-content;
       animation: ticker-scroll 30s linear infinite;
-      will-change: transform;
     }
 
     .ticker-track {
@@ -54,22 +42,18 @@
     }
 
     .ticker-item {
-      padding: 0 2rem;
+      padding: 0 1.5rem;
       font-size: 1rem;
       font-weight: 500;
       white-space: nowrap;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     @keyframes ticker-scroll {
       0% {
-        transform: translateX(100%);
+        transform: translateX(0);
       }
       100% {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
       }
     }
 
@@ -127,34 +111,14 @@
 
     /* Mobile responsive */
     @media (max-width: 768px) {
-      #market-banner {
-        height: 40px;
-        margin: 1rem 0;
-      }
-      
-      .ticker-wrapper {
-        animation: ticker-scroll-mobile 25s linear infinite;
-      }
-      
       .ticker-item {
         font-size: 0.85rem;
         padding: 0 1rem;
-        justify-content: center;
       }
       
       .ticker-refresh {
         padding: 6px 8px;
         font-size: 0.8rem;
-      }
-      
-      /* Faster mobile animation */
-      @keyframes ticker-scroll-mobile {
-        0% {
-          transform: translateX(100%);
-        }
-        100% {
-          transform: translateX(-100%);
-        }
       }
     }
   </style>
@@ -199,16 +163,11 @@
     <!-- Market Banner -->
     <section id="market-banner">
       <div class="ticker-container">
-        <div class="ticker-content">
-          <div class="ticker-wrapper" id="tickerWrapper">
-            <div class="ticker-track" id="tickerTrack1">
-              <span class="ticker-item">📊 Loading market data...</span>
-            </div>
-            <!-- Duplicate track for seamless loop -->
-            <div class="ticker-track" id="tickerTrack2">
-              <span class="ticker-item">📊 Loading market data...</span>
-            </div>
-          </div>
+        <div class="ticker-wrapper">
+          <!-- First track -->
+          <div class="ticker-track" id="tickerTrack1">📊 Loading market data...</div>
+          <!-- Duplicate track for seamless loop -->
+          <div class="ticker-track" id="tickerTrack2">📊 Loading market data...</div>
         </div>
         <button id="refreshBanner" class="ticker-refresh" aria-label="Refresh market data" title="Refresh market data">
           <span class="refresh-icon">🔄</span>
@@ -489,8 +448,16 @@
           const track1 = document.getElementById('tickerTrack1');
           const track2 = document.getElementById('tickerTrack2');
           if (track1 && track2) {
-            // Split the banner into individual items
-            const items = result.data.banner.split("   •   ").map(txt => `<span class="ticker-item">${txt.trim()}</span>`).join("");
+            // Split and restore bullets correctly
+            const items = result.data.banner
+              .split(/•/g) // split on bullet character
+              .map((txt, i, arr) => {
+                // re-add bullet except after last item
+                return `<span class="ticker-item">${txt.trim()}${i < arr.length - 1 ? " •" : ""}</span>`;
+              })
+              .join("");
+            
+            // duplicate the items into both tracks
             track1.innerHTML = items;
             track2.innerHTML = items;
           }
