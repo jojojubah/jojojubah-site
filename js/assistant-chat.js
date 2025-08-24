@@ -90,11 +90,16 @@ class JojoAssistant {
     waitForFirebase() {
         // Wait for Firebase to be available
         const checkFirebase = () => {
-            if (window.getAIResponse && window.db) {
+            if (window.firebaseReady && window.getAIResponse && window.db) {
                 this.isInitialized = true;
                 console.log('Jojo Assistant initialized with Firebase');
             } else {
-                setTimeout(checkFirebase, 100);
+                console.log('Waiting for Firebase...', {
+                    firebaseReady: !!window.firebaseReady,
+                    getAIResponse: !!window.getAIResponse,
+                    db: !!window.db
+                });
+                setTimeout(checkFirebase, 50);
             }
         };
         checkFirebase();
