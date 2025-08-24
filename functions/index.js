@@ -1,6 +1,5 @@
 const {onCall} = require("firebase-functions/v2/https");
 const {setGlobalOptions} = require("firebase-functions");
-const functions = require("firebase-functions");
 const logger = require("firebase-functions/logger");
 const axios = require("axios");
 
@@ -148,86 +147,21 @@ exports.getMarketBanner = onCall(async (request) => {
       }
     };
 
-    // Build prompt for Gemini
-    const prompt = `Create a single-line financial ticker banner using these ` +
-        `exact prices.
-Include the exact prices with currency symbols. Add brief sentiment comments.
-Use "   •   " (bullet with extra spaces) to separate each price item ` +
-        `for better readability in a scrolling banner.
+    // Create banner directly without AI (to avoid rate limits)
+    const banner = `📊 BTC ${formatCryptoPrice(bitcoin)}   •   ` +
+      `ETH ${formatCryptoPrice(ethereum)}   •   ` +
+      `DOGE ${formatCryptoPrice(dogecoin)}   •   ` +
+      `Gold ${formatPrice(gold)}   •   ` +
+      `Silver ${formatPrice(silver)}   •   ` +
+      `NVDA ${formatPrice(nvidia)}   •   ` +
+      `TSLA ${formatPrice(tesla)}   •   ` +
+      `AAPL ${formatPrice(apple)}`;
 
-Current prices:
-Bitcoin: ${formatCryptoPrice(bitcoin)}
-Ethereum: ${formatCryptoPrice(ethereum)}
-Dogecoin: ${formatCryptoPrice(dogecoin)}
-Gold Futures: ${formatPrice(gold)}
-Silver Futures: ${formatPrice(silver)}
-Nvidia: ${formatPrice(nvidia)}
-Tesla: ${formatPrice(tesla)}
-Apple: ${formatPrice(apple)}
+    logger.info("Market banner created successfully");
 
-Example format: 
-"📊 BTC steady   •   ETH rising   •   DOGE climbing   •   Gold flat"
-
-Return only the ticker text, no quotes or extra formatting.`;
-
-    // Get API key from Firebase config or fallback to hardcoded
-    let GOOGLE_AI_API_KEY;
-    try {
-      const config = functions.config();
-      GOOGLE_AI_API_KEY = (config.googleai && config.googleai.key);
-    } catch (error) {
-      // Fallback to existing key if config not available
-      GOOGLE_AI_API_KEY = "AIzaSyCXzpT_IUGSfx_J2W2mYhW1auz4hL67SkY";
-    }
-
-    const GOOGLE_AI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
-    // Prepare request body for Gemini
-    const requestBody = {
-      contents: [{role: "user", parts: [{text: prompt}]}],
+    return {
+      banner: banner,
     };
-
-    // Try Gemini API with fallback for rate limiting
-    try {
-      const geminiResponse = await axios.post(
-          `${GOOGLE_AI_API_URL}?key=${GOOGLE_AI_API_KEY}`,
-          requestBody,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-      );
-
-      if (geminiResponse.data.candidates && geminiResponse.data.candidates[0] &&
-          geminiResponse.data.candidates[0].content) {
-        const banner = geminiResponse.data.candidates[0].content.parts[0].text;
-        logger.info("Market banner generated successfully");
-
-        return {
-          banner: banner.trim(),
-        };
-      } else {
-        throw new Error("Invalid response from Gemini API");
-      }
-    } catch (geminiError) {
-      // If Gemini API fails (rate limit, etc.), create fallback banner
-      logger.warn("Gemini API failed, creating fallback banner:",
-          geminiError.message);
-
-      const fallbackBanner = `📊 BTC ${formatCryptoPrice(bitcoin)}   •   ` +
-        `ETH ${formatCryptoPrice(ethereum)}   •   ` +
-        `DOGE ${formatCryptoPrice(dogecoin)}   •   ` +
-        `Gold ${formatPrice(gold)}   •   ` +
-        `Silver ${formatPrice(silver)}   •   ` +
-        `NVDA ${formatPrice(nvidia)}   •   ` +
-        `TSLA ${formatPrice(tesla)}   •   ` +
-        `AAPL ${formatPrice(apple)}`;
-
-      return {
-        banner: fallbackBanner,
-      };
-    }
   } catch (error) {
     logger.error("Error generating market banner:", error);
     throw new Error("Failed to generate market banner");
