@@ -46,6 +46,8 @@
     .ticker-wrapper {
       display: flex;
       animation: ticker-scroll 30s linear infinite;
+      /* Ensure animation works on mobile */
+      -webkit-animation: ticker-scroll 30s linear infinite;
     }
 
     .ticker-item {
@@ -124,13 +126,21 @@
         margin: 1rem 0;
       }
       
-      .ticker-text {
+      .ticker-item {
         font-size: 0.9rem;
       }
       
       .ticker-refresh {
         padding: 6px 8px;
         font-size: 0.8rem;
+      }
+      
+      /* Force animation to work on mobile */
+      .ticker-wrapper {
+        animation: ticker-scroll 30s linear infinite !important;
+        -webkit-animation: ticker-scroll 30s linear infinite !important;
+        animation-duration: 30s !important;
+        animation-iteration-count: infinite !important;
       }
     }
   </style>
@@ -513,6 +523,18 @@
         }
       }, 5 * 60 * 1000);
     });
+
+    // Fix iOS Safari viewport height and scroll issues
+    function fixIOSViewport() {
+      // Set CSS custom property for proper viewport height
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    // Fix on load and resize
+    window.addEventListener('load', fixIOSViewport);
+    window.addEventListener('resize', fixIOSViewport);
+    window.addEventListener('orientationchange', fixIOSViewport);
   </script>
 
 </body>
