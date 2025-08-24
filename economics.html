@@ -9,6 +9,131 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Use complete site styles with AI chatbot integration -->
   <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Market Ticker Styles -->
+  <style>
+    #market-banner {
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
+      border-top: 2px solid rgba(34, 197, 94, 0.3);
+      border-bottom: 2px solid rgba(34, 197, 94, 0.3);
+      padding: 0;
+      margin: 2rem 0;
+      overflow: hidden;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .ticker-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .ticker-content {
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .ticker-wrapper {
+      display: flex;
+      animation: ticker-scroll 30s linear infinite;
+    }
+
+    .ticker-item {
+      flex-shrink: 0;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      padding-right: 3rem;
+    }
+
+    @keyframes ticker-scroll {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    .ticker-refresh {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 6px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+
+    .ticker-refresh:hover:not(:disabled) {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.5);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .ticker-refresh:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .ticker-refresh.loading .refresh-icon {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Pause animation on hover */
+    .ticker-content:hover .ticker-text {
+      animation-play-state: paused;
+    }
+
+    /* Dark mode support */
+    body[data-theme="dark"] #market-banner {
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    body[data-theme="dark"] .ticker-refresh {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      #market-banner {
+        height: 45px;
+        margin: 1rem 0;
+      }
+      
+      .ticker-text {
+        font-size: 0.9rem;
+      }
+      
+      .ticker-refresh {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Background -->
@@ -44,6 +169,21 @@
         <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
         <p class="hero-subtitle">Plain-English notes on money, markets, and decisions—made for creators.</p>
         <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
+      </div>
+    </section>
+
+    <!-- Market Banner -->
+    <section id="market-banner">
+      <div class="ticker-container">
+        <div class="ticker-content">
+          <div class="ticker-wrapper" id="tickerWrapper">
+            <div class="ticker-item" id="marketBannerText">📊 Loading market data...</div>
+            <div class="ticker-item" id="marketBannerTextDupe">📊 Loading market data...</div>
+          </div>
+        </div>
+        <button id="refreshBanner" class="ticker-refresh" aria-label="Refresh market data" title="Refresh market data">
+          <span class="refresh-icon">🔄</span>
+        </button>
       </div>
     </section>
 
@@ -274,6 +414,106 @@
     </div>
   </div>
   <!-- === AI Assistant (Jojo) — END === -->
+
+  <!-- Market Banner Functionality -->
+  <script type="module">
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
+    
+    // Use the existing Firebase app
+    const functions = getFunctions(window.app);
+    const getMarketBanner = httpsCallable(functions, 'getMarketBanner');
+
+    let isLoading = false;
+
+    async function loadMarketBanner(showStatus = false) {
+      console.log('loadMarketBanner called, isLoading:', isLoading);
+      
+      if (isLoading) return;
+      
+      const bannerElement = document.getElementById('marketBannerText');
+      const refreshButton = document.getElementById('refreshBanner');
+      
+      console.log('Elements check - banner:', !!bannerElement, 'refresh:', !!refreshButton);
+      
+      if (!bannerElement) {
+        console.error('Banner element not found!');
+        return;
+      }
+
+      try {
+        isLoading = true;
+        console.log('Setting loading state...');
+        refreshButton?.setAttribute('disabled', 'true');
+        refreshButton?.classList.add('loading');
+        
+        console.log('Calling getMarketBanner function...');
+        const result = await getMarketBanner();
+        console.log('getMarketBanner result:', result);
+        
+        if (result.data && result.data.banner) {
+          console.log('Setting banner text:', result.data.banner);
+          bannerElement.textContent = result.data.banner;
+          const dupeElement = document.getElementById('marketBannerTextDupe');
+          if (dupeElement) {
+            dupeElement.textContent = result.data.banner;
+          }
+        } else {
+          console.warn('No banner data in result:', result);
+          const fallbackText = '📊 No market data received';
+          bannerElement.textContent = fallbackText;
+          const dupeElement = document.getElementById('marketBannerTextDupe');
+          if (dupeElement) {
+            dupeElement.textContent = fallbackText;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading market banner:', error);
+        const errorText = '📊 Market data temporarily unavailable';
+        bannerElement.textContent = errorText;
+        const dupeElement = document.getElementById('marketBannerTextDupe');
+        if (dupeElement) {
+          dupeElement.textContent = errorText;
+        }
+      } finally {
+        isLoading = false;
+        refreshButton?.removeAttribute('disabled');
+        refreshButton?.classList.remove('loading');
+        console.log('Loading completed');
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Market banner script initialized');
+      
+      const refreshButton = document.getElementById('refreshBanner');
+      const bannerElement = document.getElementById('marketBannerText');
+      
+      console.log('Banner element found:', !!bannerElement);
+      console.log('Refresh button found:', !!refreshButton);
+      console.log('Firebase app available:', !!window.app);
+      
+      // Load banner on page load (with a small delay to ensure Firebase is ready)
+      setTimeout(() => {
+        console.log('Attempting to load market banner...');
+        loadMarketBanner(false);
+      }, 2000); // Increased delay to ensure Firebase is fully ready
+      
+      // Add refresh functionality
+      refreshButton?.addEventListener('click', () => {
+        console.log('Refresh button clicked');
+        loadMarketBanner(true);
+      });
+      
+      // Auto-refresh every 5 minutes
+      setInterval(() => {
+        if (!document.hidden) {
+          console.log('Auto-refreshing market banner');
+          loadMarketBanner(false);
+        }
+      }, 5 * 60 * 1000);
+    });
+  </script>
 
 </body>
 </html>
