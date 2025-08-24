@@ -66,6 +66,17 @@ body {
   #chatInput {
     font-size: 16px; /* Prevent zoom on iOS */
     min-height: 40px;
+    /* Disable zoom on focus */
+    -webkit-text-size-adjust: 100%;
+    -webkit-user-select: text;
+  }
+  
+  /* Prevent page zoom issues */
+  html {
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    text-size-adjust: none;
   }
   
   .chat-input-area {
