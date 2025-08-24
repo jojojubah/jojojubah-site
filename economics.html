@@ -37,23 +37,26 @@
       flex: 1;
       height: 100%;
       overflow: hidden;
-      white-space: nowrap;
       position: relative;
     }
 
     .ticker-wrapper {
-      display: inline-block;
-      animation: ticker-scroll 25s linear infinite;
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 20s linear infinite;
       will-change: transform;
+    }
+
+    .ticker-track {
+      display: flex;
     }
 
     .ticker-item {
       padding: 0 2rem;
-      display: inline-block;
       font-size: 1rem;
       font-weight: 500;
-      color: var(--text-primary);
       white-space: nowrap;
+      color: var(--text-primary);
     }
 
     @keyframes ticker-scroll {
@@ -126,7 +129,7 @@
       
       .ticker-item {
         font-size: 0.85rem;
-        padding: 0 1.5rem;
+        padding: 0 1rem;
       }
       
       .ticker-refresh {
@@ -178,8 +181,13 @@
       <div class="ticker-container">
         <div class="ticker-content">
           <div class="ticker-wrapper" id="tickerWrapper">
-            <div class="ticker-item" id="marketBannerText">📊 Loading market data...</div>
-            <div class="ticker-item" id="marketBannerTextDupe">📊 Loading market data...</div>
+            <div class="ticker-track" id="tickerTrack1">
+              <span class="ticker-item">📊 Loading market data...</span>
+            </div>
+            <!-- Duplicate track for seamless loop -->
+            <div class="ticker-track" id="tickerTrack2">
+              <span class="ticker-item">📊 Loading market data...</span>
+            </div>
           </div>
         </div>
         <button id="refreshBanner" class="ticker-refresh" aria-label="Refresh market data" title="Refresh market data">
@@ -435,13 +443,14 @@
       
       if (isLoading) return;
       
-      const bannerElement = document.getElementById('marketBannerText');
+      const track1 = document.getElementById('tickerTrack1');
+      const track2 = document.getElementById('tickerTrack2');
       const refreshButton = document.getElementById('refreshBanner');
       
-      console.log('Elements check - banner:', !!bannerElement, 'refresh:', !!refreshButton);
+      console.log('Elements check - track1:', !!track1, 'track2:', !!track2, 'refresh:', !!refreshButton);
       
-      if (!bannerElement) {
-        console.error('Banner element not found!');
+      if (!track1 || !track2) {
+        console.error('Ticker track elements not found!');
         return;
       }
 
@@ -457,27 +466,30 @@
         
         if (result.data && result.data.banner) {
           console.log('Setting banner text:', result.data.banner);
-          bannerElement.textContent = result.data.banner;
-          const dupeElement = document.getElementById('marketBannerTextDupe');
-          if (dupeElement) {
-            dupeElement.textContent = result.data.banner;
+          const track1 = document.getElementById('tickerTrack1');
+          const track2 = document.getElementById('tickerTrack2');
+          if (track1 && track2) {
+            track1.innerHTML = `<span class="ticker-item">${result.data.banner}</span>`;
+            track2.innerHTML = `<span class="ticker-item">${result.data.banner}</span>`;
           }
         } else {
           console.warn('No banner data in result:', result);
           const fallbackText = '📊 No market data received';
-          bannerElement.textContent = fallbackText;
-          const dupeElement = document.getElementById('marketBannerTextDupe');
-          if (dupeElement) {
-            dupeElement.textContent = fallbackText;
+          const track1 = document.getElementById('tickerTrack1');
+          const track2 = document.getElementById('tickerTrack2');
+          if (track1 && track2) {
+            track1.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
+            track2.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
           }
         }
       } catch (error) {
         console.error('Error loading market banner:', error);
         const errorText = '📊 Market data temporarily unavailable';
-        bannerElement.textContent = errorText;
-        const dupeElement = document.getElementById('marketBannerTextDupe');
-        if (dupeElement) {
-          dupeElement.textContent = errorText;
+        const track1 = document.getElementById('tickerTrack1');
+        const track2 = document.getElementById('tickerTrack2');
+        if (track1 && track2) {
+          track1.innerHTML = `<span class="ticker-item">${errorText}</span>`;
+          track2.innerHTML = `<span class="ticker-item">${errorText}</span>`;
         }
       } finally {
         isLoading = false;
