@@ -45,9 +45,10 @@
 
     .ticker-wrapper {
       display: flex;
-      animation: ticker-scroll 30s linear infinite;
+      animation: ticker-scroll 20s linear infinite;
       /* Ensure animation works on mobile */
-      -webkit-animation: ticker-scroll 30s linear infinite;
+      -webkit-animation: ticker-scroll 20s linear infinite;
+      will-change: transform;
     }
 
     .ticker-item {
@@ -56,8 +57,12 @@
       font-weight: 500;
       color: var(--text-primary);
       white-space: nowrap;
-      padding-right: 5rem;
-      min-width: 100%;
+      padding-right: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 2rem;
     }
 
     @keyframes ticker-scroll {
@@ -129,8 +134,7 @@
       
       .ticker-item {
         font-size: 0.9rem;
-        min-width: 100vw;
-        padding-right: 3rem;
+        padding-left: 1rem;
       }
       
       .ticker-refresh {
@@ -140,8 +144,8 @@
       
       /* Ensure smooth animation on mobile */
       .ticker-wrapper {
-        animation: ticker-scroll 30s linear infinite !important;
-        -webkit-animation: ticker-scroll 30s linear infinite !important;
+        animation: ticker-scroll 20s linear infinite !important;
+        -webkit-animation: ticker-scroll 20s linear infinite !important;
         will-change: transform;
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
