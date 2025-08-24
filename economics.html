@@ -41,15 +41,13 @@
       align-items: center;
       white-space: nowrap;
       position: relative;
-      mask: linear-gradient(90deg, transparent, white 20px, white calc(100% - 20px), transparent);
-      -webkit-mask: linear-gradient(90deg, transparent, white 20px, white calc(100% - 20px), transparent);
     }
 
     .ticker-wrapper {
       display: flex;
-      animation: ticker-scroll 25s linear infinite;
+      animation: ticker-scroll 30s linear infinite;
       /* Ensure animation works on mobile */
-      -webkit-animation: ticker-scroll 25s linear infinite;
+      -webkit-animation: ticker-scroll 30s linear infinite;
       will-change: transform;
       width: 200%; /* Double width to accommodate duplicate */
     }
@@ -63,17 +61,18 @@
       width: 50%; /* Each item takes half the wrapper width */
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 0 2rem;
+      justify-content: flex-start;
+      padding: 0 3rem 0 0;
       box-sizing: border-box;
+      min-width: 100%;
     }
 
     @keyframes ticker-scroll {
       0% {
-        transform: translate3d(0, 0, 0);
+        transform: translate3d(100%, 0, 0);
       }
       100% {
-        transform: translate3d(-50%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
       }
     }
 
@@ -136,9 +135,22 @@
         margin: 1rem 0;
       }
       
+      /* Mobile-specific ticker behavior */
+      .ticker-wrapper {
+        animation: ticker-scroll-mobile 35s linear infinite !important;
+        -webkit-animation: ticker-scroll-mobile 35s linear infinite !important;
+        will-change: transform;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        width: 300%; /* Wider for mobile to prevent overlap */
+      }
+      
       .ticker-item {
-        font-size: 0.9rem;
-        padding: 0 1rem;
+        font-size: 0.85rem;
+        padding: 0 4rem 0 2rem;
+        width: 33.33%; /* Three equal sections for mobile */
+        min-width: 100vw;
+        justify-content: center;
       }
       
       .ticker-refresh {
@@ -146,13 +158,14 @@
         font-size: 0.8rem;
       }
       
-      /* Ensure smooth animation on mobile */
-      .ticker-wrapper {
-        animation: ticker-scroll 25s linear infinite !important;
-        -webkit-animation: ticker-scroll 25s linear infinite !important;
-        will-change: transform;
-        -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d;
+      /* Mobile-specific animation */
+      @keyframes ticker-scroll-mobile {
+        0% {
+          transform: translate3d(100%, 0, 0);
+        }
+        100% {
+          transform: translate3d(-200%, 0, 0);
+        }
       }
       
       /* Prevent animation glitches */
@@ -207,6 +220,7 @@
           <div class="ticker-wrapper" id="tickerWrapper">
             <div class="ticker-item" id="marketBannerText">📊 Loading market data...</div>
             <div class="ticker-item" id="marketBannerTextDupe">📊 Loading market data...</div>
+            <div class="ticker-item" id="marketBannerTextTriple">📊 Loading market data...</div>
           </div>
         </div>
         <button id="refreshBanner" class="ticker-refresh" aria-label="Refresh market data" title="Refresh market data">
@@ -486,16 +500,24 @@
           console.log('Setting banner text:', result.data.banner);
           bannerElement.textContent = result.data.banner;
           const dupeElement = document.getElementById('marketBannerTextDupe');
+          const tripleElement = document.getElementById('marketBannerTextTriple');
           if (dupeElement) {
             dupeElement.textContent = result.data.banner;
+          }
+          if (tripleElement) {
+            tripleElement.textContent = result.data.banner;
           }
         } else {
           console.warn('No banner data in result:', result);
           const fallbackText = '📊 No market data received';
           bannerElement.textContent = fallbackText;
           const dupeElement = document.getElementById('marketBannerTextDupe');
+          const tripleElement = document.getElementById('marketBannerTextTriple');
           if (dupeElement) {
             dupeElement.textContent = fallbackText;
+          }
+          if (tripleElement) {
+            tripleElement.textContent = fallbackText;
           }
         }
       } catch (error) {
@@ -503,8 +525,12 @@
         const errorText = '📊 Market data temporarily unavailable';
         bannerElement.textContent = errorText;
         const dupeElement = document.getElementById('marketBannerTextDupe');
+        const tripleElement = document.getElementById('marketBannerTextTriple');
         if (dupeElement) {
           dupeElement.textContent = errorText;
+        }
+        if (tripleElement) {
+          tripleElement.textContent = errorText;
         }
       } finally {
         isLoading = false;
