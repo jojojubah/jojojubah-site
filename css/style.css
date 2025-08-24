@@ -32,14 +32,9 @@ html {
 
 body {
   /* Optimize scroll performance */
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  /* Prevent momentum scrolling bounce on iOS */
-  overscroll-behavior-y: none;
-  /* Force hardware acceleration for smoother scrolling */
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
 }
 
 /* Optimize specific elements that need hardware acceleration */
@@ -82,17 +77,6 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-  }
-  
-  /* Fix any potential border/outline issues */
-  * {
-    outline: none;
-    border: none;
-  }
-  
-  /* Restore necessary borders */
-  button, input, .btn {
-    border: revert;
   }
 }
 
@@ -269,7 +253,7 @@ footer{padding:3rem 0;border-top:1px solid #e1e8f4;background:linear-gradient(14
 .footer-links a:hover{box-shadow:var(--neu-inset);color:#0f172a}
 
 /* Cookie */
-#cookieConsentBanner{position:fixed !important;left:50% !important;bottom:24px !important;transform:translateX(-50%) !important;background:var(--bg);border-radius:18px;box-shadow:var(--neu-out);padding:1rem 1.25rem;z-index:10000 !important;width:min(92vw,520px);text-align:center}
+#cookieConsentBanner{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--bg);border-radius:18px;box-shadow:var(--neu-out);padding:1rem 1.25rem;z-index:10000;width:min(92vw,520px);text-align:center}
 #cookieConsentBanner p{color:var(--text-dim);margin-bottom:.85rem}
 #cookieConsentBanner a{color:var(--accent);text-decoration:underline}
 .cookie-buttons{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
