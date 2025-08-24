@@ -390,11 +390,22 @@
     window.app = app;
     window.db = db;
     window.getAIResponse = httpsCallable(functions, 'getAIResponse');
+    
+    // Ensure Firebase is ready before other scripts
+    console.log('Firebase initialized for Homepage');
   </script>
 
   <!-- Scripts -->
   <script src="js/app.js" defer></script>
-  <script src="js/assistant-chat.js" defer></script>
+  <!-- Add small delay to ensure Firebase is fully ready -->
+  <script>
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = 'js/assistant-chat.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    }, 100);
+  </script>
 
   <!-- === AI Assistant (Jojo) — START === -->
   <div id="jojoAssistant" class="assistant">
