@@ -18,9 +18,11 @@
       display: flex;
       align-items: center;
       position: relative;
+      width: 100%;
     }
 
     .ticker-container {
+      width: 100%;
       overflow: hidden;
       white-space: nowrap;
       background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
@@ -35,6 +37,7 @@
       display: flex;
       width: max-content;
       animation: ticker-scroll 30s linear infinite;
+      will-change: transform; /* Optimize for animations */
     }
 
     .ticker-track {
@@ -42,10 +45,23 @@
     }
 
     .ticker-item {
-      padding: 0 1.5rem;
+      padding: 0 1rem;
       font-size: 1rem;
       font-weight: 500;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .ticker-item::after {
+      content: " • ";
+      margin: 0 0.8rem;
+      color: rgba(34, 197, 94, 0.7);
+      font-weight: normal;
+    }
+    
+    .ticker-item:last-child::after {
+      display: none;
     }
 
     @keyframes ticker-scroll {
@@ -92,8 +108,8 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Pause animation on hover */
-    #market-banner:hover .ticker-wrapper {
+    /* Pause animation on hover - only when hovering over the ticker container */
+    .ticker-container:hover .ticker-wrapper {
       animation-play-state: paused;
       -webkit-animation-play-state: paused;
     }
@@ -114,6 +130,10 @@
       .ticker-item {
         font-size: 0.85rem;
         padding: 0 1rem;
+      }
+      
+      .ticker-wrapper {
+        animation: ticker-scroll 20s linear infinite; /* Faster on mobile */
       }
       
       .ticker-refresh {
@@ -417,6 +437,18 @@
 
     let isLoading = false;
 
+    function resetTickerAnimation() {
+      const wrapper = document.querySelector('.ticker-wrapper');
+      if (wrapper) {
+        // Temporarily remove animation
+        wrapper.style.animation = 'none';
+        // Force reflow
+        wrapper.offsetHeight;
+        // Re-apply animation
+        wrapper.style.animation = '';
+      }
+    }
+
     async function loadMarketBanner(showStatus = false) {
       console.log('loadMarketBanner called, isLoading:', isLoading);
       
@@ -448,18 +480,18 @@
           const track1 = document.getElementById('tickerTrack1');
           const track2 = document.getElementById('tickerTrack2');
           if (track1 && track2) {
-            // Split and restore bullets correctly
+            // Split items and wrap each in ticker-item (bullets handled by CSS)
             const items = result.data.banner
               .split(/•/g) // split on bullet character
-              .map((txt, i, arr) => {
-                // re-add bullet except after last item
-                return `<span class="ticker-item">${txt.trim()}${i < arr.length - 1 ? " •" : ""}</span>`;
-              })
+              .map(txt => `<span class="ticker-item">${txt.trim()}</span>`)
               .join("");
             
             // duplicate the items into both tracks
             track1.innerHTML = items;
             track2.innerHTML = items;
+            
+            // Reset animation to prevent mobile sync issues
+            resetTickerAnimation();
           }
         } else {
           console.warn('No banner data in result:', result);
@@ -469,6 +501,7 @@
           if (track1 && track2) {
             track1.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
             track2.innerHTML = `<span class="ticker-item">${fallbackText}</span>`;
+            resetTickerAnimation();
           }
         }
       } catch (error) {
@@ -479,6 +512,7 @@
         if (track1 && track2) {
           track1.innerHTML = `<span class="ticker-item">${errorText}</span>`;
           track2.innerHTML = `<span class="ticker-item">${errorText}</span>`;
+          resetTickerAnimation();
         }
       } finally {
         isLoading = false;
