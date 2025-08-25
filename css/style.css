@@ -844,6 +844,12 @@ body[data-theme="dark"] #chatInput::placeholder {
 /* Override for mobile will be handled in media query */
 
 .cookie-preferences-btn {
+  /* Desktop: Position at bottom of footer */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  
+  /* Styling */
   background: var(--bg);
   border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 8px;
@@ -1106,10 +1112,10 @@ body[data-theme="dark"] .cookie-modal-footer {
     z-index: 10 !important;
   }
   
-  /* Position cookie preferences much lower with relative positioning */
+  /* Position cookie preferences at bottom of footer (mobile) */
   footer .footer-left .cookie-preferences-btn {
-    position: relative !important;
-    top: 15px !important;
+    position: absolute !important;
+    bottom: 0 !important;
     left: 0 !important;
     margin: 0 !important;
     z-index: 10 !important;
