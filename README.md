@@ -47,8 +47,8 @@ A modern educational website featuring AI tutorials, economics guides, and an in
 ## 🛠️ Setup & Deployment
 
 ### Prerequisites
-- Firebase account
-- Google AI Studio API key
+- Firebase account (free)
+- Google AI Studio API key (free)
 - Node.js (for Firebase Functions)
 
 ### Local Development
