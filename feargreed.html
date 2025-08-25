@@ -1,42 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fear & Greed Index - JojoJubah Economics</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Fear & Greed Index Styles -->
-  <style>
-    /* =================== Fear & Greed Index Custom Styles =================== */
-    .fear-greed-hero {
-      min-height: 50vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem 0;
-    }
-
+<!-- Fear & Greed Index Partial Component -->
+<style>
+    /* =================== Fear & Greed Index Embedded Styles =================== */
     .fear-greed-widget {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2rem;
-      padding: 3rem 2rem;
-      background: var(--bg);
-      border-radius: var(--neu-radius);
-      box-shadow: var(--neu-out);
-      margin: 2rem auto;
-      max-width: 600px;
-      width: 90%;
+      gap: 1.5rem;
+      padding: 2rem 0;
+      margin: 0 auto;
+      max-width: 500px;
+      width: 100%;
     }
 
     .fear-greed-title {
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--text);
       margin: 0;
@@ -49,16 +26,16 @@
     }
 
     .fear-greed-subtitle {
-      font-size: 1rem;
+      font-size: 0.9rem;
       color: var(--text-dim);
-      margin: -1rem 0 0 0;
+      margin: -0.5rem 0 0 0;
       text-align: center;
       opacity: 0.9;
     }
 
     .fear-greed-gauge {
-      width: min(420px, 90vw);
-      height: 240px;
+      width: min(336px, 90vw); /* 20% smaller than 420px */
+      height: 192px; /* 20% smaller than 240px */
       position: relative;
     }
 
@@ -87,10 +64,10 @@
     .fear-greed-labels {
       display: flex;
       justify-content: space-between;
-      width: min(420px, 90vw);
+      width: min(336px, 90vw); /* Match gauge width */
       font-weight: 600;
-      font-size: 1rem;
-      margin-top: 1rem;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
       user-select: none;
     }
 
@@ -190,85 +167,34 @@
     /* Mobile adjustments */
     @media (max-width: 768px) {
       .fear-greed-widget {
-        padding: 2rem 1.5rem;
-        margin: 1rem;
-        width: calc(100% - 2rem);
+        padding: 1.5rem 0;
+        margin: 0;
+        width: 100%;
       }
       
       .fear-greed-gauge {
-        width: min(320px, 85vw);
-        height: 180px;
+        width: min(269px, 85vw); /* 20% smaller than 336px */
+        height: 154px; /* 20% smaller than 192px */
       }
       
       .fear-greed-title {
-        font-size: 1.6rem;
+        font-size: 1.3rem;
       }
       
       .fear-greed-labels {
-        font-size: 0.85rem;
-        width: min(320px, 85vw);
+        font-size: 0.8rem;
+        width: min(269px, 85vw);
       }
 
-      .fear-greed-info {
-        padding: 1.5rem;
-        margin: 1rem;
-        width: calc(100% - 2rem);
-      }
-
+      /* Keep the same transform-origin as desktop - this fixes the mobile base movement */
       .fear-greed-needle {
-        transform-origin: 160px 160px;
-      }
-
-      @keyframes fear-greed-swing {
-        0%   { transform: rotate(0deg); }
-        5.7% { transform: rotate(0deg); }
-        17.7% { transform: rotate(-72deg); }
-        49.7% { transform: rotate(72deg); }
-        81.7% { transform: rotate(0deg); }
-        89.7% { transform: rotate(-8deg); }
-        97.7% { transform: rotate(5deg); }
-        100% { transform: rotate(0deg); }
+        transform-origin: 210px 210px; /* Same as desktop to keep base stationary */
       }
     }
   </style>
-</head>
-<body>
-  <!-- Background -->
-  <div class="background-gradient"></div>
-  <div id="particles"></div>
 
-  <!-- Navigation -->
-  <nav id="navbar">
-    <div class="container">
-      <div class="nav-container">
-        <div class="logo-area">
-          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
-          <span class="logo-text">JojoJubah</span>
-        </div>
-        <ul class="nav-links">
-          <li><a href="index.html#home" class="nav-link">Home</a></li>
-          <li><a href="index.html#about" class="nav-link">About</a></li>
-          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
-          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
-          <li><a href="economics.html" class="nav-link active">Economics</a></li>
-          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
-        </ul>
-        <button class="mobile-menu-button" id="mobileMenuBtn">
-          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
-        </button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main>
-    <section class="fear-greed-hero">
-      <div class="container">
-        <a href="economics.html" class="back-link">
-          ← Back to Economics
-        </a>
-        
-        <div class="fear-greed-widget fade-in">
+<!-- Fear & Greed Index Component -->
+<div class="fear-greed-widget">
           <h1 class="fear-greed-title">Fear & Greed Index</h1>
           <p class="fear-greed-subtitle">Market sentiment visualization</p>
 
@@ -341,76 +267,34 @@
             <span class="greed-label">Extreme Greed</span>
           </div>
         </div>
+</div>
 
-        <div class="fear-greed-info fade-in">
-          <h3>What is the Fear & Greed Index?</h3>
-          <p>The Fear & Greed Index is a market sentiment indicator that measures investor emotions and behaviors. It ranges from 0 (Extreme Fear) to 100 (Extreme Greed).</p>
-          
-          <p><strong>How it works:</strong> The index analyzes multiple data points including market volatility, trading volume, social media sentiment, and safe haven demand to gauge whether investors are too fearful or too greedy.</p>
-          
-          <p><strong>Investment insight:</strong> Extreme fear often presents buying opportunities, while extreme greed may signal market tops. Contrarian investors use this as a timing tool.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+<script>
+  // Generate ticks for the gauge
+  (function addTicks(){
+    const g = document.getElementById('ticks');
+    if (!g) return; // Safety check
+    
+    const cx = 210, cy = 210, rOuter = 184, rInnerMajor = 166, rInnerMinor = 174;
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
-          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
-        </div>
-        <div class="footer-links">
-          <a href="index.html#home">Home</a>
-          <a href="index.html#about">About</a>
-          <a href="index.html#learn">Learn</a>
-          <a href="index.html#projects">Projects</a>
-          <a href="economics.html">Economics</a>
-          <a href="index.html#contact">Contact</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+    for(let i = -70; i <= 70; i += 10){
+      const rad = (i - 90) * Math.PI / 180;
+      const isMajor = (i % 20 === 0);
+      const rIn = isMajor ? rInnerMajor : rInnerMinor;
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  
-  <script>
-    // Generate ticks for the gauge
-    (function addTicks(){
-      const g = document.getElementById('ticks');
-      const cx = 210, cy = 210, rOuter = 184, rInnerMajor = 166, rInnerMinor = 174;
+      const x1 = cx + rIn * Math.cos(rad);
+      const y1 = cy + rIn * Math.sin(rad);
+      const x2 = cx + rOuter * Math.cos(rad);
+      const y2 = cy + rOuter * Math.sin(rad);
 
-      for(let i = -70; i <= 70; i += 10){
-        const rad = (i - 90) * Math.PI / 180;
-        const isMajor = (i % 20 === 0);
-        const rIn = isMajor ? rInnerMajor : rInnerMinor;
-
-        const x1 = cx + rIn * Math.cos(rad);
-        const y1 = cy + rIn * Math.sin(rad);
-        const x2 = cx + rOuter * Math.cos(rad);
-        const y2 = cy + rOuter * Math.sin(rad);
-
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', x1.toFixed(2));
-        line.setAttribute('y1', y1.toFixed(2));
-        line.setAttribute('x2', x2.toFixed(2));
-        line.setAttribute('y2', y2.toFixed(2));
-        line.setAttribute('opacity', isMajor ? '1' : '.5');
-        line.setAttribute('stroke-width', isMajor ? '3' : '2');
-        g.appendChild(line);
-      }
-    })();
-
-    // Initialize year in footer
-    document.addEventListener('DOMContentLoaded', function() {
-      const yearElement = document.getElementById('secretYear');
-      if (yearElement) {
-        yearElement.textContent = new Date().getFullYear();
-      }
-    });
-  </script>
-</body>
-</html>
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', x1.toFixed(2));
+      line.setAttribute('y1', y1.toFixed(2));
+      line.setAttribute('x2', x2.toFixed(2));
+      line.setAttribute('y2', y2.toFixed(2));
+      line.setAttribute('opacity', isMajor ? '1' : '.5');
+      line.setAttribute('stroke-width', isMajor ? '3' : '2');
+      g.appendChild(line);
+    }
+  })();
+</script>
