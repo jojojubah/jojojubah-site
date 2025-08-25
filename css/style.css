@@ -1053,17 +1053,22 @@ body[data-theme="dark"] .cookie-modal-footer {
   
   .footer-content {
     position: relative;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
   }
   
   .footer-left {
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
     position: relative;
+  }
+  
+  /* Move logo to top-left on mobile */
+  .footer-left .footer-logo {
+    align-self: flex-start;
   }
   
   /* Position cookie preferences at bottom-left on mobile */
