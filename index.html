@@ -346,21 +346,61 @@
   <footer>
     <div class="container">
       <div class="footer-content">
-        <div class="footer-logo">
-          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
-          <span class="logo-text">JojoJubah © 2025</span>
-        </div>
-        <div class="footer-links">
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#learn">Learn</a>
-          <a href="#projects">Projects</a>
-          <a href="#economics">Economics</a>
-          <a href="#contact">Contact</a>
+        <div class="footer-left">
+          <div class="footer-logo">
+            <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+            <span class="logo-text">JojoJubah © <span id="secretYear">2025</span></span>
+          </div>
+          <button id="cookiePreferences" class="cookie-preferences-btn">
+            🍪 Cookie Preferences
+          </button>
         </div>
       </div>
     </div>
   </footer>
+
+  <!-- Cookie Management Modal -->
+  <div id="cookieModal" class="cookie-modal" style="display: none;">
+    <div class="cookie-modal-content">
+      <div class="cookie-modal-header">
+        <h3>Cookie Preferences</h3>
+        <button id="closeCookieModal" class="cookie-modal-close">&times;</button>
+      </div>
+      
+      <div class="cookie-modal-body">
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Necessary</span>
+            <span class="cookie-category-status always-on">Always On</span>
+          </div>
+          <p class="cookie-category-desc">Essential cookies for site functionality and security.</p>
+        </div>
+
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Performance & Analytics</span>
+            <label class="cookie-toggle">
+              <input type="checkbox" id="analyticsToggle">
+              <span class="cookie-toggle-slider"></span>
+            </label>
+          </div>
+          <p class="cookie-category-desc">Help us understand which content you find most helpful (Google Analytics).</p>
+        </div>
+
+        <div class="cookie-category disabled">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Advertising</span>
+            <span class="cookie-category-status coming-soon">Coming Soon</span>
+          </div>
+          <p class="cookie-category-desc">Personalized ads and marketing (not currently implemented).</p>
+        </div>
+      </div>
+
+      <div class="cookie-modal-footer">
+        <button id="saveCookiePreferences" class="cookie-save-btn">Save Preferences</button>
+      </div>
+    </div>
+  </div>
 
   <div id="learnToast" class="toast" role="status" aria-live="polite" aria-atomic="true">🎉 Level up! You opened all topics.</div>
 
