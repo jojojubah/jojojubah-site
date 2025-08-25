@@ -64,9 +64,9 @@
     .fear-greed-labels {
       display: flex;
       justify-content: space-between;
-      width: min(336px, 90vw); /* Match gauge width */
+      width: min(380px, 90vw); /* Wider than gauge for better spacing */
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.8rem; /* Smaller font for better fit */
       margin-top: 0.5rem;
       user-select: none;
     }
@@ -196,7 +196,6 @@
 <!-- Fear & Greed Index Component -->
 <div class="fear-greed-widget">
           <h1 class="fear-greed-title">Fear & Greed Index</h1>
-          <p class="fear-greed-subtitle">Market sentiment visualization</p>
 
           <div class="fear-greed-gauge">
             <svg viewBox="0 0 420 220">
