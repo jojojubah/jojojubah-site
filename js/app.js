@@ -89,6 +89,124 @@
   document.addEventListener('DOMContentLoaded', hookBannerButtons);
 })();
 
+/* ================= Cookie Preferences Management ================== */
+(function cookiePreferences(){
+  // Get current cookie preferences from localStorage
+  function getCookiePreferences() {
+    const stored = localStorage.getItem('cookiePreferences');
+    return stored ? JSON.parse(stored) : {
+      necessary: true,  // Always true
+      analytics: false, // Default off
+      advertising: false // Default off (not implemented)
+    };
+  }
+
+  // Save cookie preferences to localStorage
+  function saveCookiePreferences(preferences) {
+    localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
+    
+    // Handle Google Analytics based on analytics preference
+    if (preferences.analytics) {
+      enableGoogleAnalytics();
+      localStorage.setItem('cookieConsent', 'accepted'); // Sync with old system
+    } else {
+      localStorage.setItem('cookieConsent', 'declined'); // Sync with old system
+      // Disable GA if it was previously enabled
+      if (window.gtag) {
+        window.gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+    }
+  }
+
+  // Reference to the Google Analytics function from the original code
+  function enableGoogleAnalytics() {
+    if (window.GA_LOADED) return;
+    window.GA_LOADED = true;
+    const MEASUREMENT_ID = 'G-0ZM44HTK32';
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', MEASUREMENT_ID, { anonymize_ip: true, cookie_flags: 'secure;samesite=strict' });
+  }
+
+  function initCookiePreferences() {
+    // Apply stored preferences on page load
+    const preferences = getCookiePreferences();
+    if (preferences.analytics) {
+      enableGoogleAnalytics();
+    }
+
+    // Set up modal functionality
+    const modal = document.getElementById('cookieModal');
+    const openBtn = document.getElementById('cookiePreferences');
+    const closeBtn = document.getElementById('closeCookieModal');
+    const saveBtn = document.getElementById('saveCookiePreferences');
+    const analyticsToggle = document.getElementById('analyticsToggle');
+
+    if (!modal || !openBtn || !closeBtn || !saveBtn || !analyticsToggle) return;
+
+    // Load current preferences into modal
+    analyticsToggle.checked = preferences.analytics;
+
+    // Open modal
+    openBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+      // Refresh toggle state
+      analyticsToggle.checked = getCookiePreferences().analytics;
+    });
+
+    // Close modal
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Save preferences
+    saveBtn.addEventListener('click', () => {
+      const newPreferences = {
+        necessary: true, // Always true
+        analytics: analyticsToggle.checked,
+        advertising: false // Not implemented yet
+      };
+      
+      saveCookiePreferences(newPreferences);
+      modal.style.display = 'none';
+      
+      // Show confirmation (optional)
+      console.log('Cookie preferences saved:', newPreferences);
+      
+      // Hide the original consent banner if visible
+      const banner = document.getElementById('cookieConsentBanner');
+      if (banner) {
+        banner.style.display = 'none';
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCookiePreferences);
+})();
+
 /* ========================= Main Site Interactions ===================== */
 document.addEventListener('DOMContentLoaded', () => {
   // Sticky navbar, scroll progress, fade-ins, active link
