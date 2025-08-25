@@ -299,6 +299,7 @@ footer {
   align-items: center;
   gap: 12px;
   margin-bottom: 1.5rem; /* Space between logo and cookie button */
+  text-decoration: none;
 }
 
 .footer-links {
