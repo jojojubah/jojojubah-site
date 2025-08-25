@@ -426,4 +426,66 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
+  /* ======================== Fear & Greed Index Integration ===================== */
+  // Check if we're on the feargreed.html page
+  const isFearGreedPage = window.location.pathname.includes('feargreed.html');
+  
+  if (isFearGreedPage) {
+    // Add special handling for Fear & Greed page
+    console.log('Fear & Greed Index page loaded');
+    
+    // Set initial dark theme for economics-related pages
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    
+    // Optional: You could add special animations or interactions here
+    // For example, needle position based on real data, tooltips, etc.
+    
+    // Add hover effects to the gauge
+    const gauge = document.querySelector('.fear-greed-gauge');
+    if (gauge) {
+      gauge.addEventListener('mouseenter', () => {
+        gauge.style.transform = 'scale(1.02)';
+        gauge.style.transition = 'transform 0.3s ease';
+      });
+      
+      gauge.addEventListener('mouseleave', () => {
+        gauge.style.transform = 'scale(1)';
+      });
+    }
+
+    // Add click analytics for the Fear & Greed Index
+    const backLink = document.querySelector('.back-link');
+    if (backLink) {
+      backLink.addEventListener('click', () => {
+        // Track navigation back to economics
+        if (window.gtag) {
+          window.gtag('event', 'fear_greed_back_click', {
+            event_category: 'navigation',
+            event_label: 'fear_greed_to_economics'
+          });
+        }
+      });
+    }
+  }
+
+  // Add analytics for Fear & Greed link clicks on economics page
+  const fearGreedLink = document.querySelector('a[href="feargreed.html"]');
+  if (fearGreedLink) {
+    fearGreedLink.addEventListener('click', () => {
+      if (window.gtag) {
+        window.gtag('event', 'fear_greed_link_click', {
+          event_category: 'navigation',
+          event_label: 'economics_to_fear_greed'
+        });
+      }
+      
+      // Add smooth transition effect
+      fearGreedLink.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        fearGreedLink.style.transform = 'scale(1)';
+      }, 150);
+    });
+  }
+
 });
