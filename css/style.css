@@ -1072,18 +1072,18 @@ body[data-theme="dark"] .cookie-modal-footer {
     height: 70px !important;
   }
   
-  /* Move logo higher within the compact footer */
+  /* Move logo to top-left within the compact footer */
   footer .footer-left .footer-logo {
     position: absolute !important;
-    top: 5px !important;
+    top: 0 !important;
     left: 0 !important;
     margin: 0 !important;
   }
   
-  /* Position cookie preferences lower within the compact footer */
+  /* Position cookie preferences with much more separation */
   footer .footer-left .cookie-preferences-btn {
     position: absolute !important;
-    bottom: 5px !important;
+    bottom: -10px !important;
     left: 0 !important;
     margin: 0 !important;
   }
