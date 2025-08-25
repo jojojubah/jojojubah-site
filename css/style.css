@@ -276,7 +276,7 @@ footer{
   border-top:1px solid #e1e8f4;
   background:linear-gradient(145deg,#e8edf4,#f4f7fb);
   position: relative; /* Allow absolute positioning of cookie button */
-  min-height: 140px; /* Increase space for logo and button separation */
+  min-height: 120px; /* Revert to original height to fix scroll issues */
 }
 .footer-content{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:12px}
@@ -847,7 +847,7 @@ body[data-theme="dark"] #chatInput::placeholder {
   gap: 1rem;
   position: relative; /* keep layout context */
   padding-top: 1rem; /* Add top spacing to push logo away from cookie button */
-  height: 100px; /* Define height to contain both logo and button properly */
+  /* Remove fixed height that might cause scroll issues */
 }
 
 /* Override for mobile will be handled in media query */
@@ -855,7 +855,7 @@ body[data-theme="dark"] #chatInput::placeholder {
 /* Desktop: Logo positioning */
 .footer-left .footer-logo {
   position: relative;
-  top: -20px; /* Move logo even higher */
+  top: -40px; /* Move logo as high as possible */
   margin-bottom: auto; /* Push logo to top of container */
 }
 
@@ -1124,7 +1124,7 @@ body[data-theme="dark"] .cookie-modal-footer {
   /* Keep logo spacing on mobile */
   footer .footer-left .footer-logo {
     position: relative !important;
-    top: -10px !important;
+    top: -30px !important; /* Move logo as high as possible on mobile */
     left: 0 !important;
     margin: 0 !important;
   }
