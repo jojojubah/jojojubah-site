@@ -799,9 +799,31 @@ body[data-theme="dark"] #chatInput::placeholder {
   .toggle-group{ top:98px; right:12px; gap:6px }
   #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem }
 
-  .footer-content{justify-content:center;text-align:center;flex-direction:column;align-items:center;gap:.75rem}
-  .footer-links{justify-content:center;gap:.5rem;flex-wrap:nowrap}
-  .footer-links a{font-size:.85rem;padding:.35rem .55rem}
+  /* Override these rules for cookie preferences layout */
+  .footer-content{
+    position: relative !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
+    padding: 1rem 0 !important;
+  }
+  .footer-left {
+    height: 70px !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+  .footer-left .footer-logo {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+  .footer-left .cookie-preferences-btn {
+    position: absolute !important;
+    bottom: -10px !important;
+    left: 0 !important;
+  }
 }
 
 @media (max-width: 640px) {
