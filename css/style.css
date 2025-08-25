@@ -272,10 +272,11 @@ section { scroll-margin-top: 96px; }
 
 /* Footer */
 footer{
-  padding:3rem 0;
+  padding:3rem 0 0 0; /* Remove bottom padding so button can touch bottom */
   border-top:1px solid #e1e8f4;
   background:linear-gradient(145deg,#e8edf4,#f4f7fb);
   position: relative; /* Allow absolute positioning of cookie button */
+  min-height: 120px; /* Ensure enough space for logo and button separation */
 }
 .footer-content{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:12px}
@@ -849,11 +850,12 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* Override for mobile will be handled in media query */
 
-.cookie-preferences-btn {
-  /* Break out of nested containers - position relative to footer */
+/* Desktop: Cookie button at absolute footer bottom */
+footer .cookie-preferences-btn {
   position: absolute !important;
-  bottom: 0 !important; /* Touch absolute bottom of footer */
-  left: var(--container-pad) !important; /* Align with container padding */
+  bottom: 0 !important; /* Touch absolute bottom edge */
+  left: var(--container-pad) !important;
+  z-index: 10 !important;
   
   /* Styling */
   background: var(--bg);
