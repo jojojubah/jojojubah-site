@@ -271,7 +271,14 @@ section { scroll-margin-top: 96px; }
 .reveal-inline-btn:active { transform: scale(0.96); }
 
 /* Footer */
-footer{padding:3rem 0;border-top:1px solid #e1e8f4;background:linear-gradient(145deg,#e8edf4,#f4f7fb)}
+footer{
+  padding:2rem 0;
+  border-top:1px solid #e1e8f4;
+  background:linear-gradient(145deg,#e8edf4,#f4f7fb);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* logo/info at top, cookie at bottom */
+}
 .footer-content{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .footer-logo{display:flex;align-items:center;gap:12px}
 .footer-links{display:flex;gap:1rem;flex-wrap:wrap}
@@ -838,17 +845,17 @@ body[data-theme="dark"] #chatInput::placeholder {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-end; /* Push items to bottom */
   gap: 1rem;
-  flex: 1; /* Fill vertical space */
+  position: relative; /* keep layout context */
 }
 
 /* Override for mobile will be handled in media query */
 
 .cookie-preferences-btn {
-  /* Use flexbox alignment instead of absolute positioning */
+  /* Normal footer child that hugs bottom */
   position: relative;
-  margin-top: auto; /* Pushes to bottom within flex column */
+  margin-top: auto; /* pushes it down */
+  align-self: flex-start; /* keep it aligned left */
   
   /* Styling */
   background: var(--bg);
@@ -1107,18 +1114,17 @@ body[data-theme="dark"] .cookie-modal-footer {
   /* Keep logo spacing on mobile */
   footer .footer-left .footer-logo {
     position: relative !important;
-    top: -15px !important;
+    top: -10px !important; /* Reduced since footer is smaller */
     left: 0 !important;
     margin: 0 !important;
-    z-index: 10 !important;
   }
   
-  /* Use flexbox alignment for cookie preferences on mobile too */
+  /* Cookie preferences should naturally flow to footer bottom on mobile */
   footer .footer-left .cookie-preferences-btn {
     position: relative !important;
     margin-top: auto !important;
+    align-self: flex-start !important;
     left: 0 !important;
     margin-bottom: 0 !important;
-    z-index: 10 !important;
   }
 }
