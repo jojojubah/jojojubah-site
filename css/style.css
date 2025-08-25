@@ -813,6 +813,7 @@ body[data-theme="dark"] #chatInput::placeholder {
     height: 70px !important;
     position: relative !important;
     width: 100% !important;
+    gap: 0 !important; /* Override the desktop gap */
   }
   .footer-left .footer-logo {
     position: absolute !important;
@@ -832,13 +833,15 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* ===================== Cookie Preferences Footer & Modal ===================== */
 
-/* Footer Updates */
+/* Footer Updates - Desktop only */
 .footer-left {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
 }
+
+/* Override for mobile will be handled in media query */
 
 .cookie-preferences-btn {
   background: var(--bg);
@@ -1094,18 +1097,18 @@ body[data-theme="dark"] .cookie-modal-footer {
     height: 70px !important;
   }
   
-  /* Move logo to top-left within the compact footer */
+  /* Move logo higher and cookie preferences lower for proper separation */
   footer .footer-left .footer-logo {
     position: absolute !important;
-    top: 0 !important;
+    top: -8px !important;
     left: 0 !important;
     margin: 0 !important;
   }
   
-  /* Position cookie preferences with much more separation */
+  /* Position cookie preferences much lower for bigger gap */
   footer .footer-left .cookie-preferences-btn {
     position: absolute !important;
-    bottom: -10px !important;
+    bottom: -25px !important;
     left: 0 !important;
     margin: 0 !important;
   }
