@@ -850,13 +850,15 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* Override for mobile will be handled in media query */
 
-/* Desktop: Cookie button at absolute footer bottom */
-footer .cookie-preferences-btn {
+/* Desktop: Cookie button at absolute footer bottom - stronger selector */
+footer .container .footer-content .footer-left .cookie-preferences-btn {
   position: absolute !important;
-  bottom: 0 !important; /* Touch absolute bottom edge */
+  bottom: 0 !important; /* Touch absolute bottom edge - same as mobile */
   left: var(--container-pad) !important;
   z-index: 10 !important;
-  
+}
+
+.cookie-preferences-btn {
   /* Styling */
   background: var(--bg);
   border: 1px solid rgba(59, 130, 246, 0.3);
