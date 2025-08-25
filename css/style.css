@@ -850,10 +850,10 @@ body[data-theme="dark"] #chatInput::placeholder {
 /* Override for mobile will be handled in media query */
 
 .cookie-preferences-btn {
-  /* Position relative to footer itself for absolute bottom */
-  position: absolute;
-  bottom: 1rem; /* Sits within footer padding */
-  left: 1rem;   /* Align with footer content */
+  /* Break out of nested containers - position relative to footer */
+  position: absolute !important;
+  bottom: 0 !important; /* Touch absolute bottom of footer */
+  left: var(--container-pad) !important; /* Align with container padding */
   
   /* Styling */
   background: var(--bg);
@@ -1117,11 +1117,11 @@ body[data-theme="dark"] .cookie-modal-footer {
     margin: 0 !important;
   }
   
-  /* Cookie preferences positioned at absolute footer bottom on mobile */
+  /* Cookie preferences at absolute footer bottom on mobile */
   footer .cookie-preferences-btn {
     position: absolute !important;
-    bottom: 0.5rem !important; /* Closer to bottom on mobile */
-    left: 1rem !important;
+    bottom: 0 !important; /* Touch absolute footer bottom */
+    left: var(--container-pad) !important;
     margin: 0 !important;
   }
 }
