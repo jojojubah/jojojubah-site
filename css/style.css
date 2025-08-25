@@ -855,7 +855,7 @@ body[data-theme="dark"] #chatInput::placeholder {
 /* Desktop: Logo positioning */
 .footer-left .footer-logo {
   position: relative;
-  top: 0;
+  top: -10px; /* Move logo higher */
   margin-bottom: auto; /* Push logo to top of container */
 }
 
