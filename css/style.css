@@ -270,19 +270,57 @@ section { scroll-margin-top: 96px; }
 .reveal-inline-btn:hover { background: #e2e8f0; }
 .reveal-inline-btn:active { transform: scale(0.96); }
 
-/* Footer */
-footer{
-  padding:3rem 0 0 0; /* Remove bottom padding so button can touch bottom */
-  border-top:1px solid #e1e8f4;
-  background:linear-gradient(145deg,#e8edf4,#f4f7fb);
-  position: relative; /* Allow absolute positioning of cookie button */
-  min-height: 120px; /* Revert to original height to fix scroll issues */
+/* ============================== Footer ============================== */
+/* Clean footer implementation - no conflicting rules */
+footer {
+  position: relative;
+  padding: 2rem 0 3rem 0; /* Top padding, generous bottom for cookie button */
+  border-top: 1px solid #e1e8f4;
+  background: linear-gradient(145deg, #e8edf4, #f4f7fb);
 }
-.footer-content{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}
-.footer-logo{display:flex;align-items:center;gap:12px}
-.footer-links{display:flex;gap:1rem;flex-wrap:wrap}
-.footer-links a{color:var(--text-dim);text-decoration:none;padding:.5rem .85rem;border-radius:12px;background:var(--bg);box-shadow:var(--neu-out);transition:var(--t)}
-.footer-links a:hover{box-shadow:var(--neu-inset);color:#0f172a}
+
+.footer-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem; /* Space between logo and cookie button */
+}
+
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: .5rem .85rem;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--neu-out);
+  transition: var(--t);
+}
+
+.footer-links a:hover {
+  box-shadow: var(--neu-inset);
+  color: #0f172a;
+}
 
 /* Cookie */
 #cookieConsentBanner{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--bg);border-radius:18px;box-shadow:var(--neu-out);padding:1rem 1.25rem;z-index:10000;width:min(92vw,520px);text-align:center}
@@ -805,32 +843,6 @@ body[data-theme="dark"] #chatInput::placeholder {
   .toggle-group{ top:98px; right:12px; gap:6px }
   #themeToggle,#matrixToggle{ padding:.45rem .6rem; font-size:.9rem }
 
-  /* Override these rules for cookie preferences layout */
-  .footer-content{
-    position: relative !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0 !important;
-    padding: 1rem 0 !important;
-  }
-  .footer-left {
-    height: 70px !important;
-    position: relative !important;
-    width: 100% !important;
-    gap: 0 !important; /* Override the desktop gap */
-  }
-  .footer-left .footer-logo {
-    position: absolute !important;
-    top: -5px !important;
-    left: 0 !important;
-  }
-  .footer-left .cookie-preferences-btn {
-    position: absolute !important;
-    bottom: -20px !important;
-    left: 0 !important;
-  }
 }
 
 @media (max-width: 640px) {
@@ -839,35 +851,11 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* ===================== Cookie Preferences Footer & Modal ===================== */
 
-/* Footer Updates - Desktop only */
-.footer-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  position: relative; /* keep layout context */
-  padding-top: 1rem; /* Add top spacing to push logo away from cookie button */
-  /* Remove fixed height that might cause scroll issues */
-}
-
-/* Override for mobile will be handled in media query */
-
-/* Desktop: Logo positioning */
-.footer-left .footer-logo {
-  position: relative;
-  top: -40px; /* Move logo as high as possible */
-  margin-bottom: auto; /* Push logo to top of container */
-}
-
-/* Desktop: Cookie button - positioned at footer bottom with styling */
+/* Cookie Preferences Button */
 .cookie-preferences-btn {
-  /* Positioning - relative to footer */
-  position: absolute !important;
-  bottom: 0 !important; /* Touch absolute bottom edge of footer */
-  left: var(--container-pad) !important;
-  z-index: 10 !important;
-  
-  /* Styling */
+  position: absolute;
+  bottom: 0;
+  left: var(--container-pad);
   background: var(--bg);
   border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 8px;
@@ -878,10 +866,10 @@ body[data-theme="dark"] #chatInput::placeholder {
   cursor: pointer;
   transition: var(--t);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  /* Better mobile touch support */
   -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
   touch-action: manipulation;
   user-select: none;
+  z-index: 10;
 }
 
 .cookie-preferences-btn:hover {
@@ -1100,40 +1088,17 @@ body[data-theme="dark"] .cookie-modal-footer {
     padding: 0.75rem;
   }
   
-  /* Override existing footer styles on mobile - keep compact */
-  footer .container .footer-content {
-    position: relative !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0 !important;
-    min-height: auto !important;
-    padding: 1rem 0 !important;
+  /* Mobile Footer Adjustments */
+  footer {
+    padding: 1.5rem 0 3rem 0;
   }
   
-  footer .footer-left {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    width: 100% !important;
-    position: relative !important;
-    height: 70px !important;
+  .footer-logo {
+    margin-bottom: 1rem;
   }
   
-  /* Keep logo spacing on mobile */
-  footer .footer-left .footer-logo {
-    position: relative !important;
-    top: -30px !important; /* Move logo as high as possible on mobile */
-    left: 0 !important;
-    margin: 0 !important;
-  }
-  
-  /* Cookie preferences at absolute footer bottom on mobile */
-  footer .cookie-preferences-btn {
-    position: absolute !important;
-    bottom: 0 !important; /* Touch absolute footer bottom */
-    left: var(--container-pad) !important;
-    margin: 0 !important;
+  .cookie-preferences-btn {
+    bottom: 0;
+    left: var(--container-pad);
   }
 }
