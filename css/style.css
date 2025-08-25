@@ -1069,12 +1069,13 @@ body[data-theme="dark"] .cookie-modal-footer {
   /* Move logo to top-left on mobile */
   .footer-left .footer-logo {
     align-self: flex-start;
+    margin-bottom: 1rem; /* Add space between logo and cookie button */
   }
   
   /* Position cookie preferences at bottom-left on mobile */
   .footer-left .cookie-preferences-btn {
     position: absolute;
-    bottom: -2rem;
+    bottom: -1rem; /* Adjust position to account for logo spacing */
     left: 0;
     margin: 0;
   }
