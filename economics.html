@@ -180,17 +180,11 @@
       </div>
     </section>
 
-    <!-- Fear & Greed Index Link -->
-    <section id="fear-greed-link" class="fade-in" style="padding: 2rem 0; text-align: center;">
+    <!-- Fear & Greed Index Embedded -->
+    <section id="fear-greed-section" class="fade-in" style="padding: 2rem 0; text-align: center;">
       <div class="container">
-        <div class="neu-plate" style="padding: 2rem; max-width: 500px; margin: 0 auto;">
-          <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: var(--text); font-weight: 700;">📊 Market Sentiment</h3>
-          <p style="margin: 0 0 1.5rem 0; color: var(--text-dim); line-height: 1.5;">
-            Check the current Fear & Greed Index to understand market psychology and investor sentiment.
-          </p>
-          <a href="feargreed.html" class="btn" style="background: linear-gradient(90deg, var(--accent), #60a5fa); color: white; text-decoration: none; padding: 0.75rem 2rem; border-radius: 12px; font-weight: 600; display: inline-block; transition: var(--t);">
-            View Fear & Greed Index →
-          </a>
+        <div id="fearGreedContainer" style="margin: 0 auto;">
+          <!-- Fear & Greed Index will be loaded here -->
         </div>
       </div>
     </section>
@@ -538,8 +532,38 @@
     }
 
     // Initialize when page loads
+    // Load Fear & Greed Index component
+    async function loadFearGreedIndex() {
+      try {
+        const response = await fetch('feargreed.html');
+        if (response.ok) {
+          const html = await response.text();
+          const container = document.getElementById('fearGreedContainer');
+          if (container) {
+            container.innerHTML = html;
+            
+            // Execute any scripts that were loaded
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(script => {
+              const newScript = document.createElement('script');
+              newScript.textContent = script.textContent;
+              document.head.appendChild(newScript);
+              script.remove(); // Remove the original script tag
+            });
+            
+            console.log('Fear & Greed Index loaded successfully');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load Fear & Greed Index:', error);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       console.log('Market banner script initialized');
+      
+      // Load Fear & Greed Index
+      loadFearGreedIndex();
       
       const refreshButton = document.getElementById('refreshBanner');
       const bannerElement = document.getElementById('marketBannerText');
