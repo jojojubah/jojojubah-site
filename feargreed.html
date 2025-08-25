@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fear & Greed Index - JojoJubah Economics</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Fear & Greed Index Styles -->
+  <style>
+    /* =================== Fear & Greed Index Custom Styles =================== */
+    .fear-greed-hero {
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    .fear-greed-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding: 3rem 2rem;
+      background: var(--bg);
+      border-radius: var(--neu-radius);
+      box-shadow: var(--neu-out);
+      margin: 2rem auto;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .fear-greed-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+      text-align: center;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .fear-greed-subtitle {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin: -1rem 0 0 0;
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    .fear-greed-gauge {
+      width: min(420px, 90vw);
+      height: 240px;
+      position: relative;
+    }
+
+    .fear-greed-gauge svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .fear-greed-needle {
+      transform-origin: 210px 210px;
+      animation: fear-greed-swing 7s ease-in-out infinite;
+    }
+
+    @keyframes fear-greed-swing {
+      0%   { transform: rotate(0deg); }
+      5.7% { transform: rotate(0deg); }
+      17.7% { transform: rotate(-72deg); }
+      49.7% { transform: rotate(72deg); }
+      81.7% { transform: rotate(0deg); }
+      89.7% { transform: rotate(-8deg); }
+      97.7% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .fear-greed-labels {
+      display: flex;
+      justify-content: space-between;
+      width: min(420px, 90vw);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 1rem;
+      user-select: none;
+    }
+
+    .fear-greed-labels span {
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .fear-label { color: #e63946 !important; }
+    .neutral-label { color: var(--text-dim) !important; }
+    .greed-label { color: #2eb872 !important; }
+
+    .fear-greed-info {
+      background: var(--bg-2);
+      border-radius: var(--neu-radius);
+      box-shadow: var(--neu-inset);
+      padding: 2rem;
+      margin: 2rem 0;
+      max-width: 600px;
+      width: 90%;
+      text-align: left;
+    }
+
+    .fear-greed-info h3 {
+      color: var(--text);
+      font-size: 1.3rem;
+      margin: 0 0 1rem 0;
+      font-weight: 700;
+    }
+
+    .fear-greed-info p {
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin: 0 0 1rem 0;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow: var(--neu-out);
+      text-decoration: none;
+      color: var(--text-dim);
+      font-weight: 600;
+      transition: var(--t);
+      margin: 2rem 0;
+    }
+
+    .back-link:hover {
+      color: var(--text);
+      box-shadow: var(--neu-inset);
+      transform: translateY(-1px);
+    }
+
+    /* Dark mode support */
+    body[data-theme="dark"] .fear-greed-widget,
+    body[data-theme="dark"] .fear-greed-info {
+      background: #1e293b;
+      border: 1px solid rgba(71, 85, 105, 0.3);
+    }
+
+    body[data-theme="dark"] .fear-greed-title {
+      background: linear-gradient(90deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    body[data-theme="dark"] .fear-greed-subtitle,
+    body[data-theme="dark"] .fear-greed-info p {
+      color: #94a3b8;
+    }
+
+    body[data-theme="dark"] .fear-greed-info h3 {
+      color: #f1f5f9;
+    }
+
+    body[data-theme="dark"] .fear-greed-labels span {
+      color: #94a3b8;
+    }
+
+    body[data-theme="dark"] .back-link {
+      background: #1e293b;
+      border: 1px solid rgba(71, 85, 105, 0.3);
+      color: #94a3b8;
+    }
+
+    body[data-theme="dark"] .back-link:hover {
+      color: #f1f5f9;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .fear-greed-widget {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+      
+      .fear-greed-gauge {
+        width: min(320px, 85vw);
+        height: 180px;
+      }
+      
+      .fear-greed-title {
+        font-size: 1.6rem;
+      }
+      
+      .fear-greed-labels {
+        font-size: 0.85rem;
+        width: min(320px, 85vw);
+      }
+
+      .fear-greed-info {
+        padding: 1.5rem;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+
+      .fear-greed-needle {
+        transform-origin: 160px 160px;
+      }
+
+      @keyframes fear-greed-swing {
+        0%   { transform: rotate(0deg); }
+        5.7% { transform: rotate(0deg); }
+        17.7% { transform: rotate(-72deg); }
+        49.7% { transform: rotate(72deg); }
+        81.7% { transform: rotate(0deg); }
+        89.7% { transform: rotate(-8deg); }
+        97.7% { transform: rotate(5deg); }
+        100% { transform: rotate(0deg); }
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="background-gradient"></div>
+  <div id="particles"></div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-container">
+        <div class="logo-area">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="economics.html" class="nav-link active">Economics</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <section class="fear-greed-hero">
+      <div class="container">
+        <a href="economics.html" class="back-link">
+          ← Back to Economics
+        </a>
+        
+        <div class="fear-greed-widget fade-in">
+          <h1 class="fear-greed-title">Fear & Greed Index</h1>
+          <p class="fear-greed-subtitle">Market sentiment visualization</p>
+
+          <div class="fear-greed-gauge">
+            <svg viewBox="0 0 420 220">
+              <defs>
+                <linearGradient id="fearGreed" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#e63946"/>
+                  <stop offset="50%" stop-color="#ffcc33"/>
+                  <stop offset="100%" stop-color="#2eb872"/>
+                </linearGradient>
+                
+                <filter id="needleShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.3)"/>
+                </filter>
+                
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                  <feMerge> 
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Background arc -->
+              <path
+                d="M 30 210 A 180 180 0 0 1 390 210"
+                fill="none"
+                stroke="rgba(203, 213, 225, 0.5)"
+                stroke-width="24"
+                stroke-linecap="round"
+              />
+
+              <!-- Colored arc -->
+              <path
+                d="M 30 210 A 180 180 0 0 1 390 210"
+                fill="none"
+                stroke="url(#fearGreed)"
+                stroke-width="18"
+                stroke-linecap="round"
+                filter="url(#glow)"
+              />
+
+              <!-- Ticks -->
+              <g id="ticks" stroke="var(--text-dim)" stroke-width="2.5" stroke-linecap="round" opacity="0.7"></g>
+
+              <!-- Needle group -->
+              <g class="fear-greed-needle" filter="url(#needleShadow)">
+                <!-- Main needle shaft -->
+                <rect x="207" y="55" width="6" height="155" rx="3" fill="var(--text)" />
+                
+                <!-- Arrow head -->
+                <g transform="translate(210,55)">
+                  <path d="M 0,-8 L 8,8 L 3,8 L 3,15 L -3,15 L -3,8 L -8,8 Z" 
+                        fill="var(--text)" 
+                        stroke="none"/>
+                </g>
+                
+                <!-- Center hub -->
+                <circle cx="210" cy="210" r="12" fill="var(--bg)" stroke="var(--text)" stroke-width="3"/>
+                <circle cx="210" cy="210" r="6" fill="var(--text)"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="fear-greed-labels">
+            <span class="fear-label">Extreme Fear</span>
+            <span class="neutral-label">Neutral</span>
+            <span class="greed-label">Extreme Greed</span>
+          </div>
+        </div>
+
+        <div class="fear-greed-info fade-in">
+          <h3>What is the Fear & Greed Index?</h3>
+          <p>The Fear & Greed Index is a market sentiment indicator that measures investor emotions and behaviors. It ranges from 0 (Extreme Fear) to 100 (Extreme Greed).</p>
+          
+          <p><strong>How it works:</strong> The index analyzes multiple data points including market volatility, trading volume, social media sentiment, and safe haven demand to gauge whether investors are too fearful or too greedy.</p>
+          
+          <p><strong>Investment insight:</strong> Extreme fear often presents buying opportunities, while extreme greed may signal market tops. Contrarian investors use this as a timing tool.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#learn">Learn</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="economics.html">Economics</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  
+  <script>
+    // Generate ticks for the gauge
+    (function addTicks(){
+      const g = document.getElementById('ticks');
+      const cx = 210, cy = 210, rOuter = 184, rInnerMajor = 166, rInnerMinor = 174;
+
+      for(let i = -70; i <= 70; i += 10){
+        const rad = (i - 90) * Math.PI / 180;
+        const isMajor = (i % 20 === 0);
+        const rIn = isMajor ? rInnerMajor : rInnerMinor;
+
+        const x1 = cx + rIn * Math.cos(rad);
+        const y1 = cy + rIn * Math.sin(rad);
+        const x2 = cx + rOuter * Math.cos(rad);
+        const y2 = cy + rOuter * Math.sin(rad);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1.toFixed(2));
+        line.setAttribute('y1', y1.toFixed(2));
+        line.setAttribute('x2', x2.toFixed(2));
+        line.setAttribute('y2', y2.toFixed(2));
+        line.setAttribute('opacity', isMajor ? '1' : '.5');
+        line.setAttribute('stroke-width', isMajor ? '3' : '2');
+        g.appendChild(line);
+      }
+    })();
+
+    // Initialize year in footer
+    document.addEventListener('DOMContentLoaded', function() {
+      const yearElement = document.getElementById('secretYear');
+      if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+      }
+    });
+  </script>
+</body>
+</html>
