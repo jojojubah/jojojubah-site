@@ -838,16 +838,17 @@ body[data-theme="dark"] #chatInput::placeholder {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-end; /* Push items to bottom */
   gap: 1rem;
+  flex: 1; /* Fill vertical space */
 }
 
 /* Override for mobile will be handled in media query */
 
 .cookie-preferences-btn {
-  /* Desktop: Position at bottom of footer */
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  /* Use flexbox alignment instead of absolute positioning */
+  position: relative;
+  margin-top: auto; /* Pushes to bottom within flex column */
   
   /* Styling */
   background: var(--bg);
@@ -1103,7 +1104,7 @@ body[data-theme="dark"] .cookie-modal-footer {
     height: 70px !important;
   }
   
-  /* Test with more aggressive positioning to break out of container constraints */
+  /* Keep logo spacing on mobile */
   footer .footer-left .footer-logo {
     position: relative !important;
     top: -15px !important;
@@ -1112,12 +1113,12 @@ body[data-theme="dark"] .cookie-modal-footer {
     z-index: 10 !important;
   }
   
-  /* Position cookie preferences at bottom of footer (mobile) */
+  /* Use flexbox alignment for cookie preferences on mobile too */
   footer .footer-left .cookie-preferences-btn {
-    position: absolute !important;
-    bottom: 0 !important;
+    position: relative !important;
+    margin-top: auto !important;
     left: 0 !important;
-    margin: 0 !important;
+    margin-bottom: 0 !important;
     z-index: 10 !important;
   }
 }
