@@ -169,7 +169,7 @@ nav{
 }
 nav.scrolled{background: rgba(233,238,245,.8)}
 .nav-container{height:80px;display:flex;align-items:center;justify-content:space-between}
-.logo-area{display:flex;align-items:center;gap:12px}
+.logo-area{display:flex;align-items:center;gap:12px;text-decoration:none}
 .site-avatar{
   width:48px;height:48px;border-radius:12px;border:2px solid #eaf0f8;
   box-shadow:6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
