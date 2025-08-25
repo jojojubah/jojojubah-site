@@ -1058,24 +1058,27 @@ body[data-theme="dark"] .cookie-modal-footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    min-height: 80px; /* Ensure enough space for both elements */
   }
   
   .footer-left {
     align-items: flex-start;
     width: 100%;
     position: relative;
+    min-height: 80px;
   }
   
   /* Move logo to top-left on mobile */
   .footer-left .footer-logo {
-    align-self: flex-start;
-    margin-bottom: 1rem; /* Add space between logo and cookie button */
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   
-  /* Position cookie preferences at bottom-left on mobile */
+  /* Position cookie preferences at bottom-left on mobile with proper spacing */
   .footer-left .cookie-preferences-btn {
     position: absolute;
-    bottom: -1rem; /* Adjust position to account for logo spacing */
+    bottom: 0;
     left: 0;
     margin: 0;
   }
