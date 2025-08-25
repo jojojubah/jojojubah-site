@@ -156,12 +156,17 @@
     // Load current preferences into modal
     analyticsToggle.checked = preferences.analytics;
 
-    // Open modal
-    openBtn.addEventListener('click', () => {
+    // Open modal - add both click and touchstart for better mobile support
+    const openModal = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       modal.style.display = 'flex';
       // Refresh toggle state
       analyticsToggle.checked = getCookiePreferences().analytics;
-    });
+    };
+    
+    openBtn.addEventListener('click', openModal);
+    openBtn.addEventListener('touchstart', openModal, { passive: false });
 
     // Close modal
     closeBtn.addEventListener('click', () => {
