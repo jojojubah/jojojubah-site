@@ -852,6 +852,35 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* ===================== Cookie Preferences Footer & Modal ===================== */
 
+/* Code & BTC Animation Container */
+.codebtc-container {
+  display: flex;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+.codebtc-iframe {
+  width: 100%;
+  max-width: 800px;
+  height: 350px;
+  border: none;
+  border-radius: 16px;
+}
+
+@media (max-width: 768px) {
+  .codebtc-container {
+    max-width: none;
+    padding: 0;
+  }
+  
+  .codebtc-iframe {
+    max-width: none;
+    border-radius: 0;
+  }
+}
+
 /* Cookie Preferences Button */
 .cookie-preferences-btn {
   position: absolute;
