@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tech & Economics Learning</title>
+  <style>
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .scene {
+      position: relative;
+      width: 700px;
+      height: 300px;
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    /* Computer container */
+    .computer {
+      width: 280px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .monitor {
+      width: 240px;
+      height: 150px;
+      background: #2a2a2a;
+      border-radius: 8px;
+      border: 8px solid #1a1a1a;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* macOS window controls */
+    .window-controls {
+      display: flex;
+      gap: 6px;
+      padding: 6px 10px;
+      background: #1a1a1a;
+    }
+
+    .window-control {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .window-control.close {
+      background: #ff5f57;
+    }
+
+    .window-control.minimize {
+      background: #ffbd2e;
+    }
+
+    .window-control.maximize {
+      background: #28ca42;
+    }
+
+    .screen {
+      flex: 1;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .monitor-stand {
+      width: 60px;
+      height: 30px;
+      background: #333;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+
+    .monitor-base {
+      width: 120px;
+      height: 10px;
+      background: #333;
+      margin-top: 5px;
+      border-radius: 20px;
+    }
+
+    /* Left computer - Coding */
+    .coding-screen {
+      background: #1e1e1e;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .code-line {
+      opacity: 0;
+      animation: typeIn 6s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .code-line:nth-child(1) { color: #569cd6; animation-delay: 0.3s; }
+    .code-line:nth-child(2) { color: #dcdcaa; animation-delay: 1.2s; }
+    .code-line:nth-child(3) { color: #ce9178; animation-delay: 2.4s; }
+    .code-line:nth-child(4) { color: #4fc1ff; animation-delay: 3.1s; }
+    .code-line:nth-child(5) { color: #9cdcfe; animation-delay: 4.3s; }
+
+    @keyframes typeIn {
+      0%, 15% { opacity: 0; transform: translateX(-10px); }
+      20%, 85% { opacity: 1; transform: translateX(0); }
+      90%, 100% { opacity: 0; transform: translateX(10px); }
+    }
+
+    /* Right computer - Blockchain */
+    .blockchain-screen {
+      background: #1e1e1e;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    .blockchain-line {
+      opacity: 0;
+      animation: typeIn 6s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .blockchain-line:nth-child(1) { color: #f59e0b; animation-delay: 0.8s; }
+    .blockchain-line:nth-child(2) { color: #22c55e; animation-delay: 1.7s; }
+    .blockchain-line:nth-child(3) { color: #06b6d4; animation-delay: 2.9s; }
+    .blockchain-line:nth-child(4) { color: #8b5cf6; animation-delay: 3.6s; }
+    .blockchain-line:nth-child(5) { color: #ef4444; animation-delay: 4.8s; }
+
+    /* HODL line chart */
+    .hodl-chart {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      height: 50px;
+      overflow: hidden;
+    }
+
+    .hodl-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+    }
+
+    .hodl-line svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .hodl-path {
+      fill: none;
+      stroke: #22c55e;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.5));
+      animation: drawHodlLine 6s ease-in-out infinite;
+    }
+
+    @keyframes drawHodlLine {
+      0% { stroke-dasharray: 0 400; opacity: 0.6; }
+      50% { stroke-dasharray: 200 400; opacity: 1; }
+      100% { stroke-dasharray: 400 400; opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+
+    <!-- Left Computer - Coding -->
+    <div class="computer computer-left">
+      <div class="monitor">
+        <div class="window-controls">
+          <div class="window-control close"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="screen coding-screen">
+          <div class="code-line">pip install llama-cpp-python</div>
+          <div class="code-line">from llama3 import ChatLLaMA</div>
+          <div class="code-line">model.deploy() # Ready!</div>
+          <div class="code-line">ai_response = llama3.chat()</div>
+          <div class="code-line">git push origin deploy</div>
+        </div>
+      </div>
+      <div class="monitor-stand"></div>
+      <div class="monitor-base"></div>
+    </div>
+
+    <!-- Right Computer - Economics -->
+    <div class="computer computer-right">
+      <div class="monitor">
+        <div class="window-controls">
+          <div class="window-control close"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="screen blockchain-screen">
+          <div class="blockchain-line">Decentralised Network</div>
+          <div class="blockchain-line">0x742d35Cc6cF32594</div>
+          <div class="blockchain-line">Transfer: 2.5 ETH</div>
+          <div class="blockchain-line">Block Confirmed ✓</div>
+          <div class="blockchain-line">Wallet Connected</div>
+          
+          <div class="hodl-chart">
+            <div class="hodl-line">
+              <svg viewBox="0 0 200 60">
+                <path class="hodl-path" d="M 10,45 L 30,40 L 50,35 L 70,30 L 90,28 L 110,32 L 130,25 L 150,20 L 170,15 L 190,10"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="monitor-stand"></div>
+      <div class="monitor-base"></div>
+    </div>
+
+  </div>
+</body>
+</html>
