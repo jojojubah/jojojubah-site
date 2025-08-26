@@ -490,6 +490,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /* ======================== Mystery Toggle (Chaos Mode) =============== */
+  const mysteryToggle = document.getElementById('mysteryToggle');
+  let chaosLevel = 0;
+  let chaosActive = false;
+
+  if (mysteryToggle) {
+    mysteryToggle.addEventListener('click', function() {
+      chaosLevel++;
+      chaosActive = !chaosActive;
+      
+      this.classList.toggle('active');
+      
+      if (chaosActive) {
+        // Apply chaos effects to random elements
+        const targets = document.querySelectorAll('.neu-plate, .project-card, .acc-item, .social-link, .nav-link, .btn');
+        const effects = ['shake', 'spinning', 'rainbow', 'glitch'];
+        
+        targets.forEach(target => {
+          const effect = effects[Math.floor(Math.random() * effects.length)];
+          target.classList.add(effect);
+          setTimeout(() => target.classList.remove(effect), 2000 + Math.random() * 1000);
+        });
+        
+        // Chaos mode activation at level 5
+        if (chaosLevel >= 5) {
+          document.body.classList.add('chaos-mode');
+          setTimeout(() => document.body.classList.remove('chaos-mode'), 3000);
+        }
+      }
+    });
+  }
+
   /* ==================== Floating Particles Effect =================== */
   (function initParticles() {
     const particlesContainer = document.getElementById('particles');
