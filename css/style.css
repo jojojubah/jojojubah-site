@@ -852,6 +852,112 @@ body[data-theme="dark"] #chatInput::placeholder {
 
 /* ===================== Cookie Preferences Footer & Modal ===================== */
 
+/* Mystery Toggle */
+.mystery-toggle-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 2rem var(--container-pad) 1rem;
+}
+
+.mystery-toggle {
+  width: 60px;
+  height: 30px;
+  background: var(--bg);
+  border: none;
+  border-radius: 15px;
+  box-shadow: var(--neu-inset);
+  cursor: pointer;
+  transition: var(--t);
+  position: relative;
+  outline: none;
+}
+
+.mystery-toggle::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background: var(--bg);
+  border-radius: 50%;
+  box-shadow: var(--neu-out);
+  transition: var(--t);
+}
+
+.mystery-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.mystery-toggle.active {
+  box-shadow: var(--neu-out);
+}
+
+.mystery-toggle.active::before {
+  transform: translateX(30px);
+  box-shadow: var(--neu-inset);
+}
+
+/* Chaos Effects */
+.chaos-mode {
+  animation: chaos 2s infinite;
+}
+
+@keyframes chaos {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(1.2); }
+  50% { transform: rotate(180deg) scale(0.8); }
+  75% { transform: rotate(270deg) scale(1.5); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.shake {
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rainbow {
+  background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 200% 200%;
+  animation: rainbowShift 1s linear infinite;
+}
+
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.glitch {
+  animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
 /* Cookie Preferences Button */
 .cookie-preferences-btn {
   position: absolute;
