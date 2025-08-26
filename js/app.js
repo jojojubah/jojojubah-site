@@ -1,5 +1,18 @@
 /* app.js — Complete JojoJubah site logic with AI Assistant integration */
 
+/* ================= URL Cleaner ================== */
+// Clean up .html extensions from URLs for aesthetics
+(function cleanUrls(){
+  const path = window.location.pathname;
+  if (path === '/index.html') {
+    window.history.replaceState({}, '', '/');
+  } else if (path === '/labs.html') {
+    window.history.replaceState({}, '', '/labs');
+  } else if (path === '/economics.html') {
+    window.history.replaceState({}, '', '/economics');
+  }
+})();
+
 /* ================= Cookie Consent + Google Analytics ================== */
 (function cookieConsent(){
   const MEASUREMENT_ID = 'G-0ZM44HTK32';
