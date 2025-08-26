@@ -352,7 +352,7 @@ footer {
 .acc-inner p{margin-bottom:.6rem}
 
 /* Toast */
-.toast{position:fixed;right:24px;bottom:24px;z-index:10002;pointer-events:none;padding:.8rem 1rem;border-radius:14px;background:var(--bg);color:#0f172a;box-shadow:var(--neu-out);opacity:0;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease}
+.toast{position:fixed;left:24px;bottom:24px;z-index:10002;pointer-events:none;padding:.8rem 1rem;border-radius:14px;background:var(--bg);color:#0f172a;box-shadow:var(--neu-out);opacity:0;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease}
 .toast.show{opacity:1;transform:translateY(0)}
 
 /* Fade-in helper */
