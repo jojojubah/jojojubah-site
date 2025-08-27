@@ -1392,11 +1392,14 @@ body[data-theme="dark"] .accordion-trigger {
   .vs-comparison {
     grid-template-columns: 1fr auto 1fr;
     gap: 0.8rem; /* Smaller gap between cards and VS badge */
-    align-items: stretch; /* Make cards same height on mobile */
+    align-items: start; /* Allow cards to grow independently */
   }
   
   .vs-card {
     padding: 0.8rem; /* Much smaller padding */
+    min-height: 280px; /* Set minimum height for consistent alignment */
+    display: flex;
+    flex-direction: column;
   }
   
   .vs-card-header {
@@ -1411,6 +1414,13 @@ body[data-theme="dark"] .accordion-trigger {
   .vs-badge {
     font-size: 0.7rem;
     padding: 0.3rem 0.6rem;
+  }
+  
+  .fact-list {
+    flex: 1; /* Allow fact list to fill available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .fact-list li {
@@ -1453,6 +1463,7 @@ body[data-theme="dark"] .accordion-trigger {
   
   .vs-card {
     padding: 0.6rem; /* Even more compact */
+    min-height: 260px; /* Slightly smaller min-height for very small screens */
   }
   
   .vs-card-header h3 {
@@ -1494,6 +1505,7 @@ body[data-theme="dark"] .accordion-trigger {
   user-select: none;
   font-family: 'Inter', sans-serif;
   transition: opacity 0.3s ease;
+  opacity: 0.5; /* Reduced brightness by 50% */
 }
 
 /* Dark mode support */
