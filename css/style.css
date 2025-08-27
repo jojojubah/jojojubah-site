@@ -1291,28 +1291,25 @@ body[data-theme="dark"] .cookie-modal-footer {
 }
 
 .accordion-trigger {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  transition: var(--t);
-  margin: 1rem 0;
-  font-weight: 600;
   color: var(--text);
-}
-
-.accordion-trigger:hover {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.15));
-  border-color: rgba(59, 130, 246, 0.3);
-  transform: translateY(-1px);
+  font-weight: 700;
+  text-align: left;
+  margin: 1rem 0 0 0;
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .accordion-arrow {
-  transition: transform 0.3s ease;
+  opacity: 0.8;
+  transition: transform 0.2s ease;
   color: var(--accent);
   font-size: 1.2rem;
 }
@@ -1324,15 +1321,16 @@ body[data-theme="dark"] .cookie-modal-footer {
 .accordion-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  background: var(--bg);
-  border-radius: var(--neu-radius);
-  box-shadow: var(--neu-inset);
+  transition: max-height 0.3s ease;
 }
 
 .accordion-content.active {
   max-height: 500px;
-  padding: 1.5rem;
+}
+
+.accordion-content .tip {
+  padding: 1rem 1.25rem 1.35rem;
+  margin: 0;
 }
 
 .bonus-tips {
@@ -1371,10 +1369,6 @@ body[data-theme="dark"] .fact-list li {
   color: #94a3b8;
 }
 
-body[data-theme="dark"] .accordion-content {
-  background: #0f172a;
-}
-
 body[data-theme="dark"] .tip {
   background: rgba(59, 130, 246, 0.1);
   color: #94a3b8;
@@ -1384,8 +1378,9 @@ body[data-theme="dark"] .tip strong {
   color: #f1f5f9;
 }
 
-body[data-theme="dark"] .vs-header {
-  border-bottom-color: rgba(71, 85, 105, 0.3);
+body[data-theme="dark"] .vs-card-header,
+body[data-theme="dark"] .accordion-trigger {
+  border-color: rgba(71, 85, 105, 0.3);
 }
 
 /* Mobile adjustments */
