@@ -926,8 +926,14 @@ body[data-theme="dark"] #chatInput::placeholder {
 }
 
 .page-flipped {
-  transform: rotate(180deg);
+  transform: rotate(180deg) !important;
   transition: transform 0.8s ease-in-out;
+}
+
+/* Ensure page-flipped overrides chaos-mode */
+body.page-flipped {
+  animation: none !important;
+  transform: rotate(180deg) !important;
 }
 
 .rainbow {
