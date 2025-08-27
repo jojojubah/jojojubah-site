@@ -537,12 +537,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mysteryToggle) {
     mysteryToggle.addEventListener('click', function() {
       chaosLevel++;
+      // Reset chaos level back to 1 after reaching 6
+      if (chaosLevel > 6) {
+        chaosLevel = 1;
+      }
+      
       chaosActive = !chaosActive;
       
       this.classList.toggle('active');
       
-      // Show progressive toast message
-      const messageIndex = Math.min(chaosLevel - 1, chaosMessages.length - 1);
+      // Show progressive toast message (loops back to start after max chaos)
+      const messageIndex = (chaosLevel - 1) % chaosMessages.length;
       showChaosToast(chaosMessages[messageIndex]);
       
       if (chaosActive) {
