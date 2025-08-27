@@ -1395,6 +1395,11 @@ body[data-theme="dark"] .accordion-trigger {
     align-items: start; /* Allow cards to grow independently */
   }
   
+  .vs-center {
+    align-self: center; /* Move VS badge down to center on mobile */
+    margin-top: 1rem; /* Add slight downward offset */
+  }
+  
   .vs-card {
     padding: 0.8rem; /* Much smaller padding */
     min-height: 280px; /* Set minimum height for consistent alignment */
@@ -1408,7 +1413,8 @@ body[data-theme="dark"] .accordion-trigger {
   }
   
   .vs-card-header h3 {
-    font-size: 0.95rem; /* Smaller headings */
+    font-size: 0.85rem; /* Smaller headings to prevent emoji wrapping */
+    line-height: 1.2; /* Tighter line height */
   }
   
   .vs-badge {
@@ -1467,7 +1473,8 @@ body[data-theme="dark"] .accordion-trigger {
   }
   
   .vs-card-header h3 {
-    font-size: 0.85rem;
+    font-size: 0.8rem; /* Even smaller for very small screens */
+    line-height: 1.2;
   }
   
   .vs-badge {
@@ -1505,7 +1512,7 @@ body[data-theme="dark"] .accordion-trigger {
   user-select: none;
   font-family: 'Inter', sans-serif;
   transition: opacity 0.3s ease;
-  opacity: 0.5; /* Reduced brightness by 50% */
+  opacity: 0.25; /* 75% transparent - more feint to blend in */
 }
 
 /* Dark mode support */
