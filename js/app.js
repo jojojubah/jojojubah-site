@@ -697,4 +697,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1500); // Wait for content to load
   }
 
+  /* ======================== VS Section Accordion Functionality ===================== */
+  // Initialize accordion functionality for VS section
+  function initializeAccordions() {
+    const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+    
+    accordionTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const content = document.getElementById(targetId);
+        
+        if (!content) return;
+        
+        // Toggle active states
+        const isActive = this.classList.contains('active');
+        
+        if (isActive) {
+          // Close accordion
+          this.classList.remove('active');
+          content.classList.remove('active');
+        } else {
+          // Close other accordions in the same VS card
+          const currentCard = this.closest('.vs-card');
+          const otherTriggers = currentCard.querySelectorAll('.accordion-trigger.active');
+          const otherContents = currentCard.querySelectorAll('.accordion-content.active');
+          
+          otherTriggers.forEach(t => t.classList.remove('active'));
+          otherContents.forEach(c => c.classList.remove('active'));
+          
+          // Open current accordion
+          this.classList.add('active');
+          content.classList.add('active');
+          
+          // Show toast notification
+          showAccordionToast();
+        }
+      });
+    });
+  }
+  
+  // Show toast when accordion is unlocked
+  function showAccordionToast() {
+    const existingToast = document.querySelector('.accordion-toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast accordion-toast show';
+    toast.textContent = '🎉 Bonus insights unlocked!';
+    toast.style.cssText = `
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 10002;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      opacity: 1;
+      transform: translateY(0);
+      font-weight: 600;
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+    }, 3000);
+  }
+  
+  // Initialize accordions when page loads
+  initializeAccordions();
+
 });
