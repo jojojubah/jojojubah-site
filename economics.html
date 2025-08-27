@@ -775,7 +775,7 @@
     (function initCurrencyDrift() {
       const currencySymbols = ['$', '€', '¥', '₿', '£', '₹', '¢', '₽', '₩', '₪'];
       const symbols = [];
-      const maxSymbols = 15; // Similar to homepage particle count
+      const maxSymbols = 25; // Increased from 15 to 25
       
       // Create currency symbol elements
       function createSymbol() {
@@ -783,8 +783,8 @@
         symbol.className = 'currency-symbol';
         symbol.textContent = currencySymbols[Math.floor(Math.random() * currencySymbols.length)];
         
-        // Random size (similar to homepage particles)
-        const size = Math.random() * 20 + 15; // 15px to 35px
+        // Random size (smaller than before)
+        const size = Math.random() * 12 + 8; // 8px to 20px (reduced from 15-35px)
         symbol.style.fontSize = size + 'px';
         
         // Random starting position
@@ -802,8 +802,8 @@
           y: parseFloat(symbol.style.top),
           vx: (Math.random() - 0.5) * 0.5, // Random horizontal velocity
           vy: (Math.random() - 0.5) * 0.5, // Random vertical velocity
-          life: Math.random() * 200 + 100, // Lifespan
-          maxLife: Math.random() * 200 + 100,
+          life: Math.random() * 100 + 50, // Faster fade (reduced from 200+100)
+          maxLife: Math.random() * 100 + 50,
           fadeDirection: Math.random() > 0.5 ? 1 : -1 // Fade in or out initially
         };
       }
