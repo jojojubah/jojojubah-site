@@ -3,7 +3,7 @@
 // Chat Rate Limiting Security
 const chatRateLimit = {
   requests: [],
-  maxRequests: 10,
+  maxRequests: 20, // Increased from 10 to 20
   timeWindow: 60000, // 1 minute
   
   canMakeRequest() {
