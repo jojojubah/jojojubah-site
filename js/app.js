@@ -494,6 +494,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const mysteryToggle = document.getElementById('mysteryToggle');
   let chaosLevel = 0;
   let chaosActive = false;
+  let pageFlipped = false;
+
+  // Toast messages for each chaos level
+  const chaosMessages = [
+    "You shouldn't press random buttons...",
+    "Why did you press that?",
+    "Seriously, stop clicking things!",
+    "This is getting out of hand...",
+    "You've been warned multiple times!",
+    "MAXIMUM CHAOS ACHIEVED! 🌪️"
+  ];
+
+  function showChaosToast(message) {
+    const existingToast = document.querySelector('.chaos-toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast chaos-toast show';
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 10002;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      background: var(--bg);
+      color: #0f172a;
+      box-shadow: var(--neu-out);
+      opacity: 1;
+      transform: translateY(0);
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+    }, 3000);
+  }
 
   if (mysteryToggle) {
     mysteryToggle.addEventListener('click', function() {
@@ -502,10 +541,21 @@ document.addEventListener('DOMContentLoaded', () => {
       
       this.classList.toggle('active');
       
+      // Show progressive toast message
+      const messageIndex = Math.min(chaosLevel - 1, chaosMessages.length - 1);
+      showChaosToast(chaosMessages[messageIndex]);
+      
       if (chaosActive) {
-        // Apply chaos effects to random elements
+        // Check for page flip effect
+        const shouldFlip = Math.random() < 0.3; // 30% chance
+        if (shouldFlip && !pageFlipped) {
+          document.body.classList.add('page-flipped');
+          pageFlipped = true;
+        }
+        
+        // Apply other chaos effects to random elements
         const targets = document.querySelectorAll('.neu-plate, .project-card, .acc-item, .social-link, .nav-link, .btn');
-        const effects = ['shake', 'spinning', 'rainbow', 'glitch'];
+        const effects = ['shake', 'rainbow', 'glitch'];
         
         targets.forEach(target => {
           const effect = effects[Math.floor(Math.random() * effects.length)];
@@ -517,6 +567,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chaosLevel >= 5) {
           document.body.classList.add('chaos-mode');
           setTimeout(() => document.body.classList.remove('chaos-mode'), 3000);
+        }
+      } else {
+        // Remove page flip when toggled off
+        if (pageFlipped) {
+          document.body.classList.remove('page-flipped');
+          pageFlipped = false;
         }
       }
     });
