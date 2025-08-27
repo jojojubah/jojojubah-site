@@ -770,6 +770,108 @@
     window.addEventListener('load', fixIOSViewport);
     window.addEventListener('resize', fixIOSViewport);
     window.addEventListener('orientationchange', fixIOSViewport);
+
+    // Currency Symbols Drift Effect
+    (function initCurrencyDrift() {
+      const currencySymbols = ['$', '€', '¥', '₿', '£', '₹', '¢', '₽', '₩', '₪'];
+      const symbols = [];
+      const maxSymbols = 15; // Similar to homepage particle count
+      
+      // Create currency symbol elements
+      function createSymbol() {
+        const symbol = document.createElement('div');
+        symbol.className = 'currency-symbol';
+        symbol.textContent = currencySymbols[Math.floor(Math.random() * currencySymbols.length)];
+        
+        // Random size (similar to homepage particles)
+        const size = Math.random() * 20 + 15; // 15px to 35px
+        symbol.style.fontSize = size + 'px';
+        
+        // Random starting position
+        symbol.style.left = Math.random() * window.innerWidth + 'px';
+        symbol.style.top = Math.random() * window.innerHeight + 'px';
+        
+        // Random opacity
+        symbol.style.opacity = Math.random() * 0.6 + 0.2; // 0.2 to 0.8
+        
+        document.body.appendChild(symbol);
+        
+        return {
+          element: symbol,
+          x: parseFloat(symbol.style.left),
+          y: parseFloat(symbol.style.top),
+          vx: (Math.random() - 0.5) * 0.5, // Random horizontal velocity
+          vy: (Math.random() - 0.5) * 0.5, // Random vertical velocity
+          life: Math.random() * 200 + 100, // Lifespan
+          maxLife: Math.random() * 200 + 100,
+          fadeDirection: Math.random() > 0.5 ? 1 : -1 // Fade in or out initially
+        };
+      }
+      
+      // Initialize symbols
+      function initializeSymbols() {
+        // Clear existing symbols
+        symbols.forEach(symbolObj => {
+          if (symbolObj.element.parentNode) {
+            symbolObj.element.parentNode.removeChild(symbolObj.element);
+          }
+        });
+        symbols.length = 0;
+        
+        // Create new symbols
+        for (let i = 0; i < maxSymbols; i++) {
+          symbols.push(createSymbol());
+        }
+      }
+      
+      // Animate symbols
+      function animateSymbols() {
+        symbols.forEach((symbolObj, index) => {
+          // Update position
+          symbolObj.x += symbolObj.vx;
+          symbolObj.y += symbolObj.vy;
+          
+          // Update life and opacity (fade in/out effect)
+          symbolObj.life -= symbolObj.fadeDirection;
+          
+          if (symbolObj.life <= 0) {
+            symbolObj.fadeDirection = 1; // Start fading in
+            symbolObj.life = 1;
+          } else if (symbolObj.life >= symbolObj.maxLife) {
+            symbolObj.fadeDirection = -1; // Start fading out
+            symbolObj.life = symbolObj.maxLife - 1;
+          }
+          
+          const opacity = Math.max(0, Math.min(0.8, symbolObj.life / symbolObj.maxLife * 0.8));
+          
+          // Wrap around screen edges
+          if (symbolObj.x < -50) symbolObj.x = window.innerWidth + 50;
+          if (symbolObj.x > window.innerWidth + 50) symbolObj.x = -50;
+          if (symbolObj.y < -50) symbolObj.y = window.innerHeight + 50;
+          if (symbolObj.y > window.innerHeight + 50) symbolObj.y = -50;
+          
+          // Apply to element
+          const elem = symbolObj.element;
+          if (elem && elem.parentNode) {
+            elem.style.opacity = opacity;
+            elem.style.left = symbolObj.x + 'px';
+            elem.style.top = symbolObj.y + 'px';
+          }
+        });
+        
+        requestAnimationFrame(animateSymbols);
+      }
+      
+      initializeSymbols();
+      animateSymbols();
+      
+      // Reinit on resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(initializeSymbols, 150);
+      });
+    })();
   </script>
 
 </body>
