@@ -277,6 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
       this.classList.toggle('active');
       navLinksContainer.classList.toggle('active');
     });
+    
+    // Close mobile menu when any nav link is clicked
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(){
+        mobileMenuBtn.classList.remove('active');
+        navLinksContainer.classList.remove('active');
+      });
+    });
   }
 
   // Light cursor trails only on main page (skip if matrix exists)
