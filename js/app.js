@@ -251,16 +251,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // active nav link (use viewport middle so short sections still activate)
-    let current = '';
-    const y2 = window.scrollY || window.pageYOffset;
-    const mid = y2 + window.innerHeight / 3; // adjust if you want earlier/later switch
+    // Skip active nav logic on labs page since it doesn't have homepage sections
+    if (!window.location.pathname.includes('labs.html') && !window.location.pathname.includes('/labs')) {
+      let current = '';
+      const y2 = window.scrollY || window.pageYOffset;
+      const mid = y2 + window.innerHeight / 3; // adjust if you want earlier/later switch
 
-    sections.forEach(sec => {
-      if (sec.offsetTop <= mid) current = sec.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+      sections.forEach(sec => {
+        if (sec.offsetTop <= mid) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
