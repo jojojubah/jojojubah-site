@@ -1361,8 +1361,8 @@ body[data-theme="dark"] .cookie-modal-footer {
 
 /* Dark mode support */
 body[data-theme="dark"] .vs-card {
-  background: #1e293b;
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  background: var(--bg-2); /* Use same background as homepage */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Match homepage border style */
 }
 
 body[data-theme="dark"] .fact-list li {
@@ -1380,7 +1380,7 @@ body[data-theme="dark"] .tip strong {
 
 body[data-theme="dark"] .vs-card-header,
 body[data-theme="dark"] .accordion-trigger {
-  border-color: rgba(71, 85, 105, 0.3);
+  border-color: rgba(255, 255, 255, 0.08); /* Match homepage border style */
 }
 
 /* Mobile adjustments */
