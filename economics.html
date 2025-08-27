@@ -791,8 +791,8 @@
         symbol.style.left = Math.random() * window.innerWidth + 'px';
         symbol.style.top = Math.random() * window.innerHeight + 'px';
         
-        // Random opacity
-        symbol.style.opacity = Math.random() * 0.6 + 0.2; // 0.2 to 0.8
+        // Random opacity - much more transparent
+        symbol.style.opacity = Math.random() * 0.15 + 0.05; // 0.05 to 0.2 (very faded)
         
         document.body.appendChild(symbol);
         
@@ -842,7 +842,7 @@
             symbolObj.life = symbolObj.maxLife - 1;
           }
           
-          const opacity = Math.max(0, Math.min(0.8, symbolObj.life / symbolObj.maxLife * 0.8));
+          const opacity = Math.max(0, Math.min(0.2, symbolObj.life / symbolObj.maxLife * 0.2));
           
           // Wrap around screen edges
           if (symbolObj.x < -50) symbolObj.x = window.innerWidth + 50;
