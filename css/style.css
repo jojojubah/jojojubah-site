@@ -1361,7 +1361,7 @@ body[data-theme="dark"] .cookie-modal-footer {
 
 /* Dark mode support */
 body[data-theme="dark"] .vs-card {
-  background: var(--bg-2); /* Use same background as homepage */
+  background: var(--bg); /* Use same background as pro tip card (true black) */
   border: 1px solid rgba(255, 255, 255, 0.08); /* Match homepage border style */
 }
 
