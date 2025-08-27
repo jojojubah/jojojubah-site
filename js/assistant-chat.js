@@ -1,4 +1,22 @@
 // AI Assistant Chat Functionality - Integrated with existing app.js
+
+// Chat Rate Limiting Security
+const chatRateLimit = {
+  requests: [],
+  maxRequests: 10,
+  timeWindow: 60000, // 1 minute
+  
+  canMakeRequest() {
+    const now = Date.now();
+    this.requests = this.requests.filter(time => now - time < this.timeWindow);
+    return this.requests.length < this.maxRequests;
+  },
+  
+  addRequest() {
+    this.requests.push(Date.now());
+  }
+};
+
 class JojoAssistant {
     constructor() {
         this.isOpen = false;
@@ -186,8 +204,17 @@ class JojoAssistant {
         const message = this.chatInput?.value?.trim();
         if (!message || !this.isInitialized) return;
         
+        // Rate limiting check
+        if (!chatRateLimit.canMakeRequest()) {
+            this.addMessage("⚠️ Too many requests. Please wait before sending another message.", 'bot');
+            return;
+        }
+        
         // Disable input while processing
         this.setInputEnabled(false);
+        
+        // Add request to rate limiter
+        chatRateLimit.addRequest();
         
         // Display user message
         this.displayMessage(message, true);
