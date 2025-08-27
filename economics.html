@@ -176,7 +176,7 @@
     <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
       <div class="container">
         <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
-        <p class="hero-subtitle">Plain-English notes on money, markets, and decisions—made for creators.</p>
+        <p class="hero-subtitle">From studying economics, I believe the most important concepts are self-sovereignty, learning how to make your money work for you, and mastering the art of doing more with less.</p>
         <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
       </div>
     </section>
@@ -205,104 +205,257 @@
       </div>
     </section>
 
-    <!-- Starter content (enhanced with AI integration) -->
-    <section id="notes">
+    <!-- VS Section: Economic Face-offs -->
+    <section id="vs-section">
       <div class="container">
-        <h2 class="section-title fade-in">Starter Notes</h2>
-        <div class="projects-grid">
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Supply & Demand (Fast Intuition)</h3>
-              <p class="project-description">
-                Prices move where buyers and sellers agree. Shocks (news, scarcity) shift
-                those curves. Tip: always ask "what changed the balance?"
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain supply and demand in simple terms')">Ask AI</button>
+        <h2 class="section-title fade-in">Economic Face-offs</h2>
+        <p class="section-subtitle fade-in">Compare key economic concepts with technical facts</p>
+        
+        <div class="vs-grid">
+          <!-- Bitcoin vs Fiat -->
+          <div class="vs-card fade-in">
+            <div class="vs-header">
+              <div class="vs-side vs-left">
+                <h3>Bitcoin</h3>
               </div>
+              <div class="vs-center">
+                <span class="vs-badge">VS</span>
+              </div>
+              <div class="vs-side vs-right">
+                <h3>Fiat Currency</h3>
+              </div>
+            </div>
+            
+            <div class="vs-content">
+              <div class="vs-facts-container">
+                <div class="vs-facts vs-left-facts">
+                  <ul class="fact-list">
+                    <li>Hard capped at 21 million coins</li>
+                    <li>Deflationary monetary policy</li>
+                    <li>Decentralized consensus via proof-of-work</li>
+                    <li>10-minute average block time</li>
+                    <li>Peer-to-peer transactions without intermediaries</li>
+                    <li>Immutable ledger with cryptographic security</li>
+                  </ul>
+                </div>
+                <div class="vs-facts vs-right-facts">
+                  <ul class="fact-list">
+                    <li>Unlimited supply controlled by central banks</li>
+                    <li>Inflationary monetary policy (2-3% target)</li>
+                    <li>Centralized control by government institutions</li>
+                    <li>Instant settlement for digital transactions</li>
+                    <li>Requires trusted third parties (banks)</li>
+                    <li>Physical cash provides transaction privacy</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-trigger" data-target="bitcoin-fiat">
+              <span>💡 Unlock creator insights</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            
+            <div class="accordion-content" id="bitcoin-fiat">
+              <div class="bonus-tips">
+                <div class="tip">
+                  <strong>Payment processing:</strong> Bitcoin eliminates chargebacks but has network fees; fiat has reversible payments with processing costs.
+                </div>
+                <div class="tip">
+                  <strong>International business:</strong> Bitcoin enables borderless payments; fiat requires currency conversion and banking relationships.
+                </div>
+                <div class="tip">
+                  <strong>Volatility management:</strong> Bitcoin price swings affect revenue predictability; fiat provides stable pricing for contracts.
+                </div>
+              </div>
+              <button class="btn" onclick="askAI('How should creators balance Bitcoin and fiat currency for their business?')">Ask AI About This</button>
             </div>
           </div>
 
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Inflation vs. Deflation</h3>
-              <p class="project-description">
-                Inflation = rising prices, deflation = falling prices. Moderate inflation
-                motivates spending; deflation can stall it. Why it matters for creators:
-                pricing, contracts, and savings.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How does inflation affect content creators and online businesses?')">Ask AI</button>
+          <!-- Austrian vs Keynesian -->
+          <div class="vs-card fade-in">
+            <div class="vs-header">
+              <div class="vs-side vs-left">
+                <h3>Austrian School</h3>
               </div>
+              <div class="vs-center">
+                <span class="vs-badge">VS</span>
+              </div>
+              <div class="vs-side vs-right">
+                <h3>Keynesian School</h3>
+              </div>
+            </div>
+            
+            <div class="vs-content">
+              <div class="vs-facts-container">
+                <div class="vs-facts vs-left-facts">
+                  <ul class="fact-list">
+                    <li>Sound money backed by gold standard</li>
+                    <li>Markets self-correct without intervention</li>
+                    <li>Savings drive investment and growth</li>
+                    <li>Business cycles caused by credit expansion</li>
+                    <li>Government spending crowds out private investment</li>
+                    <li>Praxeology: human action is purposeful behavior</li>
+                  </ul>
+                </div>
+                <div class="vs-facts vs-right-facts">
+                  <ul class="fact-list">
+                    <li>Fiat currency with flexible exchange rates</li>
+                    <li>Government intervention prevents market failures</li>
+                    <li>Aggregate demand drives economic growth</li>
+                    <li>Business cycles from insufficient spending</li>
+                    <li>Fiscal multiplier effect stimulates economy</li>
+                    <li>Mathematical models predict economic outcomes</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-trigger" data-target="austrian-keynesian">
+              <span>💡 Unlock creator insights</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            
+            <div class="accordion-content" id="austrian-keynesian">
+              <div class="bonus-tips">
+                <div class="tip">
+                  <strong>Business planning:</strong> Austrian approach: build cash reserves, avoid debt; Keynesian approach: leverage low rates for expansion.
+                </div>
+                <div class="tip">
+                  <strong>Market timing:</strong> Austrians prepare for inevitable corrections; Keynesians expect government support during downturns.
+                </div>
+                <div class="tip">
+                  <strong>Asset allocation:</strong> Austrian: hard assets (gold, Bitcoin, real estate); Keynesian: diversified portfolio with bonds.
+                </div>
+              </div>
+              <button class="btn" onclick="askAI('How do Austrian and Keynesian economics affect small business strategy?')">Ask AI About This</button>
             </div>
           </div>
 
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Compounding & Time</h3>
-              <p class="project-description">
-                Tiny repeated edges beat big one-offs. Audience, skills, and cashflows
-                all compound when you keep the flywheel turning.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain the power of compounding for creators and skill building')">Ask AI</button>
+          <!-- Growth vs Value -->
+          <div class="vs-card fade-in">
+            <div class="vs-header">
+              <div class="vs-side vs-left">
+                <h3>Growth Investing</h3>
               </div>
+              <div class="vs-center">
+                <span class="vs-badge">VS</span>
+              </div>
+              <div class="vs-side vs-right">
+                <h3>Value Investing</h3>
+              </div>
+            </div>
+            
+            <div class="vs-content">
+              <div class="vs-facts-container">
+                <div class="vs-facts vs-left-facts">
+                  <ul class="fact-list">
+                    <li>High P/E ratios (often 25+ or no earnings)</li>
+                    <li>Revenue growth rate >20% annually</li>
+                    <li>Reinvests profits into expansion</li>
+                    <li>Technology and innovation focused</li>
+                    <li>Higher beta (market sensitivity)</li>
+                    <li>Forward-looking valuation metrics</li>
+                  </ul>
+                </div>
+                <div class="vs-facts vs-right-facts">
+                  <ul class="fact-list">
+                    <li>Low P/E ratios (typically under 15)</li>
+                    <li>Steady dividend payments to shareholders</li>
+                    <li>Trading below intrinsic book value</li>
+                    <li>Mature industries with proven models</li>
+                    <li>Lower beta (market stability)</li>
+                    <li>Historical performance-based metrics</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-trigger" data-target="growth-value">
+              <span>💡 Unlock creator insights</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            
+            <div class="accordion-content" id="growth-value">
+              <div class="bonus-tips">
+                <div class="tip">
+                  <strong>Content strategy parallel:</strong> Growth = trending topics and new platforms; Value = evergreen content in established niches.
+                </div>
+                <div class="tip">
+                  <strong>Business model:</strong> Growth = scale quickly, sacrifice margins; Value = sustainable margins, steady cash flow.
+                </div>
+                <div class="tip">
+                  <strong>Risk tolerance:</strong> Growth requires higher volatility tolerance; Value needs patience for market recognition.
+                </div>
+              </div>
+              <button class="btn" onclick="askAI('Explain growth vs value investing principles for creator wealth building')">Ask AI About This</button>
             </div>
           </div>
 
-          <!-- New AI-Enhanced Cards -->
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Market Psychology</h3>
-              <p class="project-description">
-                Fear and greed drive cycles. Understanding crowd behavior helps creators
-                time launches, spot trends, and avoid panic decisions.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How can creators use market psychology to time their launches and content?')">Ask AI</button>
+          <!-- Inflation vs Deflation -->
+          <div class="vs-card fade-in">
+            <div class="vs-header">
+              <div class="vs-side vs-left">
+                <h3>Inflation</h3>
+              </div>
+              <div class="vs-center">
+                <span class="vs-badge">VS</span>
+              </div>
+              <div class="vs-side vs-right">
+                <h3>Deflation</h3>
               </div>
             </div>
-          </div>
-
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Network Effects</h3>
-              <p class="project-description">
-                Products become more valuable as more people use them. Think social media,
-                communities, and creator ecosystems—each new member benefits everyone.
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('Explain network effects and how creators can leverage them')">Ask AI</button>
+            
+            <div class="vs-content">
+              <div class="vs-facts-container">
+                <div class="vs-facts vs-left-facts">
+                  <ul class="fact-list">
+                    <li>Consumer Price Index (CPI) increases >2%</li>
+                    <li>Money supply expansion via quantitative easing</li>
+                    <li>Asset prices rise (stocks, real estate)</li>
+                    <li>Fixed-rate debt burden decreases over time</li>
+                    <li>Wages lag behind price increases initially</li>
+                    <li>Encourages consumption over savings</li>
+                  </ul>
+                </div>
+                <div class="vs-facts vs-right-facts">
+                  <ul class="fact-list">
+                    <li>Consumer Price Index (CPI) decreases</li>
+                    <li>Money supply contraction or velocity decline</li>
+                    <li>Asset prices fall (deleveraging cycle)</li>
+                    <li>Fixed-rate debt burden increases over time</li>
+                    <li>Real wages increase as prices fall</li>
+                    <li>Delays consumption expecting lower prices</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div class="project-card fade-in">
-            <div class="project-content">
-              <h3 class="project-title">Opportunity Cost</h3>
-              <p class="project-description">
-                Every choice has a hidden cost: what you gave up. For creators, time spent
-                on one project means less time for another. Always ask: "What am I not doing?"
-              </p>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <a href="#" class="btn">Read mini-note</a>
-                <button class="btn" onclick="askAI('How should creators think about opportunity cost when choosing projects?')">Ask AI</button>
+            
+            <div class="accordion-trigger" data-target="inflation-deflation">
+              <span>💡 Unlock creator insights</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            
+            <div class="accordion-content" id="inflation-deflation">
+              <div class="bonus-tips">
+                <div class="tip">
+                  <strong>Pricing strategy:</strong> Inflation = raise prices gradually with market; Deflation = compete on value and efficiency gains.
+                </div>
+                <div class="tip">
+                  <strong>Contract terms:</strong> Inflation = include escalation clauses; Deflation = lock in current prices for longer terms.
+                </div>
+                <div class="tip">
+                  <strong>Cash flow timing:</strong> Inflation = collect payments quickly, delay expenses; Deflation = preserve cash, delay major purchases.
+                </div>
               </div>
+              <button class="btn" onclick="askAI('How should creators prepare for both inflationary and deflationary periods?')">Ask AI About This</button>
             </div>
           </div>
         </div>
-
+        
         <div class="about-content" style="margin-top:2rem">
           <div class="about-text">
-            <strong>Roadmap:</strong> short posts, simple charts, and a jargon-free glossary.
-            I'll add sources and deeper dives later. Got a topic request? Ask the AI assistant or ping me on socials!
-            <br><br>
-            <strong>💡 Pro tip:</strong> Use the "Ask AI" buttons above to get instant explanations, examples, and practical applications of these economic concepts.
+            <strong>💡 Pro tip:</strong> Click "Unlock creator insights" to see how these economic debates affect your business decisions. Understanding both sides helps you adapt to changing market conditions.
           </div>
         </div>
       </div>
