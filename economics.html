@@ -213,242 +213,222 @@
         
         <div class="vs-grid">
           <!-- Bitcoin vs Fiat -->
-          <div class="vs-card fade-in">
-            <div class="vs-header">
-              <div class="vs-side vs-left">
+          <div class="vs-comparison fade-in">
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Bitcoin</h3>
               </div>
-              <div class="vs-center">
-                <span class="vs-badge">VS</span>
+              <ul class="fact-list">
+                <li>Hard capped at 21 million coins</li>
+                <li>Deflationary monetary policy</li>
+                <li>Decentralized consensus via proof-of-work</li>
+                <li>10-minute average block time</li>
+                <li>Peer-to-peer transactions without intermediaries</li>
+                <li>Immutable ledger with cryptographic security</li>
+              </ul>
+              <div class="accordion-trigger" data-target="bitcoin-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-              <div class="vs-side vs-right">
+              <div class="accordion-content" id="bitcoin-tip">
+                <div class="tip">
+                  <strong>Creator insight:</strong> Bitcoin enables global payments without banking relationships but requires volatility management strategies for stable business operations.
+                </div>
+                <button class="btn" onclick="askAI('How can creators effectively use Bitcoin for international payments?')">Ask AI About This</button>
+              </div>
+            </div>
+            
+            <div class="vs-center">
+              <span class="vs-badge">VS</span>
+            </div>
+            
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Fiat Currency</h3>
               </div>
-            </div>
-            
-            <div class="vs-content">
-              <div class="vs-facts-container">
-                <div class="vs-facts vs-left-facts">
-                  <ul class="fact-list">
-                    <li>Hard capped at 21 million coins</li>
-                    <li>Deflationary monetary policy</li>
-                    <li>Decentralized consensus via proof-of-work</li>
-                    <li>10-minute average block time</li>
-                    <li>Peer-to-peer transactions without intermediaries</li>
-                    <li>Immutable ledger with cryptographic security</li>
-                  </ul>
-                </div>
-                <div class="vs-facts vs-right-facts">
-                  <ul class="fact-list">
-                    <li>Unlimited supply controlled by central banks</li>
-                    <li>Inflationary monetary policy (2-3% target)</li>
-                    <li>Centralized control by government institutions</li>
-                    <li>Instant settlement for digital transactions</li>
-                    <li>Requires trusted third parties (banks)</li>
-                    <li>Physical cash provides transaction privacy</li>
-                  </ul>
-                </div>
+              <ul class="fact-list">
+                <li>Unlimited supply controlled by central banks</li>
+                <li>Inflationary monetary policy (2-3% target)</li>
+                <li>Centralized control by government institutions</li>
+                <li>Instant settlement for digital transactions</li>
+                <li>Requires trusted third parties (banks)</li>
+                <li>Physical cash provides transaction privacy</li>
+              </ul>
+              <div class="accordion-trigger" data-target="fiat-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-            </div>
-            
-            <div class="accordion-trigger" data-target="bitcoin-fiat">
-              <span>💡 Unlock creator insights</span>
-              <span class="accordion-arrow">▼</span>
-            </div>
-            
-            <div class="accordion-content" id="bitcoin-fiat">
-              <div class="bonus-tips">
+              <div class="accordion-content" id="fiat-tip">
                 <div class="tip">
-                  <strong>Payment processing:</strong> Bitcoin eliminates chargebacks but has network fees; fiat has reversible payments with processing costs.
+                  <strong>Creator insight:</strong> Fiat provides predictable pricing and instant settlements but inflation gradually erodes purchasing power over time.
                 </div>
-                <div class="tip">
-                  <strong>International business:</strong> Bitcoin enables borderless payments; fiat requires currency conversion and banking relationships.
-                </div>
-                <div class="tip">
-                  <strong>Volatility management:</strong> Bitcoin price swings affect revenue predictability; fiat provides stable pricing for contracts.
-                </div>
+                <button class="btn" onclick="askAI('How should creators protect against fiat currency inflation?')">Ask AI About This</button>
               </div>
-              <button class="btn" onclick="askAI('How should creators balance Bitcoin and fiat currency for their business?')">Ask AI About This</button>
             </div>
           </div>
 
           <!-- Austrian vs Keynesian -->
-          <div class="vs-card fade-in">
-            <div class="vs-header">
-              <div class="vs-side vs-left">
+          <div class="vs-comparison fade-in">
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Austrian School</h3>
               </div>
-              <div class="vs-center">
-                <span class="vs-badge">VS</span>
+              <ul class="fact-list">
+                <li>Sound money backed by gold standard</li>
+                <li>Markets self-correct without intervention</li>
+                <li>Savings drive investment and growth</li>
+                <li>Business cycles caused by credit expansion</li>
+                <li>Government spending crowds out private investment</li>
+                <li>Praxeology: human action is purposeful behavior</li>
+              </ul>
+              <div class="accordion-trigger" data-target="austrian-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-              <div class="vs-side vs-right">
+              <div class="accordion-content" id="austrian-tip">
+                <div class="tip">
+                  <strong>Creator insight:</strong> Austrian principles favor building cash reserves and avoiding debt to weather market cycles independently.
+                </div>
+                <button class="btn" onclick="askAI('How can creators apply Austrian economic principles to business planning?')">Ask AI About This</button>
+              </div>
+            </div>
+            
+            <div class="vs-center">
+              <span class="vs-badge">VS</span>
+            </div>
+            
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Keynesian School</h3>
               </div>
-            </div>
-            
-            <div class="vs-content">
-              <div class="vs-facts-container">
-                <div class="vs-facts vs-left-facts">
-                  <ul class="fact-list">
-                    <li>Sound money backed by gold standard</li>
-                    <li>Markets self-correct without intervention</li>
-                    <li>Savings drive investment and growth</li>
-                    <li>Business cycles caused by credit expansion</li>
-                    <li>Government spending crowds out private investment</li>
-                    <li>Praxeology: human action is purposeful behavior</li>
-                  </ul>
-                </div>
-                <div class="vs-facts vs-right-facts">
-                  <ul class="fact-list">
-                    <li>Fiat currency with flexible exchange rates</li>
-                    <li>Government intervention prevents market failures</li>
-                    <li>Aggregate demand drives economic growth</li>
-                    <li>Business cycles from insufficient spending</li>
-                    <li>Fiscal multiplier effect stimulates economy</li>
-                    <li>Mathematical models predict economic outcomes</li>
-                  </ul>
-                </div>
+              <ul class="fact-list">
+                <li>Fiat currency with flexible exchange rates</li>
+                <li>Government intervention prevents market failures</li>
+                <li>Aggregate demand drives economic growth</li>
+                <li>Business cycles from insufficient spending</li>
+                <li>Fiscal multiplier effect stimulates economy</li>
+                <li>Mathematical models predict economic outcomes</li>
+              </ul>
+              <div class="accordion-trigger" data-target="keynesian-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-            </div>
-            
-            <div class="accordion-trigger" data-target="austrian-keynesian">
-              <span>💡 Unlock creator insights</span>
-              <span class="accordion-arrow">▼</span>
-            </div>
-            
-            <div class="accordion-content" id="austrian-keynesian">
-              <div class="bonus-tips">
+              <div class="accordion-content" id="keynesian-tip">
                 <div class="tip">
-                  <strong>Business planning:</strong> Austrian approach: build cash reserves, avoid debt; Keynesian approach: leverage low rates for expansion.
+                  <strong>Creator insight:</strong> Keynesian approach suggests leveraging low interest rates for business expansion during economic downturns.
                 </div>
-                <div class="tip">
-                  <strong>Market timing:</strong> Austrians prepare for inevitable corrections; Keynesians expect government support during downturns.
-                </div>
-                <div class="tip">
-                  <strong>Asset allocation:</strong> Austrian: hard assets (gold, Bitcoin, real estate); Keynesian: diversified portfolio with bonds.
-                </div>
+                <button class="btn" onclick="askAI('How can creators use Keynesian principles for growth financing?')">Ask AI About This</button>
               </div>
-              <button class="btn" onclick="askAI('How do Austrian and Keynesian economics affect small business strategy?')">Ask AI About This</button>
             </div>
           </div>
 
           <!-- Growth vs Value -->
-          <div class="vs-card fade-in">
-            <div class="vs-header">
-              <div class="vs-side vs-left">
+          <div class="vs-comparison fade-in">
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Growth Investing</h3>
               </div>
-              <div class="vs-center">
-                <span class="vs-badge">VS</span>
+              <ul class="fact-list">
+                <li>High P/E ratios (often 25+ or no earnings)</li>
+                <li>Revenue growth rate >20% annually</li>
+                <li>Reinvests profits into expansion</li>
+                <li>Technology and innovation focused</li>
+                <li>Higher beta (market sensitivity)</li>
+                <li>Forward-looking valuation metrics</li>
+              </ul>
+              <div class="accordion-trigger" data-target="growth-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-              <div class="vs-side vs-right">
+              <div class="accordion-content" id="growth-tip">
+                <div class="tip">
+                  <strong>Creator insight:</strong> Growth strategy parallels focusing on trending topics and new platforms for rapid audience expansion.
+                </div>
+                <button class="btn" onclick="askAI('How can creators apply growth investing principles to content strategy?')">Ask AI About This</button>
+              </div>
+            </div>
+            
+            <div class="vs-center">
+              <span class="vs-badge">VS</span>
+            </div>
+            
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Value Investing</h3>
               </div>
-            </div>
-            
-            <div class="vs-content">
-              <div class="vs-facts-container">
-                <div class="vs-facts vs-left-facts">
-                  <ul class="fact-list">
-                    <li>High P/E ratios (often 25+ or no earnings)</li>
-                    <li>Revenue growth rate >20% annually</li>
-                    <li>Reinvests profits into expansion</li>
-                    <li>Technology and innovation focused</li>
-                    <li>Higher beta (market sensitivity)</li>
-                    <li>Forward-looking valuation metrics</li>
-                  </ul>
-                </div>
-                <div class="vs-facts vs-right-facts">
-                  <ul class="fact-list">
-                    <li>Low P/E ratios (typically under 15)</li>
-                    <li>Steady dividend payments to shareholders</li>
-                    <li>Trading below intrinsic book value</li>
-                    <li>Mature industries with proven models</li>
-                    <li>Lower beta (market stability)</li>
-                    <li>Historical performance-based metrics</li>
-                  </ul>
-                </div>
+              <ul class="fact-list">
+                <li>Low P/E ratios (typically under 15)</li>
+                <li>Steady dividend payments to shareholders</li>
+                <li>Trading below intrinsic book value</li>
+                <li>Mature industries with proven models</li>
+                <li>Lower beta (market stability)</li>
+                <li>Historical performance-based metrics</li>
+              </ul>
+              <div class="accordion-trigger" data-target="value-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-            </div>
-            
-            <div class="accordion-trigger" data-target="growth-value">
-              <span>💡 Unlock creator insights</span>
-              <span class="accordion-arrow">▼</span>
-            </div>
-            
-            <div class="accordion-content" id="growth-value">
-              <div class="bonus-tips">
+              <div class="accordion-content" id="value-tip">
                 <div class="tip">
-                  <strong>Content strategy parallel:</strong> Growth = trending topics and new platforms; Value = evergreen content in established niches.
+                  <strong>Creator insight:</strong> Value approach focuses on evergreen content in undervalued niches with proven demand and steady cash flow.
                 </div>
-                <div class="tip">
-                  <strong>Business model:</strong> Growth = scale quickly, sacrifice margins; Value = sustainable margins, steady cash flow.
-                </div>
-                <div class="tip">
-                  <strong>Risk tolerance:</strong> Growth requires higher volatility tolerance; Value needs patience for market recognition.
-                </div>
+                <button class="btn" onclick="askAI('How can creators identify undervalued content niches for long-term success?')">Ask AI About This</button>
               </div>
-              <button class="btn" onclick="askAI('Explain growth vs value investing principles for creator wealth building')">Ask AI About This</button>
             </div>
           </div>
 
           <!-- Inflation vs Deflation -->
-          <div class="vs-card fade-in">
-            <div class="vs-header">
-              <div class="vs-side vs-left">
+          <div class="vs-comparison fade-in">
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Inflation</h3>
               </div>
-              <div class="vs-center">
-                <span class="vs-badge">VS</span>
+              <ul class="fact-list">
+                <li>Consumer Price Index (CPI) increases >2%</li>
+                <li>Money supply expansion via quantitative easing</li>
+                <li>Asset prices rise (stocks, real estate)</li>
+                <li>Fixed-rate debt burden decreases over time</li>
+                <li>Wages lag behind price increases initially</li>
+                <li>Encourages consumption over savings</li>
+              </ul>
+              <div class="accordion-trigger" data-target="inflation-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-              <div class="vs-side vs-right">
+              <div class="accordion-content" id="inflation-tip">
+                <div class="tip">
+                  <strong>Creator insight:</strong> During inflation, raise prices gradually with the market and collect payments quickly while delaying expenses.
+                </div>
+                <button class="btn" onclick="askAI('How should creators adjust pricing strategies during inflationary periods?')">Ask AI About This</button>
+              </div>
+            </div>
+            
+            <div class="vs-center">
+              <span class="vs-badge">VS</span>
+            </div>
+            
+            <div class="vs-card">
+              <div class="vs-card-header">
                 <h3>Deflation</h3>
               </div>
-            </div>
-            
-            <div class="vs-content">
-              <div class="vs-facts-container">
-                <div class="vs-facts vs-left-facts">
-                  <ul class="fact-list">
-                    <li>Consumer Price Index (CPI) increases >2%</li>
-                    <li>Money supply expansion via quantitative easing</li>
-                    <li>Asset prices rise (stocks, real estate)</li>
-                    <li>Fixed-rate debt burden decreases over time</li>
-                    <li>Wages lag behind price increases initially</li>
-                    <li>Encourages consumption over savings</li>
-                  </ul>
-                </div>
-                <div class="vs-facts vs-right-facts">
-                  <ul class="fact-list">
-                    <li>Consumer Price Index (CPI) decreases</li>
-                    <li>Money supply contraction or velocity decline</li>
-                    <li>Asset prices fall (deleveraging cycle)</li>
-                    <li>Fixed-rate debt burden increases over time</li>
-                    <li>Real wages increase as prices fall</li>
-                    <li>Delays consumption expecting lower prices</li>
-                  </ul>
-                </div>
+              <ul class="fact-list">
+                <li>Consumer Price Index (CPI) decreases</li>
+                <li>Money supply contraction or velocity decline</li>
+                <li>Asset prices fall (deleveraging cycle)</li>
+                <li>Fixed-rate debt burden increases over time</li>
+                <li>Real wages increase as prices fall</li>
+                <li>Delays consumption expecting lower prices</li>
+              </ul>
+              <div class="accordion-trigger" data-target="deflation-tip">
+                <span>💡 Unlock creator tip</span>
+                <span class="accordion-arrow">▼</span>
               </div>
-            </div>
-            
-            <div class="accordion-trigger" data-target="inflation-deflation">
-              <span>💡 Unlock creator insights</span>
-              <span class="accordion-arrow">▼</span>
-            </div>
-            
-            <div class="accordion-content" id="inflation-deflation">
-              <div class="bonus-tips">
+              <div class="accordion-content" id="deflation-tip">
                 <div class="tip">
-                  <strong>Pricing strategy:</strong> Inflation = raise prices gradually with market; Deflation = compete on value and efficiency gains.
+                  <strong>Creator insight:</strong> During deflation, compete on value and efficiency while preserving cash and delaying major purchases.
                 </div>
-                <div class="tip">
-                  <strong>Contract terms:</strong> Inflation = include escalation clauses; Deflation = lock in current prices for longer terms.
-                </div>
-                <div class="tip">
-                  <strong>Cash flow timing:</strong> Inflation = collect payments quickly, delay expenses; Deflation = preserve cash, delay major purchases.
-                </div>
+                <button class="btn" onclick="askAI('How should creators position their business during deflationary periods?')">Ask AI About This</button>
               </div>
-              <button class="btn" onclick="askAI('How should creators prepare for both inflationary and deflationary periods?')">Ask AI About This</button>
             </div>
           </div>
         </div>
