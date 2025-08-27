@@ -129,7 +129,10 @@
     }
 
     /* Dark mode support */
-    body[data-theme="dark"] .fear-greed-widget,
+    body[data-theme="dark"] .fear-greed-widget {
+      background: none; /* Remove background to match light mode */
+    }
+    
     body[data-theme="dark"] .fear-greed-info {
       background: #1e293b;
       border: 1px solid rgba(71, 85, 105, 0.3);
