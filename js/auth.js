@@ -6,6 +6,8 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 // Initialize Firebase Auth
 let auth = null;
 let currentUser = null;
+let initializationAttempts = 0;
+const maxInitAttempts = 20; // 10 seconds max wait time
 
 // Google Sign-In provider
 const googleProvider = new GoogleAuthProvider();
@@ -14,14 +16,20 @@ googleProvider.addScope('email');
 
 // Initialize authentication when Firebase is ready
 function initializeAuth() {
+  initializationAttempts++;
+  
   if (window.app) {
     auth = getAuth(window.app);
     setupAuthStateListener();
     createAuthButton();
+    setupAccountPageButton(); // Handle account page button
     console.log('🔐 Authentication initialized');
-  } else {
-    // Wait for Firebase to initialize
+  } else if (initializationAttempts < maxInitAttempts) {
+    // Wait for Firebase to initialize, but with better error handling
     setTimeout(initializeAuth, 500);
+  } else {
+    console.error('❌ Firebase failed to initialize after 10 seconds');
+    showAuthMessage('Authentication system failed to load. Please refresh the page.', 'error');
   }
 }
 
@@ -54,12 +62,16 @@ function setupAuthStateListener() {
 async function signInWithGoogle() {
   if (!auth) {
     console.error('Auth not initialized');
+    showAuthMessage('Authentication system not ready. Please wait a moment and try again.', 'error');
     return;
   }
   
   try {
+    console.log('🔐 Starting Google sign-in...');
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
+    
+    console.log('✅ Sign-in successful:', user.displayName);
     
     // Show success message
     showAuthMessage(`Welcome, ${user.displayName}! 👋`, 'success');
@@ -71,8 +83,19 @@ async function signInWithGoogle() {
     
     return user;
   } catch (error) {
-    console.error('Sign-in error:', error);
-    showAuthMessage('Sign-in failed. Please try again.', 'error');
+    console.error('❌ Sign-in error:', error);
+    
+    // More specific error handling
+    let errorMessage = 'Sign-in failed. Please try again.';
+    if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage = 'Sign-in cancelled by user.';
+    } else if (error.code === 'auth/popup-blocked') {
+      errorMessage = 'Popup blocked by browser. Please allow popups for this site.';
+    } else if (error.code === 'auth/network-request-failed') {
+      errorMessage = 'Network error. Please check your connection and try again.';
+    }
+    
+    showAuthMessage(errorMessage, 'error');
     throw error;
   }
 }
@@ -263,13 +286,33 @@ function addAuthTips() {
   }
 }
 
+// Setup account page button (if exists)
+function setupAccountPageButton() {
+  const accountSignInBtn = document.getElementById('accountSignInBtn');
+  if (accountSignInBtn) {
+    console.log('🔗 Setting up account page sign-in button');
+    accountSignInBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signInWithGoogle();
+    });
+  }
+}
+
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Wait a bit for Firebase to be ready
-  setTimeout(() => {
+  console.log('📱 Auth system DOM loaded, waiting for Firebase...');
+  
+  // Start trying to initialize immediately
+  initializeAuth();
+  addAuthTips();
+});
+
+// Also try to initialize when window loads (fallback)
+window.addEventListener('load', () => {
+  if (!auth) {
+    console.log('🔄 Retrying auth initialization on window load...');
     initializeAuth();
-    addAuthTips();
-  }, 1000);
+  }
 });
 
 // Export functions for external use
