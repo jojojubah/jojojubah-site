@@ -1570,14 +1570,15 @@ body[data-theme="dark"] .currency-symbol {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 20px;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 18px;
   background: var(--bg);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: var(--neu-out);
-  max-width: 180px;
+  max-width: 160px;
+  min-height: 32px;
 }
 
 .user-profile-btn:hover {
@@ -1585,21 +1586,23 @@ body[data-theme="dark"] .currency-symbol {
 }
 
 .user-avatar {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--accent);
+  flex-shrink: 0;
 }
 
 .user-name {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100px;
+  line-height: 1.2;
 }
 
 /* User dropdown */
@@ -1694,18 +1697,19 @@ body[data-theme="dark"] .dropdown-item:hover {
   }
   
   .user-profile-btn {
-    padding: 0.3rem 0.5rem;
-    max-width: 140px;
+    padding: 0.25rem 0.4rem;
+    max-width: 120px;
+    gap: 0.3rem;
   }
   
   .user-name {
-    font-size: 0.8rem;
-    max-width: 80px;
+    font-size: 0.7rem;
+    max-width: 70px;
   }
   
   .user-avatar {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
   
   .user-dropdown {
