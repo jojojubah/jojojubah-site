@@ -81,6 +81,8 @@
   function start(){ 
     if (!intervalId) intervalId = setInterval(draw, speedMs); 
     canvas.style.display=''; 
+    // Save Matrix enabled state
+    localStorage.setItem('matrix-rain-preference', 'enabled');
     
     // Trigger AI Assistant tip when Matrix is enabled
     if (window.showTip) {
@@ -92,6 +94,8 @@
     if (intervalId){ clearInterval(intervalId); intervalId=null; } 
     ctx.clearRect(0,0,canvas.width,canvas.height); 
     canvas.style.display='none';
+    // Save Matrix disabled state
+    localStorage.setItem('matrix-rain-preference', 'disabled');
     
     // Trigger AI Assistant tip when Matrix is disabled
     if (window.showTip) {
@@ -99,10 +103,14 @@
     }
   }
 
-  // Start Matrix based on saved theme preference
-  const savedTheme = localStorage.getItem('theme-preference');
-  if (savedTheme === 'dark' || (!savedTheme && document.body.getAttribute('data-theme') === 'dark')) {
+  // Start Matrix based on saved Matrix preference (default ON for labs)
+  const savedMatrixPreference = localStorage.getItem('matrix-rain-preference');
+  if (savedMatrixPreference === null || savedMatrixPreference === 'enabled') {
+    // Default to enabled, or use saved 'enabled' preference
     start();
+  } else if (savedMatrixPreference === 'disabled') {
+    // User has explicitly disabled Matrix rain
+    // Don't start
   }
 
   // Ensure toggle exists + move into .toggle-group
@@ -114,9 +122,16 @@
   var group = document.querySelector('.toggle-group');
   if (group && !group.contains(btn)) group.appendChild(btn); else if (!btn.isConnected) document.body.appendChild(btn);
 
-  // Labels
-  function setLabel(){ btn.textContent = intervalId ? '🟢 Matrix' : '⚫ Matrix'; }
-  setLabel();
+  // Labels - check current state including saved preference
+  function setLabel(){ 
+    const savedMatrixPreference = localStorage.getItem('matrix-rain-preference');
+    const isRunning = intervalId !== null;
+    // Update button text based on actual running state
+    btn.textContent = isRunning ? '🟢 Matrix' : '⚫ Matrix'; 
+  }
+  
+  // Set initial label based on current state
+  setTimeout(setLabel, 100); // Small delay to ensure Matrix state is initialized
   btn.addEventListener('click', function(){
     if (intervalId) stop(); else start();
     setLabel();
