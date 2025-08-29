@@ -1681,7 +1681,7 @@ body[data-theme="dark"] .dropdown-item:hover {
 @media (max-width: 768px) {
   .auth-container {
     margin-right: 0.5rem;
-    order: -1; /* Position before mobile menu button */
+    margin-left: 0.5rem;
   }
   
   .sign-in-btn {
