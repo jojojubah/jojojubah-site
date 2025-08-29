@@ -99,8 +99,11 @@
     }
   }
 
-  // Start ON by default (Labs opens dark mode)
-  start();
+  // Start Matrix based on saved theme preference
+  const savedTheme = localStorage.getItem('theme-preference');
+  if (savedTheme === 'dark' || (!savedTheme && document.body.getAttribute('data-theme') === 'dark')) {
+    start();
+  }
 
   // Ensure toggle exists + move into .toggle-group
   var btn = document.getElementById('matrixToggle');
