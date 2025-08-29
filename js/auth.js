@@ -189,7 +189,7 @@ async function signOutUser() {
     
     // Redirect to home if on account page
     if (window.location.pathname.includes('account')) {
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }
   } catch (error) {
     console.error('Sign-out error:', error);
@@ -239,7 +239,7 @@ function updateAuthUI() {
         <img src="${currentUser.photoURL}" alt="${currentUser.displayName}" class="user-avatar">
         <span class="user-name">${currentUser.displayName}</span>
         <div class="user-dropdown" id="userDropdown">
-          <a href="account.html" class="dropdown-item">
+          <a href="/account" class="dropdown-item">
             <span>👤 My Account</span>
           </a>
           <button class="dropdown-item" id="signOutBtn">
