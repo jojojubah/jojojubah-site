@@ -73,23 +73,124 @@
   <div class="container">
     <h2 class="section-title fade-in">Lab Experiments</h2>
     <p class="muted" style="text-align:center;margin-top:.25rem">
-      Quick demos & WIP ideas I'm playing with.
+      Advanced security research and defensive AI evaluation frameworks.
     </p>
 
-    <div class="projects-grid" style="margin-top:1.5rem">
-      <!-- LLM Jailbreaking Research Card -->
+    <!-- LLM Jailbreaking Research Section -->
+    <div style="margin-top:2rem;">
+      <h3 class="project-title" style="text-align:center;margin-bottom:1rem;">LLM Jailbreaking Research</h3>
+      <p class="project-description" style="text-align:center;margin-bottom:1.5rem;max-width:800px;margin-left:auto;margin-right:auto;">
+        Comparative analysis of large language model safety mechanisms and defensive evaluation frameworks. Research into prompt injection resistance and alignment robustness across different model architectures.
+      </p>
+      <div class="project-features" style="justify-content:center;margin-bottom:2rem;">
+        <span class="feature-tag">Model Comparison</span>
+        <span class="feature-tag">Safety Evaluation</span>
+        <span class="feature-tag">Defense Research</span>
+      </div>
+      
+      <!-- Difficulty Rating Accordions -->
+      <div class="difficulty-accordions" style="max-width:900px;margin:0 auto;">
+        
+        <!-- Very Hard (5/5) -->
+        <div class="difficulty-accordion">
+          <button class="difficulty-header" onclick="toggleAccordion(this)">
+            <span class="difficulty-rating">★★★★★ Very Hard (5/5)</span>
+            <span class="accordion-arrow">▼</span>
+          </button>
+          <div class="difficulty-content">
+            <div class="model-item">
+              <h4>GPT-5</h4>
+              <p>Almost impossible to bypass; new "safe completion" training keeps responses sanitized even when tricked.</p>
+            </div>
+            <div class="model-item">
+              <h4>GPT-4</h4>
+              <p>Strong safety alignment; classic role-play and ignore-filter prompts nearly always fail.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hard (4/5) -->
+        <div class="difficulty-accordion">
+          <button class="difficulty-header" onclick="toggleAccordion(this)">
+            <span class="difficulty-rating">★★★★☆ Hard (4/5)</span>
+            <span class="accordion-arrow">▼</span>
+          </button>
+          <div class="difficulty-content">
+            <div class="model-item">
+              <h4>Claude (Anthropic)</h4>
+              <p>Uses "Constitutional AI" rules; resists simple tricks, only very complex exploits sometimes work.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Moderate (3/5) -->
+        <div class="difficulty-accordion">
+          <button class="difficulty-header" onclick="toggleAccordion(this)">
+            <span class="difficulty-rating">★★★☆☆ Moderate (3/5)</span>
+            <span class="accordion-arrow">▼</span>
+          </button>
+          <div class="difficulty-content">
+            <div class="model-item">
+              <h4>Gemini (Google)</h4>
+              <p>Strong filters, but can sometimes be sidestepped with story-mode or fictional context prompts.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fairly Easy (2/5) -->
+        <div class="difficulty-accordion">
+          <button class="difficulty-header" onclick="toggleAccordion(this)">
+            <span class="difficulty-rating">★★☆☆☆ Fairly Easy (2/5)</span>
+            <span class="accordion-arrow">▼</span>
+          </button>
+          <div class="difficulty-content">
+            <div class="model-item">
+              <h4>GPT-3.5</h4>
+              <p>Safety is brittle; community jailbreaks like "DAN" often worked, though many patched now.</p>
+            </div>
+            <div class="model-item">
+              <h4>LLaMA-3 (Meta)</h4>
+              <p>Official chat model refuses some content, but open weights let users remove safety easily.</p>
+            </div>
+            <div class="model-item">
+              <h4>LLaMA-2 (Meta)</h4>
+              <p>Chat version enforces rules, but uncensored variants are widely available.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Very Easy (1/5) -->
+        <div class="difficulty-accordion">
+          <button class="difficulty-header" onclick="toggleAccordion(this)">
+            <span class="difficulty-rating">★☆☆☆☆ Very Easy (1/5)</span>
+            <span class="accordion-arrow">▼</span>
+          </button>
+          <div class="difficulty-content">
+            <div class="model-item">
+              <h4>Mistral-7B</h4>
+              <p>There's no real "jailbreak" needed for Mistral, because the model doesn't enforce content rules in the first place. Even a completely naive user could ask something highly disallowed and Mistral-7B would likely comply.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Other Experiments Grid -->
+    <div class="projects-grid" style="margin-top:3rem;">
+      <!-- Future Experiments Card -->
       <div class="project-card fade-in">
         <div class="project-content">
-          <h3 class="project-title">LLM Jailbreaking Research</h3>
+          <h3 class="project-title">Additional Security Research</h3>
           <p class="project-description">
-            Comparative analysis of large language model safety mechanisms and defensive evaluation frameworks. Research into prompt injection resistance and alignment robustness across different model architectures.
+            Expanding research into AI alignment, prompt injection detection, and defensive security measures. More experiments coming soon.
           </p>
           <div class="project-features">
-            <span class="feature-tag">Model Comparison</span>
-            <span class="feature-tag">Safety Evaluation</span>
-            <span class="feature-tag">Defense Research</span>
+            <span class="feature-tag">Coming Soon</span>
+            <span class="feature-tag">AI Security</span>
+            <span class="feature-tag">Research</span>
           </div>
-          <a href="#" class="btn">View Research</a>
+          <a href="#" class="btn">View Progress</a>
         </div>
       </div>
     </div>
