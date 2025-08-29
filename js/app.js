@@ -327,11 +327,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mode === 'dark') body.setAttribute('data-theme','dark');
       else body.removeAttribute('data-theme');
       setIcon(mode);
+      // Save to localStorage
+      localStorage.setItem('theme-preference', mode);
     }
 
-    const isLabs = !!document.getElementById('matrix-canvas') || /jubah-labs\.html$/i.test(location.pathname);
-    const initial = isLabs ? 'dark' : 'light';
-    apply(initial);
+    // Load saved theme preference, fallback to 'light'
+    const savedTheme = localStorage.getItem('theme-preference') || 'light';
+    apply(savedTheme);
 
     themeBtn.addEventListener('click', () => {
       const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
