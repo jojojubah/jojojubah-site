@@ -214,6 +214,33 @@ body[data-theme="dark"]:has(#matrix-canvas) .footer-links a:hover {
   color: #00ff41 !important;
 }
 
+/* ======================== Lab Card Feature Tags ======================== */
+
+.project-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.feature-tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-2);
+  color: var(--text-dim);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Matrix theme feature tags */
+body[data-theme="dark"]:has(#matrix-canvas) .feature-tag {
+  background: rgba(0, 255, 65, 0.1);
+  color: #00ff41;
+  border: 1px solid rgba(0, 255, 65, 0.2);
+}
+
 /* ======================== Responsive Matrix Enhancements ======================== */
 
 @media (max-width: 640px) {
@@ -225,5 +252,11 @@ body[data-theme="dark"]:has(#matrix-canvas) .footer-links a:hover {
   /* Ensure matrix effects don't overwhelm mobile UI */
   body[data-theme="dark"]:has(#matrix-canvas) .project-card:hover {
     box-shadow: var(--neu-out), 0 0 10px rgba(0, 255, 65, 0.05);
+  }
+  
+  /* Mobile feature tags */
+  .feature-tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
   }
 }
