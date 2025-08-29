@@ -1702,7 +1702,7 @@ body[data-theme="dark"] .dropdown-item:hover {
   
   .user-name {
     font-size: 0.85rem;
-    max-width: 100px;
+    max-width: 140px;
   }
   
   .user-avatar {
@@ -1915,6 +1915,7 @@ body[data-theme="dark"] .feature-tag.coming-soon {
   
   .user-profile-header .user-name {
     font-size: 1.5rem;
+    max-width: none; /* Remove width constraint on account page */
   }
   
   .setting-actions {
