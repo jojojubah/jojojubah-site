@@ -1,7 +1,7 @@
 /* auth.js — Google Sign-In with Firebase Authentication */
 
 // Firebase Auth imports (using existing Firebase app)
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // Initialize Firebase Auth
 let auth = null;
@@ -18,17 +18,49 @@ googleProvider.addScope('email');
 function initializeAuth() {
   initializationAttempts++;
   
+  console.log(`🔄 Auth initialization attempt ${initializationAttempts}/${maxInitAttempts}`);
+  console.log('🔍 Checking for Firebase app:', !!window.app);
+  console.log('🔍 Checking for Firebase ready flag:', !!window.firebaseReady);
+  
   if (window.app) {
-    auth = getAuth(window.app);
-    setupAuthStateListener();
-    createAuthButton();
-    setupAccountPageButton(); // Handle account page button
-    console.log('🔐 Authentication initialized');
+    try {
+      auth = getAuth(window.app);
+      console.log('✅ Firebase Auth instance created');
+      
+      setupAuthStateListener();
+      console.log('✅ Auth state listener setup');
+      
+      createAuthButton();
+      console.log('✅ Auth button created');
+      
+      setupAccountPageButton(); // Handle account page button
+      console.log('✅ Account page button setup');
+      
+      // Check for redirect result (when user returns from Google OAuth)
+      checkRedirectResult();
+      console.log('✅ Redirect result check initiated');
+      
+      console.log('🔐 Authentication fully initialized');
+      
+      // Debug Firebase config
+      console.log('🔍 Firebase config check:');
+      console.log('- Auth domain:', window.app.options.authDomain);
+      console.log('- Project ID:', window.app.options.projectId);
+      
+    } catch (error) {
+      console.error('❌ Error during auth initialization:', error);
+      showAuthMessage('Authentication setup failed. Please check console for details.', 'error');
+    }
   } else if (initializationAttempts < maxInitAttempts) {
     // Wait for Firebase to initialize, but with better error handling
     setTimeout(initializeAuth, 500);
   } else {
     console.error('❌ Firebase failed to initialize after 10 seconds');
+    console.log('🔍 Final state check:');
+    console.log('- window.app:', !!window.app);
+    console.log('- window.firebaseReady:', !!window.firebaseReady);
+    console.log('- Available globals:', Object.keys(window).filter(key => key.includes('fire') || key.includes('Fire')));
+    
     showAuthMessage('Authentication system failed to load. Please refresh the page.', 'error');
   }
 }
@@ -58,7 +90,33 @@ function setupAuthStateListener() {
   });
 }
 
-// Sign in with Google
+// Check for redirect result when user returns from Google OAuth
+async function checkRedirectResult() {
+  if (!auth) return;
+  
+  try {
+    console.log('🔄 Checking for redirect result...');
+    const result = await getRedirectResult(auth);
+    
+    if (result) {
+      const user = result.user;
+      console.log('✅ Redirect sign-in successful:', user.displayName);
+      showAuthMessage(`Welcome back, ${user.displayName}! 👋`, 'success');
+      
+      // Optional: Trigger AI Assistant tip
+      if (window.showTip) {
+        setTimeout(() => window.showTip('userSignedIn'), 1000);
+      }
+    } else {
+      console.log('ℹ️ No redirect result found (normal for direct page loads)');
+    }
+  } catch (error) {
+    console.error('❌ Error checking redirect result:', error);
+    showAuthMessage('Error completing sign-in. Please try again.', 'error');
+  }
+}
+
+// Sign in with Google (with fallback to redirect)
 async function signInWithGoogle() {
   if (!auth) {
     console.error('Auth not initialized');
@@ -67,11 +125,11 @@ async function signInWithGoogle() {
   }
   
   try {
-    console.log('🔐 Starting Google sign-in...');
+    console.log('🔐 Starting Google sign-in with popup...');
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     
-    console.log('✅ Sign-in successful:', user.displayName);
+    console.log('✅ Popup sign-in successful:', user.displayName);
     
     // Show success message
     showAuthMessage(`Welcome, ${user.displayName}! 👋`, 'success');
@@ -83,16 +141,32 @@ async function signInWithGoogle() {
     
     return user;
   } catch (error) {
-    console.error('❌ Sign-in error:', error);
+    console.error('❌ Popup sign-in error:', error);
     
-    // More specific error handling
+    // Handle specific popup failures by falling back to redirect
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+      console.log('🔄 Popup failed, trying redirect method...');
+      try {
+        showAuthMessage('Opening sign-in page...', 'info');
+        await signInWithRedirect(auth, googleProvider);
+        return; // Redirect will handle the flow
+      } catch (redirectError) {
+        console.error('❌ Redirect sign-in also failed:', redirectError);
+        showAuthMessage('Sign-in failed. Please check your internet connection and try again.', 'error');
+        throw redirectError;
+      }
+    }
+    
+    // Handle other errors
     let errorMessage = 'Sign-in failed. Please try again.';
-    if (error.code === 'auth/popup-closed-by-user') {
-      errorMessage = 'Sign-in cancelled by user.';
-    } else if (error.code === 'auth/popup-blocked') {
-      errorMessage = 'Popup blocked by browser. Please allow popups for this site.';
-    } else if (error.code === 'auth/network-request-failed') {
+    if (error.code === 'auth/network-request-failed') {
       errorMessage = 'Network error. Please check your connection and try again.';
+    } else if (error.code === 'auth/unauthorized-domain') {
+      errorMessage = 'This domain is not authorized for Google sign-in. Please contact support.';
+      console.error('🔥 IMPORTANT: Add your domain to Firebase Console → Authentication → Settings → Authorized domains');
+    } else if (error.code === 'auth/operation-not-allowed') {
+      errorMessage = 'Google sign-in is not enabled. Please contact support.';
+      console.error('🔥 IMPORTANT: Enable Google sign-in in Firebase Console → Authentication → Sign-in method');
     }
     
     showAuthMessage(errorMessage, 'error');
@@ -122,7 +196,10 @@ async function signOutUser() {
 function createAuthButton() {
   // Find navbar container
   const navContainer = document.querySelector('.nav-container');
-  if (!navContainer) return;
+  if (!navContainer) {
+    console.warn('⚠️ Nav container not found');
+    return;
+  }
   
   // Create auth button container
   let authContainer = document.getElementById('authContainer');
@@ -131,11 +208,13 @@ function createAuthButton() {
     authContainer.id = 'authContainer';
     authContainer.className = 'auth-container';
     
-    // Insert before mobile menu button
+    // Insert before mobile menu button (which should be the last element)
     const mobileBtn = document.getElementById('mobileMenuBtn');
     if (mobileBtn) {
+      console.log('📱 Inserting auth container before mobile menu button');
       navContainer.insertBefore(authContainer, mobileBtn);
     } else {
+      console.log('📱 Mobile menu button not found, appending to end');
       navContainer.appendChild(authContainer);
     }
   }
