@@ -80,13 +80,28 @@ function setupAuthStateListener() {
     
     if (user) {
       console.log('✅ User signed in:', user.displayName);
+      
+      // Check if user already has a profile with a registration date
+      const existingProfile = localStorage.getItem('userProfile');
+      let registrationDate;
+      
+      if (existingProfile) {
+        const parsed = JSON.parse(existingProfile);
+        // Preserve the original registration date if it exists
+        registrationDate = parsed.registrationDate || new Date().toISOString();
+      } else {
+        // First time sign-in, set the registration date
+        registrationDate = new Date().toISOString();
+      }
+      
       // Save user info to localStorage for quick access
       localStorage.setItem('userProfile', JSON.stringify({
         uid: user.uid,
         name: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
-        signInTime: new Date().toISOString()
+        registrationDate: registrationDate,
+        lastSignInTime: new Date().toISOString()
       }));
     } else {
       console.log('👋 User signed out');
