@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'self' 'unsafe-inline' https: http:; font-src 'self' https: http: data:; connect-src 'self' https: http: ws: wss:; frame-src 'self' https: http:; img-src 'self' data: https: http:; media-src 'self' https: http:;">
+  <title>My Account — JojoJubah</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Early theme loading to prevent flash -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme-preference');
+      if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Cookie Consent Banner -->
+  <div id="cookieConsentBanner" style="display:none;">
+    <p>🍪 This site uses cookies for analytics to improve your experience. <a href="#" id="learnMoreBtn">Learn more</a></p>
+    <div class="cookie-buttons">
+      <button id="acceptCookies" class="cookie-btn accept">Accept All Cookies</button>
+      <button id="declineCookies" class="cookie-btn decline">Decline</button>
+    </div>
+  </div>
+
+  <!-- Animated Background -->
+  <div class="background-gradient"></div>
+  
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-container">
+        <a href="index.html" class="logo-area">
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+          <span class="logo-text">JojoJubah</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#learn" class="nav-link">Learn</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="/economics" class="nav-link">Economics</a></li>
+          <li><a href="/labs" class="nav-link">Labs</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+          <div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Account Hero Section -->
+    <section id="account-hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:120px;">
+      <div class="container">
+        <div id="signInPrompt" class="sign-in-prompt" style="display:none;">
+          <h1 class="hero-title">Welcome to <span class="gradient-text">Your Account</span></h1>
+          <p class="hero-subtitle">Sign in to access your personalized dashboard and upcoming premium features.</p>
+          <button class="btn" id="accountSignInBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" class="google-icon">
+              <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign In with Google
+          </button>
+        </div>
+        
+        <div id="accountDashboard" class="account-dashboard" style="display:none;">
+          <div class="user-profile-header">
+            <img id="userProfilePhoto" class="user-profile-image" src="" alt="Profile Photo">
+            <div class="user-info">
+              <h1 id="userDisplayName" class="user-name">Loading...</h1>
+              <p id="userEmail" class="user-email">Loading...</p>
+              <p class="user-member-since">Member since: <span id="userMemberSince">Loading...</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Account Features Section -->
+    <section id="account-features" style="display:none;">
+      <div class="container">
+        <h2 class="section-title">Your Dashboard</h2>
+        
+        <div class="projects-grid">
+          <!-- Profile Settings Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">Profile Settings</h3>
+              <p class="project-description">
+                Manage your account preferences, privacy settings, and personal information.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag">Available Now</span>
+              </div>
+              <button class="btn" onclick="showProfileSettings()">Manage Profile</button>
+            </div>
+          </div>
+
+          <!-- Learning Progress Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">Learning Progress</h3>
+              <p class="project-description">
+                Track your progress through tutorials, save bookmarks, and get personalized recommendations.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag coming-soon">Coming Soon</span>
+              </div>
+              <button class="btn" disabled>View Progress</button>
+            </div>
+          </div>
+
+          <!-- AI Assistant History Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">AI Chat History</h3>
+              <p class="project-description">
+                Review your conversations with Jojo AI Assistant and access your most helpful exchanges.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag coming-soon">Coming Soon</span>
+              </div>
+              <button class="btn" disabled>View History</button>
+            </div>
+          </div>
+
+          <!-- Premium Features Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">Premium Features</h3>
+              <p class="project-description">
+                Unlock advanced tutorials, priority AI assistance, and exclusive content access.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag coming-soon">Coming Soon</span>
+              </div>
+              <button class="btn" disabled>Upgrade</button>
+            </div>
+          </div>
+
+          <!-- Lab Access Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">Research Lab Access</h3>
+              <p class="project-description">
+                Early access to experimental features, security research, and beta testing programs.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag coming-soon">Coming Soon</span>
+              </div>
+              <button class="btn" disabled>Request Access</button>
+            </div>
+          </div>
+
+          <!-- Data Export Card -->
+          <div class="project-card">
+            <div class="project-content">
+              <h3 class="project-title">Data & Privacy</h3>
+              <p class="project-description">
+                Download your data, manage privacy settings, and control how your information is used.
+              </p>
+              <div class="project-features">
+                <span class="feature-tag coming-soon">Coming Soon</span>
+              </div>
+              <button class="btn" disabled>Manage Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Profile Settings Modal -->
+  <div id="profileModal" class="modal-overlay" style="display: none;">
+    <div class="learn-more-modal">
+      <button class="close-btn" id="closeProfileModal">&times;</button>
+      <h3>Profile Settings</h3>
+      <div class="profile-settings">
+        <div class="setting-group">
+          <h4>Account Information</h4>
+          <p>Your Google account information is automatically synced and cannot be changed here. To update your name or email, please visit your Google Account settings.</p>
+        </div>
+        <div class="setting-group">
+          <h4>Preferences</h4>
+          <label class="setting-item">
+            <input type="checkbox" id="emailNotifications" checked>
+            <span>Email notifications for new tutorials</span>
+          </label>
+          <label class="setting-item">
+            <input type="checkbox" id="aiTips" checked>
+            <span>AI Assistant tips and suggestions</span>
+          </label>
+        </div>
+        <div class="setting-group">
+          <h4>Theme</h4>
+          <p>Theme preference is automatically saved and synced across all pages.</p>
+          <div class="current-theme" id="currentTheme">Current theme: Light</div>
+        </div>
+        <div class="setting-actions">
+          <button class="btn" onclick="saveSettings()">Save Settings</button>
+          <button class="btn" style="background:#ef4444;" onclick="signOutFromProfile()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <a href="index.html" class="footer-logo">
+            <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
+            <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
+          </a>
+          <button id="cookiePreferences" class="cookie-preferences-btn">
+            🍪 Cookie Preferences
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cookie Management Modal -->
+  <div id="cookieModal" class="cookie-modal" style="display: none;">
+    <div class="cookie-modal-content">
+      <div class="cookie-modal-header">
+        <h3>Cookie Preferences</h3>
+        <button id="closeCookieModal" class="cookie-modal-close">&times;</button>
+      </div>
+      
+      <div class="cookie-modal-body">
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Necessary</span>
+            <span class="cookie-category-status always-on">Always On</span>
+          </div>
+          <p class="cookie-category-desc">Essential cookies for site functionality and security.</p>
+        </div>
+
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Performance & Analytics</span>
+            <label class="cookie-toggle">
+              <input type="checkbox" id="analyticsToggle">
+              <span class="cookie-toggle-slider"></span>
+            </label>
+          </div>
+          <p class="cookie-category-desc">Help us understand which content you find most helpful (Google Analytics).</p>
+        </div>
+
+        <div class="cookie-category disabled">
+          <div class="cookie-category-header">
+            <span class="cookie-category-title">Advertising</span>
+            <span class="cookie-category-status coming-soon">Coming Soon</span>
+          </div>
+          <p class="cookie-category-desc">Personalized ads and marketing (not currently implemented).</p>
+        </div>
+      </div>
+
+      <div class="cookie-modal-footer">
+        <button id="saveCookiePreferences" class="cookie-save-btn">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
+    
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+        authDomain: "jojojubah-f2996.firebaseapp.com",
+        projectId: "jojojubah-f2996",
+        storageBucket: "jojojubah-f2996.firebasestorage.app",
+        messagingSenderId: "160250947651",
+        appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
+        measurementId: "G-XC16XPJ48T"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const functions = getFunctions(app);
+    
+    // Make Firebase services available globally
+    window.app = app;
+    window.db = db;
+    window.getAIResponse = httpsCallable(functions, 'getAIResponse');
+    
+    // Mark Firebase as ready
+    window.firebaseReady = true;
+    console.log('Firebase initialized for Account page');
+  </script>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/assistant-chat.js" defer></script>
+  <script src="js/auth.js" type="module" defer></script>
+
+  <!-- Account Page Specific Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Account page specific functionality
+      const signInPrompt = document.getElementById('signInPrompt');
+      const accountDashboard = document.getElementById('accountDashboard');
+      const accountFeatures = document.getElementById('account-features');
+      const accountSignInBtn = document.getElementById('accountSignInBtn');
+      
+      // Check for user authentication state
+      function updateAccountUI() {
+        if (window.authSystem && window.authSystem.isSignedIn()) {
+          const user = window.authSystem.getCurrentUser();
+          if (user) {
+            showUserDashboard(user);
+          }
+        } else {
+          showSignInPrompt();
+        }
+      }
+      
+      function showSignInPrompt() {
+        signInPrompt.style.display = 'block';
+        accountDashboard.style.display = 'none';
+        accountFeatures.style.display = 'none';
+        
+        // Trigger AI Assistant tip
+        if (window.showTip) {
+          setTimeout(() => window.showTip('signInPrompt'), 1000);
+        }
+      }
+      
+      function showUserDashboard(user) {
+        signInPrompt.style.display = 'none';
+        accountDashboard.style.display = 'block';
+        accountFeatures.style.display = 'block';
+        
+        // Populate user information
+        document.getElementById('userProfilePhoto').src = user.photoURL;
+        document.getElementById('userDisplayName').textContent = user.displayName;
+        document.getElementById('userEmail').textContent = user.email;
+        
+        // Calculate member since date
+        const cached = window.authSystem.getCachedUserProfile();
+        if (cached && cached.signInTime) {
+          const signInDate = new Date(cached.signInTime);
+          document.getElementById('userMemberSince').textContent = signInDate.toLocaleDateString();
+        } else {
+          document.getElementById('userMemberSince').textContent = 'Today';
+        }
+        
+        // Trigger AI Assistant tip
+        if (window.showTip) {
+          setTimeout(() => window.showTip('accountPage'), 1000);
+        }
+      }
+      
+      // Sign in button handler
+      accountSignInBtn?.addEventListener('click', () => {
+        if (window.authSystem) {
+          window.authSystem.signIn();
+        }
+      });
+      
+      // Poll for auth system readiness
+      const checkAuth = () => {
+        if (window.authSystem) {
+          updateAccountUI();
+        } else {
+          setTimeout(checkAuth, 500);
+        }
+      };
+      checkAuth();
+    });
+    
+    // Profile settings functions
+    function showProfileSettings() {
+      const modal = document.getElementById('profileModal');
+      const currentTheme = document.getElementById('currentTheme');
+      const theme = localStorage.getItem('theme-preference') || 'light';
+      
+      currentTheme.textContent = `Current theme: ${theme.charAt(0).toUpperCase() + theme.slice(1)}`;
+      modal.style.display = 'flex';
+    }
+    
+    function saveSettings() {
+      // In a real app, this would save to a backend
+      alert('Settings saved! (This is a demo)');
+      document.getElementById('profileModal').style.display = 'none';
+    }
+    
+    function signOutFromProfile() {
+      if (window.authSystem) {
+        window.authSystem.signOut();
+      }
+    }
+    
+    // Close profile modal
+    document.getElementById('closeProfileModal')?.addEventListener('click', () => {
+      document.getElementById('profileModal').style.display = 'none';
+    });
+  </script>
+
+  <!-- === AI Assistant (Jojo) with Chat — START === -->
+  <div id="jojoAssistant" class="assistant">
+    <div class="assistant-avatar" id="assistantAvatar">
+      <img src="assets/jojo-assistant.png" alt="Jojo Assistant"/>
+      <div class="assistant-status-dot"></div>
+    </div>
+    
+    <!-- Chat Interface -->
+    <div class="assistant-chat" id="assistantChat">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <img src="assets/jojo-assistant.png" alt="Jojo Assistant" class="chat-avatar"/>
+          <div>
+            <h3>Jojo AI Assistant</h3>
+            <span class="chat-status">Online</span>
+          </div>
+        </div>
+        <button class="chat-close" id="chatClose" aria-label="Close chat">×</button>
+      </div>
+      
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+          <div class="message-content">
+            Welcome to your account dashboard! 👤 I'm here to help you navigate your personalized features.<br><br>
+            I can help you with:<br>
+            ⚙️ Understanding your account settings<br>
+            📚 Planning your learning journey<br>
+            🚀 Exploring upcoming premium features<br>
+            🔐 Managing your privacy and data<br><br>
+            What would you like to know about your account?
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Ask about your account..." autofocus>
+        <button id="chatSend" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Original assistant bubble for tips -->
+    <div class="assistant-bubble" id="assistantBubble">
+      <button class="assistant-close" id="assistantClose" aria-label="Close">×</button>
+      <p id="assistantText">Need a hand?</p>
+    </div>
+  </div>
+  <!-- === AI Assistant (Jojo) — END === -->
+
+</body>
+</html>
