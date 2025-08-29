@@ -260,3 +260,138 @@ body[data-theme="dark"]:has(#matrix-canvas) .feature-tag {
     padding: 0.2rem 0.4rem;
   }
 }
+
+/* ======================== Difficulty Accordions ======================== */
+
+.difficulty-accordions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.difficulty-accordion {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.difficulty-header {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-2);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.difficulty-header:hover {
+  background: var(--bg-3);
+  box-shadow: var(--neu-inset);
+}
+
+.difficulty-rating {
+  font-size: 0.9rem;
+}
+
+.accordion-arrow {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+}
+
+.difficulty-accordion.open .accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.difficulty-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: var(--bg);
+}
+
+.difficulty-accordion.open .difficulty-content {
+  max-height: 500px;
+  padding: 1rem;
+}
+
+.model-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(0,0,0,0.02);
+  border-radius: 0 6px 6px 0;
+}
+
+.model-item:last-child {
+  margin-bottom: 0;
+}
+
+.model-item h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.model-item p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* Matrix theme difficulty accordions */
+body[data-theme="dark"]:has(#matrix-canvas) .difficulty-accordion {
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.05);
+}
+
+body[data-theme="dark"]:has(#matrix-canvas) .difficulty-header {
+  background: rgba(0, 255, 65, 0.1);
+  color: #00ff41;
+}
+
+body[data-theme="dark"]:has(#matrix-canvas) .difficulty-header:hover {
+  background: rgba(0, 255, 65, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+}
+
+body[data-theme="dark"]:has(#matrix-canvas) .model-item {
+  border-left-color: #00ff41;
+  background: rgba(0, 255, 65, 0.05);
+}
+
+body[data-theme="dark"]:has(#matrix-canvas) .model-item h4 {
+  color: #00ff41;
+}
+
+/* Mobile accordion adjustments */
+@media (max-width: 640px) {
+  .difficulty-header {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .difficulty-rating {
+    font-size: 0.8rem;
+  }
+  
+  .model-item {
+    padding: 0.6rem;
+  }
+  
+  .model-item h4 {
+    font-size: 0.9rem;
+  }
+  
+  .model-item p {
+    font-size: 0.8rem;
+  }
+}
