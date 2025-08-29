@@ -365,9 +365,9 @@
         
         // Calculate member since date
         const cached = window.authSystem.getCachedUserProfile();
-        if (cached && cached.signInTime) {
-          const signInDate = new Date(cached.signInTime);
-          document.getElementById('userMemberSince').textContent = signInDate.toLocaleDateString();
+        if (cached && cached.registrationDate) {
+          const registrationDate = new Date(cached.registrationDate);
+          document.getElementById('userMemberSince').textContent = registrationDate.toLocaleDateString();
         } else {
           document.getElementById('userMemberSince').textContent = 'Today';
         }
