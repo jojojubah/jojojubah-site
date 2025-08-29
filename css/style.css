@@ -1570,15 +1570,15 @@ body[data-theme="dark"] .currency-symbol {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.55rem;
-  border-radius: 18px;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
   background: var(--bg);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: var(--neu-out);
-  max-width: 160px;
-  min-height: 32px;
+  max-width: 220px;
+  min-height: auto;
 }
 
 .user-profile-btn:hover {
@@ -1595,14 +1595,12 @@ body[data-theme="dark"] .currency-symbol {
 }
 
 .user-name {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text);
+  font-weight: 600;
+  color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
-  line-height: 1.2;
+  max-width: 140px;
 }
 
 /* User dropdown */
@@ -1697,14 +1695,14 @@ body[data-theme="dark"] .dropdown-item:hover {
   }
   
   .user-profile-btn {
-    padding: 0.25rem 0.4rem;
-    max-width: 120px;
-    gap: 0.3rem;
+    padding: 0.45rem 0.6rem;
+    max-width: 160px;
+    gap: 0.4rem;
   }
   
   .user-name {
-    font-size: 0.7rem;
-    max-width: 70px;
+    font-size: 0.85rem;
+    max-width: 100px;
   }
   
   .user-avatar {
@@ -1780,7 +1778,7 @@ body[data-theme="dark"] .dropdown-item:hover {
   flex: 1;
 }
 
-.user-name {
+.user-profile-header .user-name {
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
@@ -1915,7 +1913,7 @@ body[data-theme="dark"] .feature-tag.coming-soon {
     height: 60px;
   }
   
-  .user-name {
+  .user-profile-header .user-name {
     font-size: 1.5rem;
   }
   
