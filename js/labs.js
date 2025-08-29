@@ -241,3 +241,65 @@
     }
   });
 })();
+
+// Difficulty Accordion Functionality
+function toggleAccordion(button) {
+  const accordion = button.parentElement;
+  const content = accordion.querySelector('.difficulty-content');
+  const isOpen = accordion.classList.contains('open');
+  
+  // Close all other accordions
+  document.querySelectorAll('.difficulty-accordion.open').forEach(otherAccordion => {
+    if (otherAccordion !== accordion) {
+      otherAccordion.classList.remove('open');
+      const otherContent = otherAccordion.querySelector('.difficulty-content');
+      if (otherContent) {
+        otherContent.style.maxHeight = '0';
+      }
+    }
+  });
+  
+  // Toggle current accordion
+  if (isOpen) {
+    accordion.classList.remove('open');
+    content.style.maxHeight = '0';
+  } else {
+    accordion.classList.add('open');
+    content.style.maxHeight = content.scrollHeight + 'px';
+    
+    // Show AI Assistant tip for first accordion open
+    if (window.showTip) {
+      setTimeout(() => window.showTip('jailbreakResearch'), 500);
+    }
+  }
+}
+
+// Enhanced Labs Tips for Jailbreaking Research
+(function enhanceJailbreakTips() {
+  setTimeout(function() {
+    if (window.showTip && typeof window.showTip === 'function') {
+      // Add jailbreaking research tips
+      const jailbreakTips = {
+        'jailbreakResearch': '🔍 Exploring LLM safety mechanisms! This research helps understand defensive AI alignment.',
+        'difficultyRating': '⭐ Each star represents how robust the model\'s safety training is against prompt injection attempts.',
+        'ethicalResearch': '🛡️ Remember: This research is for defensive security and educational purposes only.'
+      };
+
+      // Extend the existing tips system
+      var originalShowTip = window.showTip;
+      window.showTip = function(key) {
+        if (jailbreakTips[key]) {
+          var bubble = document.getElementById('assistantBubble');
+          var textEl = document.getElementById('assistantText');
+          if (textEl && bubble) {
+            textEl.textContent = jailbreakTips[key];
+            bubble.classList.add('show');
+            setTimeout(() => bubble.classList.remove('show'), 8000);
+          }
+        } else {
+          originalShowTip(key);
+        }
+      };
+    }
+  }, 1000);
+})();
