@@ -325,10 +325,17 @@
       
       // Check for user authentication state
       function updateAccountUI() {
+        console.log('🔍 Updating account UI...');
+        console.log('- authSystem available:', !!window.authSystem);
+        console.log('- is signed in:', window.authSystem ? window.authSystem.isSignedIn() : 'N/A');
+        
         if (window.authSystem && window.authSystem.isSignedIn()) {
           const user = window.authSystem.getCurrentUser();
+          console.log('- current user:', user ? user.displayName : 'null');
           if (user) {
             showUserDashboard(user);
+          } else {
+            showSignInPrompt();
           }
         } else {
           showSignInPrompt();
@@ -378,11 +385,16 @@
         }
       });
       
+      // Make updateAccountUI globally available for auth state changes
+      window.updateAccountUI = updateAccountUI;
+      
       // Poll for auth system readiness
       const checkAuth = () => {
         if (window.authSystem) {
+          console.log('✅ Auth system ready, updating account UI');
           updateAccountUI();
         } else {
+          console.log('⏳ Waiting for auth system...');
           setTimeout(checkAuth, 500);
         }
       };
