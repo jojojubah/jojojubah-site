@@ -20,6 +20,15 @@
 
 <link rel="stylesheet" href="css/style.css">
 
+  <!-- Early theme loading to prevent flash -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme-preference');
+      if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
 </head>
 <body>
   <!-- Cookie Consent Banner - ADDED HERE -->
