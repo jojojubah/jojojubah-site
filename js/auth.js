@@ -73,6 +73,11 @@ function setupAuthStateListener() {
     currentUser = user;
     updateAuthUI();
     
+    // Update account page if we're on it
+    if (window.location.pathname.includes('account') && window.updateAccountUI) {
+      setTimeout(() => window.updateAccountUI(), 100);
+    }
+    
     if (user) {
       console.log('✅ User signed in:', user.displayName);
       // Save user info to localStorage for quick access
