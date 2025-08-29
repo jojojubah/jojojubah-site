@@ -64,12 +64,26 @@
 
     accept && (accept.onclick = function(){
       localStorage.setItem('cookieConsent','accepted');
+      // Also sync with cookie preferences system
+      const cookiePreferences = {
+        necessary: true,
+        analytics: true, // User accepted all cookies
+        advertising: false
+      };
+      localStorage.setItem('cookiePreferences', JSON.stringify(cookiePreferences));
       banner && (banner.style.display = 'none');
       enableGoogleAnalytics();
     });
 
     decline && (decline.onclick = function(){
       localStorage.setItem('cookieConsent','declined');
+      // Also sync with cookie preferences system
+      const cookiePreferences = {
+        necessary: true,
+        analytics: false, // User declined cookies
+        advertising: false
+      };
+      localStorage.setItem('cookiePreferences', JSON.stringify(cookiePreferences));
       banner && (banner.style.display = 'none');
       console.log('❌ Analytics declined by user');
     });
