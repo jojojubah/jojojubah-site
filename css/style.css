@@ -934,15 +934,14 @@ body[data-theme="dark"] #chatInput::placeholder {
   100% { transform: translateX(0); }
 }
 
-.page-flipped {
-  transform: rotate(180deg) !important;
-  transition: transform 0.8s ease-in-out;
-}
-
-/* Ensure page-flipped overrides chaos-mode */
+/* Page flip - instant 180° with proper visibility */
 body.page-flipped {
-  animation: none !important;
   transform: rotate(180deg) !important;
+  transition: none !important;
+  animation: none !important;
+  transform-origin: center center;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .rainbow {
@@ -1549,6 +1548,7 @@ body[data-theme="dark"] .currency-symbol {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
+  justify-content: flex-end;
 }
 
 /* Sign-in button */
