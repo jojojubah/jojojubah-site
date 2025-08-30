@@ -183,7 +183,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
   text-decoration:none;color:var(--text-dim);font-weight:600;padding:.55rem .9rem;
   transition:var(--t);
 }
-.nav-link:hover,.nav-link.active{color:#0f172a}
+.nav-link:hover,.nav-link.active{color:var(--accent)}
 
 /* Hamburger */
 .mobile-menu-button{display:none;background:none;border:0;cursor:pointer;padding:.5rem}
@@ -1537,8 +1537,10 @@ body[data-theme="dark"] .currency-symbol {
 .auth-container {
   display: flex;
   align-items: center;
-  margin-left: auto;
-  margin-right: 0;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Sign-in button */
@@ -1683,8 +1685,7 @@ body[data-theme="dark"] .dropdown-item:hover {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .auth-container {
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
+    right: 12px;
   }
   
   .sign-in-btn {
