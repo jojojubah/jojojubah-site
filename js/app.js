@@ -594,12 +594,27 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.add('page-flipped');
           pageFlipped = true;
           
-          // Simple repaint trigger to prevent blank screen
+          // Immediate repaint trigger
+          document.body.offsetHeight;
+          
+          // Multiple repaint triggers at different timings
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight;
             document.body.style.visibility = 'visible';
+            document.body.offsetHeight;
           }, 10);
+          
+          // Additional repaint trigger
+          setTimeout(() => {
+            document.body.style.transform = document.body.style.transform;
+            document.body.offsetHeight;
+          }, 20);
+          
+          // Final repaint trigger
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+          }, 40);
         }
         
         // Apply other chaos effects to random elements
@@ -623,12 +638,27 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.remove('page-flipped');
           pageFlipped = false;
           
-          // Simple repaint trigger
+          // Immediate repaint trigger
+          document.body.offsetHeight;
+          
+          // Multiple repaint triggers at different timings
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight;
             document.body.style.visibility = 'visible';
+            document.body.offsetHeight;
           }, 10);
+          
+          // Additional repaint trigger
+          setTimeout(() => {
+            document.body.style.transform = document.body.style.transform;
+            document.body.offsetHeight;
+          }, 20);
+          
+          // Final repaint trigger
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+          }, 40);
         }
       }
     });
