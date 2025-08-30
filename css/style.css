@@ -1545,6 +1545,10 @@ body[data-theme="dark"] .currency-symbol {
 .auth-container {
   display: flex;
   align-items: center;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Sign-in button */
@@ -1553,20 +1557,17 @@ body[data-theme="dark"] .currency-symbol {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  background: var(--bg);
-  color: var(--text);
+  border: none;
+  background: none;
+  color: var(--text-dim);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--neu-out);
+  transition: var(--t);
 }
 
 .sign-in-btn:hover {
-  box-shadow: var(--neu-inset);
-  transform: translateY(-1px);
+  color: var(--accent);
 }
 
 .google-icon {
@@ -1674,8 +1675,11 @@ body[data-theme="dark"] .currency-symbol {
 
 /* Dark theme support */
 body[data-theme="dark"] .sign-in-btn {
-  border-color: rgba(255,255,255,0.2);
-  background: var(--bg);
+  color: var(--text-dim);
+}
+
+body[data-theme="dark"] .sign-in-btn:hover {
+  color: var(--accent);
 }
 
 body[data-theme="dark"] .user-dropdown {
