@@ -926,18 +926,12 @@ body[data-theme="dark"] #chatInput::placeholder {
   100% { transform: translateX(0); }
 }
 
-/* Page flip - instant 180° with viewport-centered origin */
+/* Page flip - instant 180° with dynamic transform origin */
 body.page-flipped {
   transform: rotate(180deg) !important;
   transition: none !important;
   animation: none !important;
-  transform-origin: center center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
+  min-height: 100vh;
 }
 
 .rainbow {
