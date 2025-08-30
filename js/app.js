@@ -265,8 +265,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // active nav link (use viewport middle so short sections still activate)
-    // Skip active nav logic on labs page since it doesn't have homepage sections
-    if (!window.location.pathname.includes('labs.html') && !window.location.pathname.includes('/labs')) {
+    // Only run on homepage - skip on other pages
+    const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+    
+    if (isHomepage) {
       let current = '';
       const y2 = window.scrollY || window.pageYOffset;
       const mid = y2 + window.innerHeight / 3; // adjust if you want earlier/later switch
