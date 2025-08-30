@@ -926,21 +926,18 @@ body[data-theme="dark"] #chatInput::placeholder {
   100% { transform: translateX(0); }
 }
 
-/* Page flip - instant 180° with proper visibility */
+/* Page flip - instant 180° with viewport-centered origin */
 body.page-flipped {
   transform: rotate(180deg) !important;
   transition: none !important;
   animation: none !important;
-  transform-origin: 50% 50%;
-  min-height: 100vh;
-  overflow: visible;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  will-change: transform;
-  backface-visibility: visible;
-  -webkit-backface-visibility: visible;
-  transform-style: preserve-3d;
+  transform-origin: center center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
 }
 
 .rainbow {
