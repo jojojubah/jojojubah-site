@@ -926,17 +926,14 @@ body[data-theme="dark"] #chatInput::placeholder {
   100% { transform: translateX(0); }
 }
 
-/* Page flip - instant 180° with proper boundaries */
+/* Page flip - instant 180° with viewport center origin */
 body.page-flipped {
   transform: rotate(180deg) !important;
   transition: none !important;
   animation: none !important;
+  transform-origin: 50vw 50vh;
   min-height: 100vh;
-  max-height: none;
-  width: 100vw;
   overflow-x: hidden;
-  position: relative;
-  box-sizing: border-box;
 }
 
 /* Ensure html container doesn't cause issues when body is flipped */
