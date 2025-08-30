@@ -239,47 +239,32 @@
   document.addEventListener('DOMContentLoaded', initCookiePreferences);
 })();
 
-/* ========================= Unified Toast System ===================== */
-function showUnifiedToast(message) {
-  // Create or get toast container
-  let toastContainer = document.getElementById('toastContainer');
-  if (!toastContainer) {
-    toastContainer = document.createElement('div');
-    toastContainer.id = 'toastContainer';
-    toastContainer.className = 'toast-container';
-    document.body.appendChild(toastContainer);
-  }
+/* ========================= Simple Toast System ===================== */
+function showSimpleToast(message) {
+  // Remove existing toast
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) existingToast.remove();
 
-  // Create toast element
+  // Create new toast
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = message;
-
-  // Add to container
-  toastContainer.appendChild(toast);
+  document.body.appendChild(toast);
 
   // Show toast
   setTimeout(() => toast.classList.add('show'), 10);
 
   // Auto-hide after 5 seconds
   setTimeout(() => {
-    toast.classList.add('hide');
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.remove();
-      }
-      // Remove container if no more toasts
-      if (toastContainer.children.length === 0) {
-        toastContainer.remove();
-      }
-    }, 300);
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 250);
   }, 5000);
 
   return toast;
 }
 
 // Make globally available
-window.showUnifiedToast = showUnifiedToast;
+window.showSimpleToast = showSimpleToast;
 
 /* ========================= Main Site Interactions ===================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -467,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showToast(){
     if (!toastEl) {
-      showUnifiedToast('🎉 Amazing! You explored every topic. Check out JubahLabs for more!');
+      showSimpleToast('🎉 Amazing! You explored every topic. Check out JubahLabs for more!');
       return;
     }
     toastEl.classList.add('show');
@@ -581,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   function showChaosToast(message) {
-    showUnifiedToast(message);
+    showSimpleToast(message);
   }
 
   if (mysteryToggle) {
@@ -777,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Show toast when accordion is unlocked
   function showAccordionToast() {
-    showUnifiedToast('🎉 Bonus insights unlocked!');
+    showSimpleToast('🎉 Bonus insights unlocked!');
   }
   
   // Initialize accordions when page loads
