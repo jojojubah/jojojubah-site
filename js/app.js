@@ -591,6 +591,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shouldFlip && !pageFlipped) {
           document.body.classList.add('page-flipped');
           pageFlipped = true;
+          // Force repaint to prevent blank screen
+          setTimeout(() => {
+            document.body.style.visibility = 'hidden';
+            document.body.offsetHeight; // Trigger reflow
+            document.body.style.visibility = 'visible';
+          }, 10);
         }
         
         // Apply other chaos effects to random elements
@@ -613,6 +619,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageFlipped) {
           document.body.classList.remove('page-flipped');
           pageFlipped = false;
+          // Force repaint when flipping back to normal
+          setTimeout(() => {
+            document.body.style.visibility = 'hidden';
+            document.body.offsetHeight; // Trigger reflow
+            document.body.style.visibility = 'visible';
+          }, 10);
         }
       }
     });
