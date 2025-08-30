@@ -554,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let chaosLevel = 0;
   let chaosActive = false;
   let pageFlipped = false;
+  let savedScrollPosition = 0;
 
   // Toast messages for each chaos level
   const chaosMessages = [
@@ -589,14 +590,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check for page flip effect
         const shouldFlip = Math.random() < 0.3; // 30% chance
         if (shouldFlip && !pageFlipped) {
+          // Save current scroll position
+          savedScrollPosition = window.scrollY || window.pageYOffset;
+          
           document.body.classList.add('page-flipped');
           pageFlipped = true;
+          
+          // Restore scroll position after flip
+          setTimeout(() => {
+            window.scrollTo(0, savedScrollPosition);
+          }, 20);
+          
           // Force repaint to prevent blank screen
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight; // Trigger reflow
             document.body.style.visibility = 'visible';
-          }, 10);
+          }, 30);
         }
         
         // Apply other chaos effects to random elements
@@ -619,12 +629,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageFlipped) {
           document.body.classList.remove('page-flipped');
           pageFlipped = false;
+          
+          // Restore scroll position when flipping back
+          setTimeout(() => {
+            window.scrollTo(0, savedScrollPosition);
+          }, 20);
+          
           // Force repaint when flipping back to normal
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight; // Trigger reflow
             document.body.style.visibility = 'visible';
-          }, 10);
+          }, 30);
         }
       }
     });
