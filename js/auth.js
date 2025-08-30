@@ -303,43 +303,13 @@ function updateAuthUI() {
 
 // Show auth messages (success/error/info)
 function showAuthMessage(message, type = 'info') {
-  // Remove existing messages
-  const existingMessage = document.querySelector('.auth-message');
-  if (existingMessage) existingMessage.remove();
-  
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `auth-message auth-message-${type}`;
-  messageDiv.textContent = message;
-  
-  const colors = {
-    success: '#22c55e',
-    error: '#ef4444', 
-    info: '#3b82f6'
-  };
-  
-  messageDiv.style.cssText = `
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 10003;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    background: ${colors[type]};
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: slideInRight 0.3s ease-out;
-  `;
-  
-  document.body.appendChild(messageDiv);
-  
-  // Auto remove after 4 seconds
-  setTimeout(() => {
-    if (messageDiv && messageDiv.parentNode) {
-      messageDiv.style.animation = 'slideOutRight 0.3s ease-out';
-      setTimeout(() => messageDiv.remove(), 300);
-    }
-  }, 4000);
+  // Use unified toast system
+  if (window.showUnifiedToast) {
+    window.showUnifiedToast(message);
+  } else {
+    // Fallback if unified toast isn't available yet
+    console.log(`Auth message (${type}):`, message);
+  }
 }
 
 // Get current user info
