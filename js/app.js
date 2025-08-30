@@ -593,10 +593,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check for page flip effect
         const shouldFlip = Math.random() < 0.3; // 30% chance
         if (shouldFlip && !pageFlipped) {
-          // Calculate transform origin based on current viewport
+          // Calculate transform origin based on current viewport with boundary checks
           const scrollY = window.scrollY || window.pageYOffset;
+          const docHeight = document.documentElement.scrollHeight;
+          const viewportHeight = window.innerHeight;
+          
+          // Ensure we don't go beyond document boundaries
+          const clampedScrollY = Math.max(0, Math.min(scrollY, docHeight - viewportHeight));
+          
           const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = scrollY + (window.innerHeight / 2);
+          const viewportCenterY = clampedScrollY + (viewportHeight / 2);
           
           // Set dynamic transform origin
           document.body.style.transformOrigin = `${viewportCenterX}px ${viewportCenterY}px`;
