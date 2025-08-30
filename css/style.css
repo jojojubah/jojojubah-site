@@ -909,17 +909,9 @@ body[data-theme="dark"] #chatInput::placeholder {
   box-shadow: var(--neu-inset);
 }
 
-/* Chaos Effects */
+/* Chaos Effects - removed spinning animation */
 .chaos-mode {
-  animation: chaos 2s infinite;
-}
-
-@keyframes chaos {
-  0% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(90deg) scale(1.2); }
-  50% { transform: rotate(180deg) scale(0.8); }
-  75% { transform: rotate(270deg) scale(1.5); }
-  100% { transform: rotate(360deg) scale(1); }
+  /* Chaos mode no longer has spinning animation */
 }
 
 .shake {
@@ -939,9 +931,12 @@ body.page-flipped {
   transform: rotate(180deg) !important;
   transition: none !important;
   animation: none !important;
-  transform-origin: center center;
+  transform-origin: 50% 50%;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: visible;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .rainbow {
@@ -1544,10 +1539,10 @@ body[data-theme="dark"] .currency-symbol {
 .auth-container {
   display: flex;
   align-items: center;
-  position: absolute;
+  position: fixed;
   right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 26px;
+  z-index: 1001;
   justify-content: flex-end;
 }
 
@@ -1697,10 +1692,9 @@ body[data-theme="dark"] .dropdown-item:hover {
   }
   
   .auth-container {
-    position: absolute;
+    position: fixed;
     right: 60px; /* Position next to hamburger menu */
-    top: 50%;
-    transform: translateY(-50%);
+    top: 26px;
   }
   
   .sign-in-btn {
