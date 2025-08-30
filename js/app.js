@@ -593,6 +593,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check for page flip effect
         const shouldFlip = Math.random() < 0.3; // 30% chance
         if (shouldFlip && !pageFlipped) {
+          // Calculate transform origin based on current viewport
+          const scrollY = window.scrollY || window.pageYOffset;
+          const viewportCenterX = window.innerWidth / 2;
+          const viewportCenterY = scrollY + (window.innerHeight / 2);
+          
+          // Set dynamic transform origin
+          document.body.style.transformOrigin = `${viewportCenterX}px ${viewportCenterY}px`;
+          
           document.body.classList.add('page-flipped');
           pageFlipped = true;
           
@@ -628,6 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove page flip when toggled off
         if (pageFlipped) {
           document.body.classList.remove('page-flipped');
+          // Reset transform origin
+          document.body.style.transformOrigin = '';
           pageFlipped = false;
           
           // Simple repaint trigger
