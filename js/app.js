@@ -596,17 +596,29 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.add('page-flipped');
           pageFlipped = true;
           
-          // Restore scroll position after flip
+          // Immediate repaint trigger
+          document.body.offsetHeight;
+          
+          // Restore scroll position and force multiple repaints
           setTimeout(() => {
             window.scrollTo(0, savedScrollPosition);
-          }, 20);
+            // Force repaint after scroll
+            document.body.style.transform = document.body.style.transform;
+            document.body.offsetHeight;
+          }, 10);
           
-          // Force repaint to prevent blank screen
+          // Additional repaint triggers
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
-            document.body.offsetHeight; // Trigger reflow
+            document.body.offsetHeight;
             document.body.style.visibility = 'visible';
-          }, 30);
+            document.body.offsetHeight;
+          }, 20);
+          
+          // Final repaint trigger
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+          }, 50);
         } else {
           // Even if no page flip, restore scroll position to prevent jumping
           setTimeout(() => {
@@ -635,17 +647,28 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.remove('page-flipped');
           pageFlipped = false;
           
-          // Restore scroll position when flipping back
+          // Immediate repaint trigger
+          document.body.offsetHeight;
+          
+          // Restore scroll position and force repaints
           setTimeout(() => {
             window.scrollTo(0, savedScrollPosition);
-          }, 20);
+            document.body.style.transform = document.body.style.transform;
+            document.body.offsetHeight;
+          }, 10);
           
-          // Force repaint when flipping back to normal
+          // Additional repaint triggers
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
-            document.body.offsetHeight; // Trigger reflow
+            document.body.offsetHeight;
             document.body.style.visibility = 'visible';
-          }, 30);
+            document.body.offsetHeight;
+          }, 20);
+          
+          // Final repaint trigger
+          setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+          }, 50);
         }
       }
     });
