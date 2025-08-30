@@ -599,13 +599,18 @@ document.addEventListener('DOMContentLoaded', () => {
           // Immediate repaint trigger
           document.body.offsetHeight;
           
-          // Restore scroll position and force multiple repaints
+          // Restore scroll position immediately after transform
           setTimeout(() => {
             window.scrollTo(0, savedScrollPosition);
             // Force repaint after scroll
             document.body.style.transform = document.body.style.transform;
             document.body.offsetHeight;
           }, 10);
+          
+          // Additional scroll restoration to combat transform effects
+          setTimeout(() => {
+            window.scrollTo(0, savedScrollPosition);
+          }, 25);
           
           // Additional repaint triggers
           setTimeout(() => {
@@ -615,9 +620,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.offsetHeight;
           }, 20);
           
-          // Final repaint trigger
+          // Final repaint trigger and scroll restoration
           setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
+            // Final scroll restoration using requestAnimationFrame
+            requestAnimationFrame(() => {
+              window.scrollTo(0, savedScrollPosition);
+            });
           }, 50);
         } else {
           // Even if no page flip, restore scroll position to prevent jumping
