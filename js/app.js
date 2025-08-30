@@ -596,38 +596,12 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.add('page-flipped');
           pageFlipped = true;
           
-          // Immediate repaint trigger
-          document.body.offsetHeight;
-          
-          // Restore scroll position immediately after transform
-          setTimeout(() => {
-            window.scrollTo(0, savedScrollPosition);
-            // Force repaint after scroll
-            document.body.style.transform = document.body.style.transform;
-            document.body.offsetHeight;
-          }, 10);
-          
-          // Additional scroll restoration to combat transform effects
-          setTimeout(() => {
-            window.scrollTo(0, savedScrollPosition);
-          }, 25);
-          
-          // Additional repaint triggers
+          // Simple repaint trigger
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight;
             document.body.style.visibility = 'visible';
-            document.body.offsetHeight;
-          }, 20);
-          
-          // Final repaint trigger and scroll restoration
-          setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-            // Final scroll restoration using requestAnimationFrame
-            requestAnimationFrame(() => {
-              window.scrollTo(0, savedScrollPosition);
-            });
-          }, 50);
+          }, 10);
         } else {
           // Even if no page flip, restore scroll position to prevent jumping
           setTimeout(() => {
@@ -656,28 +630,12 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.remove('page-flipped');
           pageFlipped = false;
           
-          // Immediate repaint trigger
-          document.body.offsetHeight;
-          
-          // Restore scroll position and force repaints
-          setTimeout(() => {
-            window.scrollTo(0, savedScrollPosition);
-            document.body.style.transform = document.body.style.transform;
-            document.body.offsetHeight;
-          }, 10);
-          
-          // Additional repaint triggers
+          // Simple repaint trigger
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight;
             document.body.style.visibility = 'visible';
-            document.body.offsetHeight;
-          }, 20);
-          
-          // Final repaint trigger
-          setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-          }, 50);
+          }, 10);
         }
       }
     });
