@@ -1685,16 +1685,12 @@ body[data-theme="dark"] .dropdown-item:hover {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .auth-container {
-    right: 12px;
+    right: 60px; /* Position next to hamburger menu */
   }
   
   .sign-in-btn {
     padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
-  }
-  
-  .sign-in-btn span {
-    display: none; /* Hide "Sign In" text on mobile, show only icon */
   }
   
   .user-profile-btn {
