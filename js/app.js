@@ -239,6 +239,48 @@
   document.addEventListener('DOMContentLoaded', initCookiePreferences);
 })();
 
+/* ========================= Unified Toast System ===================== */
+function showUnifiedToast(message) {
+  // Create or get toast container
+  let toastContainer = document.getElementById('toastContainer');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toastContainer';
+    toastContainer.className = 'toast-container';
+    document.body.appendChild(toastContainer);
+  }
+
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+
+  // Add to container
+  toastContainer.appendChild(toast);
+
+  // Show toast
+  setTimeout(() => toast.classList.add('show'), 10);
+
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.remove();
+      }
+      // Remove container if no more toasts
+      if (toastContainer.children.length === 0) {
+        toastContainer.remove();
+      }
+    }, 300);
+  }, 5000);
+
+  return toast;
+}
+
+// Make globally available
+window.showUnifiedToast = showUnifiedToast;
+
 /* ========================= Main Site Interactions ===================== */
 document.addEventListener('DOMContentLoaded', () => {
   // Sticky navbar, scroll progress, fade-ins, active link
@@ -424,7 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showToast(){
-    if (!toastEl) return;
+    if (!toastEl) {
+      showUnifiedToast('🎉 Amazing! You explored every topic. Check out JubahLabs for more!');
+      return;
+    }
     toastEl.classList.add('show');
     setTimeout(()=>toastEl.classList.remove('show'), 6000);
   }
@@ -536,31 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   function showChaosToast(message) {
-    const existingToast = document.querySelector('.chaos-toast');
-    if (existingToast) existingToast.remove();
-
-    const toast = document.createElement('div');
-    toast.className = 'toast chaos-toast show';
-    toast.textContent = message;
-    toast.style.cssText = `
-      position: fixed;
-      left: 24px;
-      bottom: 24px;
-      z-index: 10002;
-      padding: 0.8rem 1rem;
-      border-radius: 14px;
-      background: var(--bg);
-      color: #0f172a;
-      box-shadow: var(--neu-out);
-      opacity: 1;
-      transform: translateY(0);
-    `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 250);
-    }, 3000);
+    showUnifiedToast(message);
   }
 
   if (mysteryToggle) {
@@ -756,32 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Show toast when accordion is unlocked
   function showAccordionToast() {
-    const existingToast = document.querySelector('.accordion-toast');
-    if (existingToast) existingToast.remove();
-
-    const toast = document.createElement('div');
-    toast.className = 'toast accordion-toast show';
-    toast.textContent = '🎉 Bonus insights unlocked!';
-    toast.style.cssText = `
-      position: fixed;
-      left: 24px;
-      bottom: 24px;
-      z-index: 10002;
-      padding: 0.8rem 1rem;
-      border-radius: 14px;
-      background: linear-gradient(90deg, var(--accent), #60a5fa);
-      color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-      opacity: 1;
-      transform: translateY(0);
-      font-weight: 600;
-    `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 250);
-    }, 3000);
+    showUnifiedToast('🎉 Bonus insights unlocked!');
   }
   
   // Initialize accordions when page loads
