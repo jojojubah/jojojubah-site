@@ -587,26 +587,18 @@ document.addEventListener('DOMContentLoaded', () => {
       showChaosToast(chaosMessages[messageIndex]);
       
       if (chaosActive) {
-        // Always save scroll position when chaos activates
-        savedScrollPosition = window.scrollY || window.pageYOffset;
         
         // Check for page flip effect
         const shouldFlip = Math.random() < 0.3; // 30% chance
         if (shouldFlip && !pageFlipped) {
-          // Use simple viewport center to maintain document boundaries
           document.body.classList.add('page-flipped');
           pageFlipped = true;
           
-          // Simple repaint trigger
+          // Simple repaint trigger to prevent blank screen
           setTimeout(() => {
             document.body.style.visibility = 'hidden';
             document.body.offsetHeight;
             document.body.style.visibility = 'visible';
-          }, 10);
-        } else {
-          // Even if no page flip, restore scroll position to prevent jumping
-          setTimeout(() => {
-            window.scrollTo(0, savedScrollPosition);
           }, 10);
         }
         
