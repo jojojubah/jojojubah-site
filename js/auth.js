@@ -303,11 +303,11 @@ function updateAuthUI() {
 
 // Show auth messages (success/error/info)
 function showAuthMessage(message, type = 'info') {
-  // Use unified toast system
-  if (window.showUnifiedToast) {
-    window.showUnifiedToast(message);
+  // Use simple toast system
+  if (window.showSimpleToast) {
+    window.showSimpleToast(message);
   } else {
-    // Fallback if unified toast isn't available yet
+    // Fallback if simple toast isn't available yet
     console.log(`Auth message (${type}):`, message);
   }
 }
