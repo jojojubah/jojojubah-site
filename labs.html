@@ -46,10 +46,10 @@
   </nav>
 
   <main>
-    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;">
+    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:left;">
       <div class="container">
-        <h1 class="hero-title">Welcome to <span class="gradient-text">Jubah Labs</span></h1>
-        <p class="hero-subtitle">This page contains experimental security research content. All materials are intended for educational and defensive security purposes only. Misuse of information or tools may violate applicable laws and regulations.</p>
+        <h1 class="hero-title"><span class="gradient-text">Jubah Labs</span></h1>
+        <p class="hero-subtitle"><span id="typed-text-labs"></span><span class="cursor">|</span></p>
         <!-- (Matrix toggle is now always in the top-right .toggle-group) -->
       </div>
     </section>
@@ -282,6 +282,33 @@
   <script src="js/labs.js" defer></script>
   <script src="js/assistant-chat.js" defer></script>
   <script src="js/auth.js" type="module" defer></script>
+  
+  <!-- Typing Effect Script for Labs -->
+  <script>
+    const typedTextSpanLabs = document.getElementById("typed-text-labs");
+    const textArrayLabs = ["Security research experiments", "LLM jailbreaking analysis", "Defensive AI evaluation", "Experimental security tools", "Advanced prompt injection testing"];
+    const typingDelay = 100, pauseDelay = 2000, clearDelay = 500;
+    let textIndexLabs = 0, charIndexLabs = 0;
+
+    function typeLabs() {
+      if (charIndexLabs < textArrayLabs[textIndexLabs].length) {
+        typedTextSpanLabs.textContent += textArrayLabs[textIndexLabs].charAt(charIndexLabs);
+        charIndexLabs++;
+        setTimeout(typeLabs, typingDelay);
+      } else {
+        setTimeout(clearAndNextLabs, pauseDelay);
+      }
+    }
+
+    function clearAndNextLabs() {
+      typedTextSpanLabs.textContent = "";
+      charIndexLabs = 0;
+      textIndexLabs = (textIndexLabs + 1) % textArrayLabs.length;
+      setTimeout(typeLabs, clearDelay);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => setTimeout(typeLabs, clearDelay));
+  </script>
 
   <!-- === AI Assistant (Jojo) with Chat — START === -->
   <div id="jojoAssistant" class="assistant">
