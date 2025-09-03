@@ -182,10 +182,10 @@
 
   <main>
     <!-- Hero -->
-    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
+    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:left">
       <div class="container">
-        <h1 class="hero-title">Welcome to <span class="gradient-text">Economics</span></h1>
-        <p class="hero-subtitle">From studying economics, I believe the most important concepts are self-sovereignty, learning how to make your money work for you, and mastering the art of doing more with less.</p>
+        <h1 class="hero-title"><span class="gradient-text">Economics</span></h1>
+        <p class="hero-subtitle"><span id="typed-text-econ"></span><span class="cursor">|</span></p>
         <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
       </div>
     </section>
@@ -539,6 +539,33 @@
   <script src="js/app.js" defer></script>
   <script src="js/assistant-chat.js" defer></script>
   <script src="js/auth.js" type="module" defer></script>
+  
+  <!-- Typing Effect Script for Economics -->
+  <script>
+    const typedTextSpanEcon = document.getElementById("typed-text-econ");
+    const textArrayEcon = ["What is Bitcoin?", "Supply and demand explained", "Austrian vs Keynesian economics", "Economics for creators"];
+    const typingDelay = 100, pauseDelay = 2000, clearDelay = 500;
+    let textIndexEcon = 0, charIndexEcon = 0;
+
+    function typeEcon() {
+      if (charIndexEcon < textArrayEcon[textIndexEcon].length) {
+        typedTextSpanEcon.textContent += textArrayEcon[textIndexEcon].charAt(charIndexEcon);
+        charIndexEcon++;
+        setTimeout(typeEcon, typingDelay);
+      } else {
+        setTimeout(clearAndNextEcon, pauseDelay);
+      }
+    }
+
+    function clearAndNextEcon() {
+      typedTextSpanEcon.textContent = "";
+      charIndexEcon = 0;
+      textIndexEcon = (textIndexEcon + 1) % textArrayEcon.length;
+      setTimeout(typeEcon, clearDelay);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => setTimeout(typeEcon, clearDelay));
+  </script>
 
   <!-- Helper function for Ask AI buttons -->
   <script>
