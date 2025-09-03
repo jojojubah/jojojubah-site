@@ -80,8 +80,8 @@
     <section id="home">
       <div class="container">
         <div class="hero-content">
-          <h1 class="hero-title">Welcome to <span class="gradient-text">JojoJubah</span></h1>
-          <p class="hero-subtitle">AI, Tech & YouTube Tutorials – Learn, Build, and Create with me.</p>
+          <h1 class="hero-title"><span class="gradient-text">JojoJubah</span></h1>
+          <p class="hero-subtitle"><span id="typed-text"></span><span class="cursor">|</span></p>
           <div class="hero-socials">
             <a href="https://youtube.com/@jojojubah" class="social-link" target="_blank" rel="nofollow noopener noreferrer" aria-label="YouTube">
               <svg viewBox="0 0 24 24">
@@ -468,6 +468,33 @@
   <script src="js/app.js" defer></script>
   <script src="js/assistant-chat.js" defer></script>
   <script src="js/auth.js" type="module" defer></script>
+  
+  <!-- Typing Effect Script -->
+  <script>
+    const typedTextSpan = document.getElementById("typed-text");
+    const textArray = ["AI, Tech & YouTube Tutorials", "Learn, Build, and Create with me!", "Welcome to my world of tech!"];
+    const typingDelay = 100, pauseDelay = 2000, clearDelay = 500;
+    let textIndex = 0, charIndex = 0;
+
+    function type() {
+      if (charIndex < textArray[textIndex].length) {
+        typedTextSpan.textContent += textArray[textIndex].charAt(charIndex);
+        charIndex++;
+        setTimeout(type, typingDelay);
+      } else {
+        setTimeout(clearAndNext, pauseDelay);
+      }
+    }
+
+    function clearAndNext() {
+      typedTextSpan.textContent = "";
+      charIndex = 0;
+      textIndex = (textIndex + 1) % textArray.length;
+      setTimeout(type, clearDelay);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => setTimeout(type, clearDelay));
+  </script>
 
   <!-- === AI Assistant (Jojo) — START === -->
   <div id="jojoAssistant" class="assistant">
