@@ -190,7 +190,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
   object-fit:cover; transition:var(--t);
 }
 .site-avatar:hover{transform:scale(1.06) rotate(3deg)}
-.logo-text{font-weight:800;font-size:1.5rem;color:transparent;background:linear-gradient(90deg,var(--accent),#60a5fa);-webkit-background-clip:text;background-clip:text}
+.logo-text{font-weight:800;font-size:1.5rem;color:transparent;background:linear-gradient(90deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;background-clip:text}
 
 .nav-links{display:flex;gap:1.25rem;list-style:none;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%)}
 .nav-link{
@@ -775,6 +775,12 @@ body[data-theme="dark"] .nav-link.active {
 }
 
 body[data-theme="dark"] .gradient-text {
+  background: linear-gradient(90deg,#22c55e,#60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+body[data-theme="dark"] .logo-text {
   background: linear-gradient(90deg,#22c55e,#60a5fa);
   -webkit-background-clip: text;
   background-clip: text;
