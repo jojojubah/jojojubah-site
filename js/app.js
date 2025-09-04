@@ -314,11 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mobile menu (hamburger)
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const navLinksContainer = document.querySelector('.nav-links');
+  const navLinksContainer = document.getElementById('nav-menu') || document.querySelector('.nav-links');
   if (mobileMenuBtn && navLinksContainer) {
     mobileMenuBtn.addEventListener('click', function(){
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
       this.classList.toggle('active');
       navLinksContainer.classList.toggle('active');
+      this.setAttribute('aria-expanded', !isExpanded);
     });
     
     // Close mobile menu when any nav link is clicked
@@ -326,8 +328,22 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', function(){
         mobileMenuBtn.classList.remove('active');
         navLinksContainer.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
       });
     });
+    
+    // Reset menu state on window resize to prevent stuck states
+    const mediaQuery = window.matchMedia('(min-width: 769px)');
+    const handleResize = () => {
+      if (mediaQuery.matches) {
+        navLinksContainer.style.display = '';
+        mobileMenuBtn.classList.remove('active');
+        navLinksContainer.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    };
+    mediaQuery.addEventListener('change', handleResize);
+    handleResize(); // Initial check
   }
 
   // Light cursor trails only on main page (skip if matrix exists)
