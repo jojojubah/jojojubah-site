@@ -873,7 +873,7 @@ body[data-theme="dark"] #chatInput::placeholder {
   .hero-subtitle{font-size:clamp(0.9rem,3vw,1.4rem); line-height:1.3; max-width:100%; overflow:hidden; text-align:left}
   
   /* Economics page typing alignment with centered title */
-  body[data-page="economics"] .hero-subtitle{display:block; text-align:center; width:100%}
+  body[data-page="economics"] .hero-subtitle{display:block; text-align:left; width:100%; text-align-last:left}
   body[data-page="economics"] .hero-subtitle + .hero-subtitle{text-align:center; display:block; max-width:100%}
   .nav-links{
     position:fixed; top:80px; left:-100%; width:100%; height:calc(100vh - 80px);
