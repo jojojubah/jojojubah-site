@@ -182,8 +182,17 @@ nav{
   border-bottom:1px solid #dde6f2;
 }
 nav.scrolled{background: rgba(233,238,245,.8)}
-.nav-container{height:80px;display:flex;align-items:center;justify-content:space-between;position:relative}
-.logo-area{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-container{
+  height:80px;
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+}
+.logo-area{display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto;}
 .site-avatar{
   width:48px;height:48px;border-radius:12px;border:2px solid #eaf0f8;
   box-shadow:6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
@@ -192,16 +201,55 @@ nav.scrolled{background: rgba(233,238,245,.8)}
 .site-avatar:hover{transform:scale(1.06) rotate(3deg)}
 .logo-text{font-weight:800;font-size:1.5rem;color:transparent;background:linear-gradient(90deg,#8b5cf6,#3b82f6);-webkit-background-clip:text;background-clip:text}
 
-.nav-links{display:flex;gap:1.25rem;list-style:none;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%)}
+.nav-links{
+  display:flex;
+  gap:clamp(8px, 1.2vw, 20px);
+  list-style:none;
+  justify-content:center;
+  min-width:0;
+  overflow:hidden;
+}
 .nav-link{
   text-decoration:none;color:var(--text-dim);font-weight:600;padding:.55rem .9rem;
-  transition:var(--t);
+  transition:var(--t);white-space:nowrap;
 }
 .nav-link:hover,.nav-link.active{color:var(--accent)}
 
-/* Hamburger */
-.mobile-menu-button{display:none;background:none;border:0;cursor:pointer;padding:.5rem}
-.hamburger{width:24px;height:3px;background:#0f172a;border-radius:2px;margin:4px 0;transition:var(--t)}
+/* Navigation actions container */
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  justify-self:end;
+  min-width:50px;
+}
+
+/* Mobile menu button - hide on desktop */
+.mobile-menu-button{display:none;}
+
+/* Responsive breakpoints to prevent collision */
+@media (max-width: 1200px){
+  .nav-links{ gap: clamp(6px, 0.8vw, 14px); }
+  .nav-link{ font-size: clamp(14px, 1.2vw, 16px); padding:.45rem .7rem; }
+}
+
+@media (max-width: 768px){
+  .nav-links{ 
+    display: none;
+    position:fixed; top:80px; left:-100%; width:100%; height:auto;
+    backdrop-filter:blur(8px); background:rgba(233,238,245,.95);
+    flex-direction:column; align-items:center; padding:1.25rem 0; transition:left .25s ease; z-index:999;
+    justify-content:flex-start; min-width:auto; overflow:visible;
+    border-radius:0 0 12px 12px;
+  }
+  .nav-links.active{ display: flex !important; left:0; }
+  body[data-theme="dark"] .nav-links{ background:rgba(10,10,10,.96) }
+  .mobile-menu-button{ display: inline-grid; place-items: center; width: 42px; height: 42px; background:none; border:none; cursor:pointer; }
+}
+
+/* Hamburger styles */
+.hamburger{width:24px;height:3px;background:var(--text);border-radius:2px;margin:4px 0;transition:var(--t)}
+.mobile-menu-button:hover .hamburger{background:var(--accent)}
 .mobile-menu-button.active .hamburger:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .mobile-menu-button.active .hamburger:nth-child(2){opacity:0}
 .mobile-menu-button.active .hamburger:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
@@ -872,15 +920,27 @@ body[data-theme="dark"] #chatInput::placeholder {
   .hero-content{text-align:center}
   .hero-subtitle{font-size:clamp(0.9rem,3vw,1.4rem); line-height:1.3; max-width:100%; overflow:hidden; text-align:left}
   
-  /* Economics page typing alignment with centered title */
-  body[data-page="economics"] .hero-subtitle:first-of-type{display:block; text-align:center; width:100%}
-  body[data-page="economics"] .hero-subtitle:first-of-type #typed-text-econ{text-align:left; display:inline-block}
-  body[data-page="economics"] .hero-subtitle + .hero-subtitle{text-align:center; display:block; max-width:100%}
+  /* Economics page typing alignment with title */
+  body[data-page="economics"] .hero-title{
+    text-align:center; /* Keep title centered */
+  }
+  body[data-page="economics"] .hero-subtitle:first-of-type{
+    display:block; text-align:center; width:100%; position:relative;
+  }
+  body[data-page="economics"] .hero-subtitle:first-of-type #typed-text-econ{
+    text-align:left; display:inline-block; 
+    /* This creates left-aligned text within a centered container */
+  }
+  /* Center the tip underneath */
+  body[data-page="economics"] .hero-subtitle + .hero-subtitle{
+    text-align:center; display:block; max-width:100%; margin-top:1rem;
+  }
   .nav-links{
-    position:fixed; top:80px; left:-100%; width:100%; height:calc(100vh - 80px);
+    position:fixed; top:80px; left:-100%; width:100%; height:auto;
     backdrop-filter:blur(8px); background:rgba(233,238,245,.95);
-    flex-direction:column; align-items:center; padding-top:1.25rem; transition:left .25s ease; z-index:999;
-    transform:none; /* Remove centering transform on mobile */
+    flex-direction:column; align-items:center; padding:1.25rem 0; transition:left .25s ease; z-index:999;
+    justify-content:flex-start; min-width:auto; overflow:visible;
+    border-radius:0 0 12px 12px;
   }
   body[data-theme="dark"] .nav-links{ background:rgba(10,10,10,.96) }
   .nav-links.active{ left:0 }
@@ -1762,6 +1822,7 @@ body[data-theme="dark"] .dropdown-item:hover {
   /* Ensure auth doesn't interfere with mobile menu */
   .nav-links {
     top: 80px; /* Account for navbar height */
+    justify-content:flex-start; min-width:auto; overflow:visible;
   }
 }
 
