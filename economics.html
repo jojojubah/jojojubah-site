@@ -151,10 +151,6 @@
         font-size: 0.8rem;
       }
 
-      /* Make typing effect start from left on mobile */
-      #home .hero-subtitle {
-        text-align: left;
-      }
     }
   </style>
 </head>
@@ -187,11 +183,13 @@
 
   <main>
     <!-- Hero -->
-    <section id="home" style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
+    <section id="home">
       <div class="container">
-        <h1 class="hero-title"><span class="gradient-text">Economics</span></h1>
-        <p class="hero-subtitle"><span id="typed-text-econ"></span><span class="cursor">|</span></p>
-        <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
+        <div class="hero-content">
+          <h1 class="hero-title"><span class="gradient-text">Economics</span></h1>
+          <p class="hero-subtitle"><span id="typed-text-econ"></span><span class="cursor">|</span></p>
+          <p class="hero-subtitle" style="font-size:1rem;margin-top:0.5rem;opacity:0.8">💡 Ask the AI assistant about any economic concept!</p>
+        </div>
       </div>
     </section>
 
