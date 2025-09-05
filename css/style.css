@@ -925,11 +925,11 @@ body[data-theme="dark"] #chatInput::placeholder {
     text-align:center; /* Keep title centered */
   }
   body[data-page="economics"] .hero-subtitle:first-of-type{
-    display:block; text-align:center; width:100%; position:relative;
+    display:flex; justify-content:center; width:100%; position:relative;
   }
   body[data-page="economics"] .hero-subtitle:first-of-type #typed-text-econ{
     text-align:left; display:inline-block; 
-    /* This creates left-aligned text within a centered container */
+    /* Left-aligned text that starts where the title starts */
   }
   /* Center the tip underneath */
   body[data-page="economics"] .hero-subtitle + .hero-subtitle{
