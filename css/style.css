@@ -222,6 +222,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
   gap:12px;
   justify-self:end;
   min-width:80px;
+  position: relative;
 }
 
 /* Mobile menu button - hide on desktop */
@@ -244,8 +245,23 @@ nav.scrolled{background: rgba(233,238,245,.8)}
   }
   .nav-links.active{ display: flex !important; left:0; }
   body[data-theme="dark"] .nav-links{ background:rgba(10,10,10,.96) }
-  .mobile-menu-button{ display: inline-grid; place-items: center; width: 42px; height: 42px; background:none; border:none; cursor:pointer; flex-shrink: 0; }
-  .nav-actions{ gap: 8px; min-width: 60px; }
+  .mobile-menu-button{ 
+    display: inline-grid; 
+    place-items: center; 
+    width: 42px; 
+    height: 42px; 
+    background:none; 
+    border:none; 
+    cursor:pointer; 
+    flex-shrink: 0;
+    position: absolute;
+    right: -4px; /* Align with theme toggle: 12px - 16px container padding = -4px */
+  }
+  .nav-actions{ 
+    gap: 16px; 
+    min-width: 120px; 
+    padding-right: 50px; /* Space for absolutely positioned hamburger */
+  }
 }
 
 /* Hamburger styles */
