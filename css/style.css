@@ -923,7 +923,7 @@ body[data-theme="dark"] #chatInput::placeholder {
   /* Economics page - specific alignment for typing and tips */
   body[data-page="economics"] .hero-subtitle:first-of-type {
     align-self: flex-start; /* Align typing with title left edge */
-    margin-left: 2rem; /* Move typing effect to the right to align under E */
+    margin-left: 5rem; /* Move typing effect to the right to align under E */
   }
   body[data-page="economics"] .hero-subtitle[style*="opacity:0.8"] {
     text-align: center; /* Keep tips centered */
