@@ -260,7 +260,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
   .nav-actions{ 
     gap: 16px; 
     min-width: 120px; 
-    padding-right: 50px; /* Space for absolutely positioned hamburger */
+    padding-right: 58px; /* Space for absolutely positioned hamburger + move login left */
   }
 }
 
