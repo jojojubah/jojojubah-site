@@ -282,6 +282,149 @@ section { scroll-margin-top: 96px; }
 .about-content{max-width:850px;margin:0 auto;text-align:center}
 .about-text{padding:2.25rem;border-radius:var(--neu-radius);background:var(--bg);box-shadow:var(--neu-out);color:var(--text-dim);font-size:1.075rem}
 
+/* About Card - Coding Style */
+.about-card {
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--neu-out);
+  background: var(--bg);
+  transition: var(--t);
+}
+
+.about-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--neu-out), 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.about-code-window {
+  background: var(--bg-2);
+  margin: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--neu-inset);
+}
+
+.about-window-controls {
+  background: var(--bg);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--neu-dark);
+}
+
+.about-control-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.about-control-dot.red { background: #ff5f57; }
+.about-control-dot.yellow { background: #ffbd2e; }
+.about-control-dot.green { background: #28ca42; }
+
+.about-file-name {
+  margin-left: 12px;
+  color: var(--text-dim);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.about-file-icon {
+  width: 16px;
+  height: 16px;
+  background: #f39c12;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.about-code-content {
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg-2);
+  text-align: left;
+}
+
+.about-line-number {
+  color: #7f8c8d;
+  margin-right: 20px;
+  user-select: none;
+}
+
+/* Syntax highlighting colors - more variety like the example */
+.about-string { 
+  color: #e67e22; /* Orange for strings */
+}
+
+.about-bracket {
+  color: #f39c12; /* Gold for brackets */
+}
+
+.about-punctuation {
+  color: #bdc3c7; /* Light gray for punctuation */
+}
+
+.about-keyword {
+  color: #9b59b6; /* Purple for JSON keys */
+}
+
+.about-variable {
+  color: #e74c3c; /* Red for variable names */
+}
+
+.about-number {
+  color: #f39c12; /* Gold for numbers */
+}
+
+.about-property {
+  color: #3498db; /* Blue for property names */
+}
+
+.about-value {
+  color: #e67e22; /* Orange for values */
+}
+
+.about-special {
+  color: #2ecc71; /* Green for special values */
+}
+
+.about-function {
+  color: #e74c3c; /* Red for function-like elements */
+}
+
+/* Mobile adjustments for about card */
+@media (max-width: 768px) {
+  .about-card {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .about-code-window {
+    margin: 10px;
+  }
+  
+  .about-code-content {
+    padding: 15px;
+    font-size: 12px;
+  }
+  
+  .about-line-number {
+    margin-right: 12px;
+  }
+}
+
 .projects-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; margin-top:2rem}
 .project-card{border-radius:var(--neu-radius); background:var(--bg); box-shadow:var(--neu-out); transition:var(--t); overflow:hidden}
 .project-card:hover{transform:translateY(-3px)}
@@ -909,6 +1052,59 @@ body[data-theme="dark"] .bot-message .message-content {
 
 body[data-theme="dark"] #chatInput::placeholder {
   color: var(--text-muted) !important;
+}
+
+/* About Card Dark Mode */
+body[data-theme="dark"] .about-window-controls {
+  border-bottom-color: rgba(255,255,255,.06);
+}
+
+body[data-theme="dark"] .about-code-content {
+  color: var(--text);
+}
+
+body[data-theme="dark"] .about-string {
+  color: #e67e22; /* Orange for strings */
+}
+
+body[data-theme="dark"] .about-bracket {
+  color: #f39c12; /* Gold for brackets */
+}
+
+body[data-theme="dark"] .about-punctuation {
+  color: #bdc3c7; /* Light gray for punctuation */
+}
+
+body[data-theme="dark"] .about-keyword {
+  color: #9b59b6; /* Purple for JSON keys */
+}
+
+body[data-theme="dark"] .about-variable {
+  color: #e74c3c; /* Red for variables */
+}
+
+body[data-theme="dark"] .about-number {
+  color: #f39c12; /* Gold for numbers */
+}
+
+body[data-theme="dark"] .about-property {
+  color: #3498db; /* Blue for property names */
+}
+
+body[data-theme="dark"] .about-value {
+  color: #e67e22; /* Orange for values */
+}
+
+body[data-theme="dark"] .about-special {
+  color: #2ecc71; /* Green for special values */
+}
+
+body[data-theme="dark"] .about-function {
+  color: #e74c3c; /* Red for function-like elements */
+}
+
+body[data-theme="dark"] .about-line-number {
+  color: #7f8c8d; /* Muted gray for line numbers */
 }
 
 /* ============================== Responsive ============================ */
