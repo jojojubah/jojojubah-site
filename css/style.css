@@ -255,7 +255,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
     cursor:pointer; 
     flex-shrink: 0;
     position: absolute;
-    right: -16px; /* Move further right to better align with theme toggle */
+    right: -20px; /* Move even further right to align with theme toggle */
   }
   .nav-actions{ 
     gap: 16px; 
