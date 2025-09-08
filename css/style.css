@@ -194,7 +194,7 @@ nav.scrolled{background: rgba(233,238,245,.8)}
 }
 .logo-area{display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto;}
 .site-avatar{
-  width:48px;height:48px;border-radius:12px;border:2px solid #eaf0f8;
+  width:48px;height:48px;border-radius:50%;border:2px solid #eaf0f8;
   box-shadow:6px 6px 12px var(--neu-dark), -6px -6px 12px var(--neu-light);
   object-fit:cover; transition:var(--t);
 }
