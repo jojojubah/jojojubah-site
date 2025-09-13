@@ -318,3 +318,161 @@ function toggleAccordion(button) {
     }
   }, 1000);
 })();
+
+// ==================== NASA APOD Functionality ==================== 
+(function nasaAPOD() {
+  // Wait for DOM to load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const dateInput = document.getElementById('apod-date');
+    const loadBtn = document.getElementById('load-apod-btn');
+    const retryBtn = document.getElementById('retry-apod-btn');
+    const loading = document.getElementById('apod-loading');
+    const display = document.getElementById('apod-display');
+    const error = document.getElementById('apod-error');
+    
+    // Display elements
+    const title = document.getElementById('apod-title');
+    const dateDisplay = document.getElementById('apod-date-display');
+    const img = document.getElementById('apod-img');
+    const videoContainer = document.getElementById('apod-video-container');
+    const video = document.getElementById('apod-video');
+    const desc = document.getElementById('apod-desc');
+    const credit = document.getElementById('apod-credit');
+
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+
+    // Your Firebase Function URL (will be updated after deployment)
+    const FIREBASE_FUNCTION_URL = 'https://us-central1-jojojubah-f2996.cloudfunctions.net/nasaApod';
+
+    // Load APOD data
+    async function loadAPOD(date = '') {
+      showState('loading');
+      
+      try {
+        const url = date ? `${FIREBASE_FUNCTION_URL}?date=${date}` : FIREBASE_FUNCTION_URL;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Handle potential error response from our function
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        displayAPOD(data);
+        showState('display');
+        
+        // Show AI Assistant tip for successful load
+        if (window.showTip) {
+          setTimeout(() => window.showTip('nasaLoaded'), 1000);
+        }
+        
+      } catch (err) {
+        console.error('NASA APOD Error:', err);
+        showState('error');
+        
+        // Show AI Assistant tip for error
+        if (window.showTip) {
+          setTimeout(() => window.showTip('nasaError'), 500);
+        }
+      }
+    }
+
+    // Display APOD data
+    function displayAPOD(data) {
+      title.textContent = data.title || 'Untitled';
+      dateDisplay.textContent = data.date ? `Date: ${data.date}` : '';
+      desc.textContent = data.explanation || 'No description available.';
+      
+      // Handle copyright/credit
+      if (data.copyright) {
+        credit.textContent = `© ${data.copyright}`;
+        credit.style.display = 'block';
+      } else {
+        credit.style.display = 'none';
+      }
+
+      // Handle media (image vs video)
+      if (data.media_type === 'video') {
+        img.style.display = 'none';
+        videoContainer.style.display = 'block';
+        video.src = data.url;
+      } else {
+        videoContainer.style.display = 'none';
+        img.style.display = 'block';
+        img.src = data.url || data.hdurl || '';
+        img.alt = data.title || 'NASA APOD';
+      }
+    }
+
+    // Show different states
+    function showState(state) {
+      loading.style.display = state === 'loading' ? 'block' : 'none';
+      display.style.display = state === 'display' ? 'block' : 'none';
+      error.style.display = state === 'error' ? 'block' : 'none';
+    }
+
+    // Event listeners
+    loadBtn.addEventListener('click', () => {
+      const selectedDate = dateInput.value;
+      loadAPOD(selectedDate);
+    });
+
+    retryBtn.addEventListener('click', () => {
+      const selectedDate = dateInput.value;
+      loadAPOD(selectedDate);
+    });
+
+    // Load today's APOD on page load
+    setTimeout(() => loadAPOD(), 1000);
+
+    // Date input change
+    dateInput.addEventListener('change', () => {
+      loadBtn.textContent = 'Load Image';
+      loadBtn.style.background = 'var(--primary)';
+    });
+
+    // Keyboard shortcut: Enter to load
+    dateInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loadBtn.click();
+      }
+    });
+
+    // Enhanced Labs Tips for NASA APOD
+    setTimeout(function() {
+      if (window.showTip && typeof window.showTip === 'function') {
+        const nasaTips = {
+          'nasaLoaded': '🚀 Cosmic discovery loaded! NASA\'s daily space imagery is simply breathtaking.',
+          'nasaError': '🛸 Houston, we have a problem! The space connection seems disrupted. Try again in a moment.',
+          'nasaDatePicker': '📅 Time travel through space! Pick any date since June 16, 1995 to explore NASA\'s archive.',
+          'nasaVideo': '🎬 Sometimes NASA features space videos instead of images - prepare to be amazed!'
+        };
+
+        // Extend the existing tips system
+        const originalShowTip = window.showTip;
+        window.showTip = function(key) {
+          if (nasaTips[key]) {
+            const bubble = document.getElementById('assistantBubble');
+            const textEl = document.getElementById('assistantText');
+            if (textEl && bubble) {
+              textEl.textContent = nasaTips[key];
+              bubble.classList.add('show');
+              setTimeout(() => bubble.classList.remove('show'), 8000);
+            }
+          } else {
+            originalShowTip(key);
+          }
+        };
+      }
+    }, 1000);
+  });
+})();
+// ================== /NASA APOD Functionality =====================
