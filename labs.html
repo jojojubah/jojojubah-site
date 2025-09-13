@@ -56,6 +56,65 @@
 
   </main>
 
+<!-- ==================== NASA APOD Section ==================== -->
+<section id="nasa-apod" style="padding: 3rem 0;">
+  <div class="container">
+    <h2 class="section-title fade-in">🚀 NASA Astronomy Picture of the Day</h2>
+    <p class="muted" style="text-align:center;margin-bottom:2rem;">
+      Discover the cosmos through NASA's featured space imagery and scientific explanations.
+    </p>
+
+    <!-- Date Picker -->
+    <div style="text-align:center;margin-bottom:2rem;">
+      <label for="apod-date" style="margin-right:1rem;color:var(--text-light);">Choose a date:</label>
+      <input type="date" id="apod-date" style="padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+      <button id="load-apod-btn" class="btn" style="margin-left:1rem;">Load Image</button>
+    </div>
+
+    <!-- APOD Content -->
+    <div id="apod-content" class="fade-in" style="max-width:1000px;margin:0 auto;">
+      <!-- Loading State -->
+      <div id="apod-loading" style="text-align:center;padding:2rem;">
+        <div class="typing-indicator" style="display:inline-block;">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <p style="margin-top:1rem;color:var(--text-light);">Loading today's cosmic discovery...</p>
+      </div>
+
+      <!-- APOD Display -->
+      <div id="apod-display" style="display:none;">
+        <div style="text-align:center;margin-bottom:2rem;">
+          <h3 id="apod-title" style="color:var(--text);margin-bottom:1rem;font-size:1.5rem;"></h3>
+          <p id="apod-date-display" style="color:var(--text-light);font-size:0.9rem;"></p>
+        </div>
+
+        <div style="position:relative;margin-bottom:2rem;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.1);width:50%;margin-left:auto;margin-right:auto;">
+          <img id="apod-img" style="width:100%;height:auto;display:block;" alt="NASA APOD">
+          <div id="apod-video-container" style="display:none;position:relative;padding-bottom:56.25%;height:0;">
+            <iframe id="apod-video" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);padding:2rem;border-radius:16px;border:1px solid var(--border);">
+          <h4 style="color:var(--text);margin-bottom:1rem;">Explanation</h4>
+          <p id="apod-desc" style="color:var(--text-light);line-height:1.6;"></p>
+          <p id="apod-credit" style="color:var(--text-muted);font-size:0.85rem;margin-top:1rem;font-style:italic;"></p>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="apod-error" style="display:none;text-align:center;padding:2rem;">
+        <p style="color:#ff6b6b;margin-bottom:1rem;">🚨 Houston, we have a problem!</p>
+        <p style="color:var(--text-light);">Could not load NASA's cosmic imagery. Please try again later.</p>
+        <button id="retry-apod-btn" class="btn" style="margin-top:1rem;">Retry</button>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ================== /NASA APOD Section ===================== -->
+
 <!-- ==================== ADDED: Labs Experiments ==================== -->
 <section id="labs-experiments">
   <div class="container">
