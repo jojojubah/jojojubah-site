@@ -28,6 +28,50 @@
       }
     })();
   </script>
+  
+  <!-- Theme-aware Robot Image Styles -->
+  <style>
+    /* Base robot image styling with glassmorphism and neon glow */
+    .robot-dark, .robot-light {
+      opacity: 0.65; /* Glassmorphism transparency - much more see-through */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 
+        0 0 20px rgba(0, 191, 255, 0.6), /* Inner electric blue glow */
+        0 0 40px rgba(0, 191, 255, 0.4), /* Middle glow */
+        0 0 80px rgba(0, 191, 255, 0.2), /* Outer glow */
+        0 8px 32px rgba(0, 0, 0, 0.3); /* Subtle depth shadow */
+      border: 1px solid rgba(0, 191, 255, 0.3); /* Electric blue border */
+      transition: all 0.3s ease;
+    }
+    
+    /* Hover effect for extra glow */
+    .robot-dark:hover, .robot-light:hover {
+      opacity: 0.85;
+      box-shadow: 
+        0 0 30px rgba(0, 191, 255, 0.8), /* Stronger inner glow */
+        0 0 60px rgba(0, 191, 255, 0.6), /* Stronger middle glow */
+        0 0 120px rgba(0, 191, 255, 0.4), /* Stronger outer glow */
+        0 12px 48px rgba(0, 0, 0, 0.4); /* Stronger depth shadow */
+      transform: translateY(-2px); /* Subtle lift effect */
+    }
+    
+    /* Light mode: show light robot, hide dark robot */
+    body:not([data-theme="dark"]) .robot-light {
+      display: block !important;
+    }
+    body:not([data-theme="dark"]) .robot-dark {
+      display: none !important;
+    }
+    
+    /* Dark mode: show dark robot, hide light robot */
+    body[data-theme="dark"] .robot-light {
+      display: none !important;
+    }
+    body[data-theme="dark"] .robot-dark {
+      display: block !important;
+    }
+  </style>
 </head>
 <body>
   <!-- Cookie Consent Banner - ADDED HERE -->
@@ -107,16 +151,22 @@
       </div>
     </section>
 
-    <!-- Code & BTC Animation -->
+    <!-- Theme-aware Robot Images -->
     <section style="padding: 2rem 0;">
       <div class="container">
-        <div style="display: flex; justify-content: center;">
-          <iframe 
-            src="codebtc.html" 
-            style="width: 100%; max-width: 800px; height: 350px; border: none; border-radius: 16px;"
-            title="Code & BTC Animation"
-            loading="lazy">
-          </iframe>
+        <div style="display: flex; justify-content: center; position: relative;">
+          <!-- Dark Mode Robot -->
+          <img 
+            src="RobotDark.JPG" 
+            alt="JojoJubah Robot" 
+            style="max-width: 400px; height: auto; border-radius: 16px; display: none;"
+            class="robot-dark">
+          <!-- Light Mode Robot -->
+          <img 
+            src="RobotLight.JPG" 
+            alt="JojoJubah Robot" 
+            style="max-width: 400px; height: auto; border-radius: 16px; display: block;"
+            class="robot-light">
         </div>
       </div>
     </section>
@@ -353,6 +403,19 @@
   </div>
 </section>
 
+    <!-- Code & BTC Animation -->
+    <section style="padding: 2rem 0;">
+      <div class="container">
+        <div style="display: flex; justify-content: center;">
+          <iframe 
+            src="codebtc.html" 
+            style="width: 100%; max-width: 800px; height: 350px; border: none; border-radius: 16px;"
+            title="Code & BTC Animation"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </section>
 
     <!-- Contact Section -->
     <section id="contact">
