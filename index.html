@@ -71,6 +71,44 @@
     body[data-theme="dark"] .robot-dark {
       display: block !important;
     }
+    
+    /* Economics card with ticker tape border */
+    .economics-card {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ticker-wrapper {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      border-top: 2px solid #00ff41;
+    }
+    
+    .ticker {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: ticker 15s linear infinite;
+      color: #00ff41; /* Bright neon green */
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+    
+    @keyframes ticker {
+      from { transform: translateX(0%); }
+      to { transform: translateX(-100%); }
+    }
+    
+    /* Add padding to bottom of card content to make room for ticker */
+    .economics-card {
+      padding-bottom: 35px !important;
+    }
   </style>
 </head>
 <body>
@@ -97,7 +135,7 @@
     <div class="container">
       <div class="nav-container">
         <a href="index.html" class="logo-area">
-          <img src="LogoRobot.png" alt="JojoJubah" class="site-avatar"/>
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
           <span class="logo-text">JojoJubah</span>
         </a>
         <ul class="nav-links" id="nav-menu">
@@ -390,13 +428,19 @@
   <div class="container">
     <h2 class="section-title fade-in">Economics</h2>
     <div class="about-content fade-in">
-      <div class="about-text">
-        I'm collecting practical economics notes: simple explanations, mental models, and
-        "why it matters" breakdowns for creators and builders. This will grow over time.
+      <div class="about-text economics-card">
+        Money meets code.
+        <br>
+        Exploring DeFi, old-school economics, and the models shaping tomorrow's markets. Fast, practical notes with a builder's mindset.
         <br><br>
-        Want the deeper dives? Open the dedicated page.
+        🚀 Tap in for the breakdowns.
         <div style="margin-top:1rem">
           <a class="btn" href="economics.html">Open Economics</a>
+        </div>
+        
+        <!-- Ticker Tape Border at bottom of card -->
+        <div class="ticker-wrapper">
+          <div class="ticker">GDP ↑ 2.1% • INFLATION ↓ 0.4% • CPI ↑ 3.2% • UNEMPLOYMENT 5.1% • INTEREST RATES 4.5% • TRADE BALANCE $12B • S&P 500 ↑ 1.8% • NASDAQ ↓ 0.3% • DOW JONES ↑ 0.7% • VOLATILITY INDEX 18.2</div>
         </div>
       </div>
     </div>
@@ -430,7 +474,7 @@
         <button id="revealEmail" class="reveal-inline-btn">Reveal</button>
       </span>
       <span id="emailVisible" hidden>
-        hendrixjuba@gmail.com
+        hello@jojojubah.com
       </span>
       <span class="muted">(email me)</span>
     </div>
@@ -466,7 +510,7 @@
       <div class="footer-content">
         <div class="footer-left">
           <a href="index.html" class="footer-logo">
-            <img src="LogoRobot.png" alt="JojoJubah" class="site-avatar"/>
+            <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
             <span class="logo-text">JojoJubah © <span id="secretYear">2025</span></span>
           </a>
           <button id="cookiePreferences" class="cookie-preferences-btn">
