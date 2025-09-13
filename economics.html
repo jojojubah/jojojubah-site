@@ -20,8 +20,48 @@
     })();
   </script>
   
-  <!-- Market Ticker Styles -->
+  <!-- Market Ticker Styles and Robot Image Styles -->
   <style>
+    /* Theme-aware Robot Image Styles */
+    /* Base robot image styling with glassmorphism and neon glow */
+    .robot-dark, .robot-light {
+      opacity: 0.65; /* Glassmorphism transparency - much more see-through */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid rgba(0, 191, 255, 0.3);
+      box-shadow: 
+        0 0 20px rgba(0, 191, 255, 0.6), /* Neon electric blue glow */
+        inset 0 0 20px rgba(255, 255, 255, 0.1); /* Inner glassmorphism glow */
+      transition: all 0.3s ease;
+    }
+    
+    /* Hover effect for extra glow */
+    .robot-dark:hover, .robot-light:hover {
+      opacity: 0.85;
+      box-shadow: 
+        0 0 30px rgba(0, 191, 255, 0.8), /* Stronger inner glow */
+        0 0 60px rgba(0, 191, 255, 0.4), /* Outer glow on hover */
+        inset 0 0 30px rgba(255, 255, 255, 0.2);
+      transform: scale(1.02);
+    }
+    
+    /* Light mode: show light robot, hide dark robot */
+    body:not([data-theme="dark"]) .robot-light {
+      display: block !important;
+    }
+    body:not([data-theme="dark"]) .robot-dark {
+      display: none !important;
+    }
+    
+    /* Dark mode: show dark robot, hide light robot */
+    body[data-theme="dark"] .robot-light {
+      display: none !important;
+    }
+    body[data-theme="dark"] .robot-dark {
+      display: block !important;
+    }
+    
+    /* Market Ticker Styles */
     #market-banner {
       margin: 2rem 0;
       height: 50px;
@@ -163,7 +203,7 @@
     <div class="container">
       <div class="nav-container">
         <a href="index.html" class="logo-area">
-          <img src="LogoRobot.png" alt="JojoJubah" class="site-avatar"/>
+          <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
           <span class="logo-text">JojoJubah</span>
         </a>
         <ul class="nav-links">
@@ -221,6 +261,26 @@
         <button id="refreshBanner" class="ticker-refresh" aria-label="Refresh market data" title="Refresh market data">
           <span class="refresh-icon">🔄</span>
         </button>
+      </div>
+    </section>
+
+    <!-- Theme-aware Robot Images -->
+    <section class="robot-section" style="padding: 2rem 0; text-align: center;">
+      <div class="container">
+        <div class="robot-container" style="display: inline-block;">
+          <!-- Dark Mode Robot -->
+          <img 
+            src="LogoRobotDark.png" 
+            alt="JojoJubah Robot" 
+            style="max-width: 400px; height: auto; border-radius: 16px; display: none;"
+            class="robot-dark">
+          <!-- Light Mode Robot -->
+          <img 
+            src="LogoRobot.png" 
+            alt="JojoJubah Robot" 
+            style="max-width: 400px; height: auto; border-radius: 16px; display: block;"
+            class="robot-light">
+        </div>
       </div>
     </section>
 
@@ -459,7 +519,7 @@
       <div class="footer-content">
         <div class="footer-left">
           <a href="index.html" class="footer-logo">
-            <img src="LogoRobot.png" alt="JojoJubah" class="site-avatar"/>
+            <img src="favicon.png" alt="JojoJubah" class="site-avatar"/>
             <span class="logo-text">JojoJubah © <span id="secretYear"></span></span>
           </a>
           <button id="cookiePreferences" class="cookie-preferences-btn">
