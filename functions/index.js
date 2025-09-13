@@ -1,7 +1,8 @@
-const {onCall} = require("firebase-functions/v2/https");
+const {onCall, onRequest} = require("firebase-functions/v2/https");
 const {setGlobalOptions} = require("firebase-functions");
 const logger = require("firebase-functions/logger");
 const axios = require("axios");
+const {defineSecret} = require("firebase-functions/params");
 
 setGlobalOptions({maxInstances: 10});
 
@@ -174,3 +175,39 @@ exports.getMarketBanner = onCall(async (request) => {
     throw new Error("Failed to generate market banner");
   }
 });
+
+// Define the NASA API key secret
+const NASA_API_KEY = defineSecret("NASA_API_KEY");
+
+// NASA APOD (Astronomy Picture of the Day) function
+exports.nasaApod = onRequest(
+    {secrets: [NASA_API_KEY], cors: true},
+    async (req, res) => {
+      try {
+        const date = req.query.date ? `&date=${req.query.date}` : "";
+        const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY.value()}${date}`;
+
+        logger.info("Fetching NASA APOD",
+            {url: url.replace(NASA_API_KEY.value(), "***")});
+
+        const response = await axios.get(url);
+        const data = response.data;
+
+        logger.info("NASA APOD fetched successfully");
+
+        res.set("Access-Control-Allow-Origin", "*");
+        res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+        res.set("Access-Control-Allow-Headers", "Content-Type");
+
+        if (req.method === "OPTIONS") {
+          res.status(204).send("");
+          return;
+        }
+
+        res.json(data);
+      } catch (error) {
+        logger.error("Error fetching NASA APOD:", error);
+        res.status(500).json({error: "Failed to fetch NASA APOD"});
+      }
+    },
+);
