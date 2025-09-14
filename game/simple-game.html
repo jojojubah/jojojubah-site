@@ -191,6 +191,9 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
+        // Game Variables that need to be declared early
+        let groundHeight;
+        
         // Dynamically size the canvas
         function resizeCanvas() {
             if (window.innerWidth < 768) {
@@ -212,7 +215,6 @@
         window.addEventListener("resize", resizeCanvas);
 
         // Game Variables
-        let groundHeight = canvas.height - 50;
         const player = {
             x: 50,
             y: groundHeight - 20,
@@ -889,6 +891,7 @@
             paused = false;
             restartGame();
         }
+        window.startGame = startGame;
 
         function changeSkin() {
             selectedSkin = (selectedSkin + 1) % playerSkins.length;
@@ -910,6 +913,7 @@
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 2000);
         }
+        window.changeSkin = changeSkin;
 
         // Firebase Leaderboard Functions - Add current high score tracking
         let currentHighScore = 0;
@@ -1001,6 +1005,7 @@
                 alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
             }
         }
+        window.showLeaderboard = showLeaderboard;
 
         function openPauseMenu() {
             if (!gameStarted) return;
@@ -1137,10 +1142,7 @@
             }
         }, 1000);
 
-        // Make functions globally accessible for onclick handlers
-        window.startGame = startGame;
-        window.changeSkin = changeSkin;
-        window.showLeaderboard = showLeaderboard;
+        // Make remaining functions globally accessible for onclick handlers
         window.openPauseMenu = openPauseMenu;
         window.resumeGame = resumeGame;
         window.playAgain = playAgain;
