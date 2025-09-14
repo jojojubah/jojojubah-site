@@ -305,10 +305,10 @@
 
         // Draw Background with HD-2D Effects
         function drawBackground() {
-            // Enhanced gradient sky
+            // Original gradient sky colors restored
             const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-            gradient.addColorStop(0, '#0a0a2a'); // Deeper space blue
-            gradient.addColorStop(1, '#01010f'); // Rich dark blue
+            gradient.addColorStop(0, '#0f0f5e'); // Original light blue
+            gradient.addColorStop(1, '#01012c'); // Original dark blue
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -345,8 +345,8 @@
             groundOffset -= speed;
             if (groundOffset <= -canvasWidth) groundOffset = 0;
 
-            // Base ground layer with depth color
-            ctx.fillStyle = 'rgba(40,40,60,0.9)';
+            // Base ground layer - solid moon gray
+            ctx.fillStyle = '#444'; // Solid moon gray (restored original)
             for (let i = 0; i <= 1; i++) {
                 ctx.fillRect(groundOffset + i * canvasWidth, groundHeight, canvasWidth, canvasHeight - groundHeight);
             }
@@ -386,13 +386,16 @@
             const centerX = player.x + player.width/2;
             const centerY = player.y + player.height/2;
             
-            // Draw soft shadow beneath player
-            ctx.save();
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY + 40, 30, 12, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+            // Draw soft shadow beneath player (only when on ground)
+            const isOnGround = player.y >= groundHeight - player.height;
+            if (isOnGround) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY + 15, 15, 6, 0, 0, Math.PI * 2); // Smaller and closer shadow
+                ctx.fill();
+                ctx.restore();
+            }
 
             // Use the selected skin to draw the player
             playerSkins[selectedSkin].draw(centerX, centerY, player.width);
@@ -447,18 +450,18 @@
             }
 
             obstacles = obstacles.filter((obstacle) => {
-                // HD-2D Fiery gradient for obstacles
+                // HD-2D gradient using original dynamic colors
                 const gradient = ctx.createLinearGradient(obstacle.x, obstacle.y, obstacle.x + obstacle.width, obstacle.y + obstacle.height);
-                gradient.addColorStop(0, '#ff3300');
-                gradient.addColorStop(1, '#550000');
+                gradient.addColorStop(0, obstacleColor || '#ff3300');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.6)'); // Darker version for depth
                 ctx.fillStyle = gradient;
                 ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
 
-                // HD-2D Glow effect
+                // HD-2D Glow effect using original dynamic colors
                 ctx.save();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#ff6600';
-                ctx.strokeStyle = 'rgba(255,100,0,0.7)';
+                ctx.shadowBlur = obstacleGlow || 15;
+                ctx.shadowColor = obstacleColor || '#ff6600';
+                ctx.strokeStyle = obstacleColor || 'rgba(255,100,0,0.7)';
                 ctx.lineWidth = 4;
                 ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
                 ctx.restore();
@@ -496,20 +499,20 @@
                 const centerY = coin.y + 7.5;
                 const radius = 7.5;
 
-                // HD-2D Glass halo effect
+                // HD-2D Glass halo effect using original dynamic glow
                 ctx.save();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = 'rgba(255,255,255,0.6)';
+                ctx.shadowBlur = coinGlow || 15;
+                ctx.shadowColor = coinColor || 'rgba(255,255,255,0.6)';
                 ctx.fillStyle = 'rgba(255,255,255,0.1)';
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius + 3, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
 
-                // HD-2D Radial gradient fill
+                // HD-2D Radial gradient fill using original dynamic colors
                 const gradient = ctx.createRadialGradient(centerX - 3, centerY - 3, 2, centerX, centerY, radius);
                 gradient.addColorStop(0, 'rgba(255,255,255,0.7)');
-                gradient.addColorStop(0.4, 'gold');
+                gradient.addColorStop(0.4, coinColor || 'gold');
                 gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
