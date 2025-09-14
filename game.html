@@ -79,10 +79,23 @@
 
         #game-container {
             position: relative;
+            width: 100%;
+            max-width: 100vw;
+            aspect-ratio: 4 / 3;
+            background: black;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        #game-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         canvas {
@@ -170,6 +183,31 @@
             .game-header {
                 margin-bottom: 1rem;
             }
+            
+            #game-container {
+                width: 95vw;
+                max-height: 60vh;
+            }
+        }
+        
+        /* Landscape orientation message */
+        @media screen and (orientation: portrait) and (max-width: 768px) {
+            #game-container::after {
+                content: "🔄 Rotate to landscape for better gameplay!";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #ffd700;
+                font-size: 1.1em;
+                text-align: center;
+                background: rgba(0,0,0,0.8);
+                padding: 1rem;
+                border-radius: 8px;
+                backdrop-filter: blur(10px);
+                z-index: 100;
+                pointer-events: none;
+            }
         }
     </style>
 </head>
@@ -208,9 +246,7 @@
                 gameContainer.innerHTML = `
                     <iframe 
                         src="game/simple-game.html" 
-                        width="800" 
-                        height="600" 
-                        style="border: none; display: block; background: black;"
+                        style="border: none;"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
