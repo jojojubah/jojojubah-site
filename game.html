@@ -169,6 +169,62 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Auth Widget Styling */
+        #auth-widget {
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        #loginBtn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #loginBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+            background: linear-gradient(135deg, #34a853 0%, #4285f4 100%);
+        }
+
+        #userInfo {
+            margin-left: 15px;
+            font-weight: 600;
+            color: #ffd700;
+            font-size: 16px;
+        }
+
+        #logoutBtn {
+            margin-left: 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #logoutBtn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 0 1rem;
@@ -224,6 +280,13 @@
                 Powered by Rust + WebAssembly
             </div>
         </div>
+    </div>
+
+    <!-- Inline Auth Widget -->
+    <div id="auth-widget">
+        <button id="loginBtn">🔑 Login with Google</button>
+        <span id="userInfo"></span>
+        <button id="logoutBtn" style="display: none;">Logout</button>
     </div>
 
     <div id="error-container"></div>
@@ -288,6 +351,93 @@
         
         // Update theme on page load
         updateTheme();
+    </script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+            authDomain: "jojojubah-f2996.firebaseapp.com",
+            projectId: "jojojubah-f2996",
+            storageBucket: "jojojubah-f2996.firebasestorage.app",
+            messagingSenderId: "160250947651",
+            appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
+            measurementId: "G-XC16XPJ48T"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Make Firebase services available globally for the game iframe
+        window.auth = auth;
+        window.db = db;
+        window.firebaseServices = {
+            auth,
+            db,
+            doc,
+            setDoc,
+            getDocs,
+            collection,
+            query,
+            orderBy,
+            limit
+        };
+
+        // Login with Google
+        document.getElementById("loginBtn").addEventListener("click", async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+
+        // Logout function
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        // Auth state listener
+        onAuthStateChanged(auth, (user) => {
+            const loginBtn = document.getElementById("loginBtn");
+            const userInfo = document.getElementById("userInfo");
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (user) {
+                // User is logged in
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "inline-block";
+                userInfo.textContent = `Welcome, ${user.displayName || user.email}!`;
+                console.log('User logged in:', user.displayName);
+            } else {
+                // User is logged out
+                loginBtn.style.display = "inline-block";
+                logoutBtn.style.display = "none";
+                userInfo.textContent = "";
+                console.log('User logged out');
+            }
+        });
+
+        // Function to prompt login (called from game)
+        window.promptLogin = async () => {
+            const provider = new GoogleAuthProvider();
+            return await signInWithPopup(auth, provider);
+        };
+
+        console.log('Firebase initialized for Game page');
     </script>
 </body>
 </html>
