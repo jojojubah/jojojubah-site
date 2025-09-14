@@ -795,7 +795,7 @@
                     timestamp: Date.now()
                 }, { merge: true });
 
-                console.log("✅ Score saved:", score);
+                console.log("✅ Score saved for", user.displayName, ":", score);
                 return true;
             } catch (error) {
                 console.error('Error saving score:', error);
@@ -834,7 +834,7 @@
                 }
                 
                 leaderboardHTML += "</ol>";
-                leaderboardHTML += "<button onclick='location.reload()' style='margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer;'>Back</button>";
+                leaderboardHTML += "<button onclick='backToMainMenu()' style='margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer;'>Back</button>";
                 leaderboardHTML += "</div>";
 
                 document.getElementById("menuOverlay").innerHTML = leaderboardHTML;
