@@ -4,22 +4,61 @@
     <meta charset="UTF-8">
     <title>₿itcoin Runner</title>
     <style>
-        canvas {
-            border: 1px solid black;
-            display: block;
-            margin: 0 auto;
-        }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #000; /* Space black */
+            background-color: #000;
             margin: 0;
+            padding: 0;
             overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            display: block;
+            background: #000;
+            max-width: 100vw;
+            max-height: 80vh;
+            border: 1px solid #333;
+            touch-action: manipulation;
         }
 
         #topScore {
-            font-size: 18px;
-            color: #fff; /* White text for dark background */
+            font-size: 16px;
+            color: #fff;
+            margin: 5px 0;
+        }
+        
+        h1 {
+            font-size: 1.5em;
+            margin: 10px 0;
+            color: white;
+        }
+        
+        p {
+            font-size: 0.9em;
+            margin: 5px 0;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.2em;
+                margin: 5px 0;
+            }
+            
+            p {
+                font-size: 0.8em;
+                margin: 2px 0;
+            }
+            
+            canvas {
+                max-height: 70vh;
+            }
         }
     </style>
 </head>
@@ -32,13 +71,68 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let canvasWidth = window.innerWidth > 800 ? 800 : window.innerWidth * 0.9;
-        let canvasHeight = window.innerHeight > 400 ? 300 : window.innerHeight * 0.5;
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+        
+        // Responsive canvas sizing function
+        function resizeCanvas() {
+            const isMobile = window.innerWidth <= 768;
+            const maxWidth = isMobile ? window.innerWidth * 0.95 : Math.min(800, window.innerWidth * 0.9);
+            const maxHeight = isMobile ? window.innerHeight * 0.7 : Math.min(600, window.innerHeight * 0.8);
+            
+            // Maintain 4:3 aspect ratio
+            const aspectRatio = 4 / 3;
+            let canvasWidth, canvasHeight;
+            
+            if (maxWidth / maxHeight > aspectRatio) {
+                // Height is the limiting factor
+                canvasHeight = maxHeight;
+                canvasWidth = maxHeight * aspectRatio;
+            } else {
+                // Width is the limiting factor
+                canvasWidth = maxWidth;
+                canvasHeight = maxWidth / aspectRatio;
+            }
+            
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            // Update game variables that depend on canvas size
+            groundHeight = canvasHeight - 50;
+            if (typeof player !== 'undefined') {
+                player.y = groundHeight - player.height;
+            }
+            
+            if (typeof stars !== 'undefined') {
+                // Regenerate stars for new canvas size
+                stars.length = 0;
+                for (let i = 0; i < 100; i++) {
+                    stars.push({
+                        x: Math.random() * canvasWidth,
+                        y: Math.random() * canvasHeight,
+                        size: Math.random() * 2,
+                        twinkle: Math.random() * 0.5 + 0.5,
+                    });
+                }
+            }
+            
+            return { width: canvasWidth, height: canvasHeight };
+        }
+        
+        // Initial canvas setup
+        const { width: canvasWidth, height: canvasHeight } = resizeCanvas();
+        
+        // Handle window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const newSize = resizeCanvas();
+                // Update game variables that depend on canvas size
+                speed = Math.max(3, newSize.width / 300);
+            }, 250);
+        });
 
-        // Game Variables
-        const groundHeight = canvasHeight - 50;
+        // Game Variables (dynamic based on canvas size)
+        let groundHeight = canvas.height - 50;
         const player = {
             x: 50,
             y: groundHeight - 20,
@@ -71,13 +165,8 @@
 
         const coinSymbols = ['£', '₿', '€'];
 
-        // Stars for Background
-        const stars = Array.from({ length: 100 }, () => ({
-            x: Math.random() * canvasWidth,
-            y: Math.random() * canvasHeight,
-            size: Math.random() * 2,
-            twinkle: Math.random() * 0.5 + 0.5,
-        }));
+        // Stars for Background (will be populated after canvas is sized)
+        let stars = [];
 
         // Ground Objects
         let groundObjects = [];
@@ -602,15 +691,34 @@
             }
         });
 
+        // Improved touch controls for mobile
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             handleInteraction();
-        });
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
 
         canvas.addEventListener('click', (e) => {
             e.preventDefault();
             handleInteraction();
         });
+
+        // Also listen for taps on the canvas parent for better mobile experience
+        document.body.addEventListener('touchstart', (e) => {
+            if (e.target === canvas || canvas.contains(e.target)) {
+                e.preventDefault();
+                handleInteraction();
+            }
+        }, { passive: false });
 
         document.getElementById('topScore').innerText = `Top Score: ${topScore}`;
 
