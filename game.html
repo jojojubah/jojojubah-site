@@ -14,12 +14,12 @@
     
     <!-- Theme loading script -->
     <script>
-        (function() {
+        document.addEventListener("DOMContentLoaded", () => {
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
             }
-        })();
+        });
     </script>
     
     <style>
