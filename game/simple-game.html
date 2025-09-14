@@ -138,9 +138,26 @@
     </div>
 
     <script type="module">
-        // Import Firestore functions directly from Firebase CDN
-        import { doc, setDoc, getDocs, collection, query, orderBy, limit } 
+        // Import Firebase functions directly from Firebase CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } 
             from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBnpzb54f0WbeIDgvdj4T0HRb3a2NdCgY",
+            authDomain: "jojojubah-f2996.firebaseapp.com",
+            projectId: "jojojubah-f2996",
+            storageBucket: "jojojubah-f2996.firebasestorage.app",
+            messagingSenderId: "160250947651",
+            appId: "1:160250947651:web:7e30c9f67a2e04cc270cf6",
+            measurementId: "G-XC16XPJ48T"
+        };
+
+        // Initialize Firebase again inside iframe
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -505,18 +522,18 @@
 
                 // HD-2D Glass halo effect using original dynamic glow
                 ctx.save();
-                ctx.shadowBlur = coinGlow || 15;
-                ctx.shadowColor = coinColor || 'rgba(255,255,255,0.6)';
+                ctx.shadowBlur = coinGlow;
+                ctx.shadowColor = coinColor;
                 ctx.fillStyle = 'rgba(255,255,255,0.1)';
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius + 3, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
 
-                // HD-2D Radial gradient fill using original dynamic colors
+                // HD-2D Radial gradient fill using original dynamic neon colors
                 const gradient = ctx.createRadialGradient(centerX - 3, centerY - 3, 2, centerX, centerY, radius);
                 gradient.addColorStop(0, 'rgba(255,255,255,0.7)');
-                gradient.addColorStop(0.4, coinColor || 'gold');
+                gradient.addColorStop(0.4, coinColor); // Use the dynamic neon color directly
                 gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
@@ -851,10 +868,9 @@
 
         // Firebase Leaderboard Functions
         async function saveScoreToLeaderboard(score) {
-            const user = window.parent.auth?.currentUser;
-            const db = window.parent.db; // real Firestore instance
-            if (!user || !db) {
-                console.log("⚠️ Cannot save score: not logged in or Firebase not ready");
+            const user = window.parent.auth?.currentUser; // use parent login state
+            if (!user) {
+                console.log("⚠️ Cannot save score: not logged in");
                 return;
             }
 
@@ -875,13 +891,6 @@
 
 
         async function showLeaderboard() {
-            const db = window.parent.db;
-            if (!db) {
-                console.log("⚠️ Firebase not ready, try again later");
-                alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
-                return;
-            }
-
             try {
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
@@ -912,7 +921,7 @@
                 document.getElementById("menuOverlay").style.display = "block";
                 
             } catch (error) {
-                console.error('Leaderboard error:', error);
+                console.error("❌ Leaderboard error:", error);
                 alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
             }
         }
