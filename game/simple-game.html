@@ -137,7 +137,11 @@
         ⏸️
     </div>
 
-    <script>
+    <script type="module">
+        // Import Firestore functions directly from Firebase CDN
+        import { doc, setDoc, getDocs, collection, query, orderBy, limit } 
+            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let canvasWidth = window.innerWidth > 800 ? 800 : window.innerWidth * 0.9;
@@ -848,42 +852,37 @@
         // Firebase Leaderboard Functions
         async function saveScoreToLeaderboard(score) {
             const user = window.parent.auth?.currentUser;
-            const services = window.parent.firebaseServices;
-            if (!user || !services) {
+            const db = window.parent.db; // real Firestore instance
+            if (!user || !db) {
                 console.log("⚠️ Cannot save score: not logged in or Firebase not ready");
                 return;
             }
 
             try {
-                const { doc, setDoc } = services;
-                const db = window.parent.db; // 🔑 use db directly, not from services
-
                 await setDoc(doc(db, "leaderboard", user.uid), {
                     displayName: user.displayName,
-                    score: Number(score), // ensure it's a number
+                    score: Number(score),
                     timestamp: Date.now()
                 }, { merge: true });
 
                 console.log("✅ Score saved:", score);
                 return true;
             } catch (error) {
-                console.error('Error saving score:', error);
+                console.error("❌ Error saving score:", error);
                 return false;
             }
         }
 
 
         async function showLeaderboard() {
-            const services = window.parent.firebaseServices;
-            if (!services || !window.parent.db) {
+            const db = window.parent.db;
+            if (!db) {
                 console.log("⚠️ Firebase not ready, try again later");
                 alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
                 return;
             }
 
             try {
-                const { collection, query, orderBy, limit, getDocs } = services;
-                const db = window.parent.db; // 🔑 use db directly, not from services
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
@@ -892,8 +891,8 @@
                 leaderboardHTML += "<ol style='list-style: none; padding: 0; font-size: 16px;'>";
                 
                 let rank = 1;
-                snap.forEach(doc => {
-                    const data = doc.data();
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
                     const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
                     leaderboardHTML += `<li style='margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;'>
                         ${medal} ${data.displayName}: <strong>${data.score}</strong>
