@@ -181,13 +181,21 @@
 
         const coinSymbols = ['£', '₿', '€'];
 
-        // Stars for Background
-        const stars = Array.from({ length: 100 }, () => ({
-            x: Math.random() * canvasWidth,
-            y: Math.random() * canvasHeight,
-            size: Math.random() * 2,
-            twinkle: Math.random() * 0.5 + 0.5,
-        }));
+        // HD-2D Parallax Stars for Background
+        function makeStars(count, speed, blur, color) {
+            return Array.from({ length: count }, () => ({
+                x: Math.random() * canvasWidth,
+                y: Math.random() * canvasHeight,
+                size: Math.random() * 2 + 1,
+                speed: speed,
+                blur: blur,
+                color: color
+            }));
+        }
+
+        const farStars = makeStars(40, 0.2, 6, '#888');
+        const midStars = makeStars(30, 0.5, 3, '#bbb');  
+        const nearStars = makeStars(20, 1.0, 0, '#fff');
 
         // Ground Objects
         let groundObjects = [];
@@ -195,10 +203,8 @@
         // Element Colors and Glow Effects
         let obstacleColor;
         let coinColor;
-        let starColor;
         let obstacleGlow;
         let coinGlow;
-        let starGlow;
         let playerGlow;
 
         // Colors for player transition
@@ -280,26 +286,36 @@
             return `hsl(${h}, ${s}%, ${l}%)`;
         }
 
-        // Draw Background
-        function drawBackground() {
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-            gradient.addColorStop(0, '#0f0f5e'); // Light blue
-            gradient.addColorStop(1, '#01012c'); // Dark blue
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw stars
-            stars.forEach((star) => {
-                ctx.save(); // Save the current state
-                ctx.globalAlpha = Math.abs(Math.sin(frameCount / 50) * star.twinkle);
-                ctx.fillStyle = starColor;
-                ctx.shadowBlur = starGlow;
-                ctx.shadowColor = starColor;
+        // HD-2D Parallax Layer Drawing
+        function drawParallaxLayer(stars) {
+            stars.forEach(star => {
+                ctx.save();
+                ctx.shadowBlur = star.blur;
+                ctx.shadowColor = star.color;
+                ctx.fillStyle = star.color;
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.restore(); // Restore the previous state
+                ctx.restore();
+
+                star.x -= star.speed;
+                if (star.x < 0) star.x = canvasWidth;
             });
+        }
+
+        // Draw Background with HD-2D Effects
+        function drawBackground() {
+            // Enhanced gradient sky
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+            gradient.addColorStop(0, '#0a0a2a'); // Deeper space blue
+            gradient.addColorStop(1, '#01010f'); // Rich dark blue
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw parallax star layers (far to near)
+            drawParallaxLayer(farStars);
+            drawParallaxLayer(midStars);
+            drawParallaxLayer(nearStars);
         }
 
         // Generate Ground Objects
@@ -324,12 +340,22 @@
             }
         }
 
-        // Draw Ground with Random Objects
+        // Draw Ground with HD-2D Soft Lighting
         function drawGround() {
             groundOffset -= speed;
             if (groundOffset <= -canvasWidth) groundOffset = 0;
 
-            ctx.fillStyle = '#444'; // Moon gray
+            // Base ground layer with depth color
+            ctx.fillStyle = 'rgba(40,40,60,0.9)';
+            for (let i = 0; i <= 1; i++) {
+                ctx.fillRect(groundOffset + i * canvasWidth, groundHeight, canvasWidth, canvasHeight - groundHeight);
+            }
+
+            // Add soft lighting gradient overlay
+            const lightingGradient = ctx.createLinearGradient(0, groundHeight, 0, canvasHeight);
+            lightingGradient.addColorStop(0, 'rgba(255,255,255,0.1)');
+            lightingGradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+            ctx.fillStyle = lightingGradient;
             for (let i = 0; i <= 1; i++) {
                 ctx.fillRect(groundOffset + i * canvasWidth, groundHeight, canvasWidth, canvasHeight - groundHeight);
             }
@@ -355,14 +381,32 @@
             });
         }
 
-        // Draw Player with Selected Skin
+        // Draw Player with HD-2D Effects and Selected Skin
         function drawPlayer() {
+            const centerX = player.x + player.width/2;
+            const centerY = player.y + player.height/2;
+            
+            // Draw soft shadow beneath player
+            ctx.save();
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY + 40, 30, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
             // Use the selected skin to draw the player
-            playerSkins[selectedSkin].draw(
-                player.x + player.width/2,
-                player.y + player.height/2,
-                player.width
-            );
+            playerSkins[selectedSkin].draw(centerX, centerY, player.width);
+
+            // Add bloom effect around player
+            ctx.save();
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = 'rgba(100,150,255,0.8)';
+            ctx.strokeStyle = 'rgba(100,150,255,0.5)';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, player.width/2 + 5, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
         }
 
         // Function to interpolate between two hex colors
@@ -403,14 +447,21 @@
             }
 
             obstacles = obstacles.filter((obstacle) => {
-                ctx.fillStyle = obstacleColor;
-                ctx.shadowBlur = obstacleGlow;
-                ctx.shadowColor = obstacleColor;
+                // HD-2D Fiery gradient for obstacles
+                const gradient = ctx.createLinearGradient(obstacle.x, obstacle.y, obstacle.x + obstacle.width, obstacle.y + obstacle.height);
+                gradient.addColorStop(0, '#ff3300');
+                gradient.addColorStop(1, '#550000');
+                ctx.fillStyle = gradient;
                 ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
 
-                // Reset shadow settings
-                ctx.shadowBlur = 0;
-                ctx.shadowColor = 'transparent';
+                // HD-2D Glow effect
+                ctx.save();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#ff6600';
+                ctx.strokeStyle = 'rgba(255,100,0,0.7)';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.restore();
 
                 obstacle.x -= speed;
 
@@ -441,22 +492,35 @@
             }
 
             coins = coins.filter((coin) => {
-                ctx.fillStyle = coinColor;
-                ctx.shadowBlur = coinGlow;
-                ctx.shadowColor = coinColor;
+                const centerX = coin.x + 7.5;
+                const centerY = coin.y + 7.5;
+                const radius = 7.5;
+
+                // HD-2D Glass halo effect
+                ctx.save();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = 'rgba(255,255,255,0.6)';
+                ctx.fillStyle = 'rgba(255,255,255,0.1)';
                 ctx.beginPath();
-                ctx.arc(coin.x + 7.5, coin.y + 7.5, 7.5, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY, radius + 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // HD-2D Radial gradient fill
+                const gradient = ctx.createRadialGradient(centerX - 3, centerY - 3, 2, centerX, centerY, radius);
+                gradient.addColorStop(0, 'rgba(255,255,255,0.7)');
+                gradient.addColorStop(0.4, 'gold');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Draw smaller coin symbol
+                // Draw coin symbol with better contrast
                 ctx.fillStyle = 'black';
                 ctx.font = 'bold 10px Arial';
                 const textWidth = ctx.measureText(coin.symbol).width;
-                ctx.fillText(coin.symbol, coin.x + 7.5 - textWidth / 2, coin.y + 10);
-
-                // Reset shadow settings
-                ctx.shadowBlur = 0;
-                ctx.shadowColor = 'transparent';
+                ctx.fillText(coin.symbol, centerX - textWidth / 2, centerY + 3);
 
                 coin.x -= speed;
 
@@ -492,12 +556,10 @@
                         // Randomly change colors of elements
                         obstacleColor = getRandomColor();
                         coinColor = getRandomColor();
-                        starColor = getRandomColor();
 
                         // Randomly set glow effects
                         obstacleGlow = Math.random() * 20;
                         coinGlow = Math.random() * 20;
-                        starGlow = Math.random() * 5;
                         playerGlow = Math.random() * 20;
                     }
 
@@ -738,10 +800,8 @@
             // Initialize element colors and glow effects at the start
             obstacleColor = getRandomColor();
             coinColor = getRandomColor();
-            starColor = getRandomColor();
             obstacleGlow = Math.random() * 20;
             coinGlow = Math.random() * 20;
-            starGlow = Math.random() * 5;
             playerGlow = Math.random() * 20;
 
             gameLoop();
@@ -961,10 +1021,8 @@
         // Initialize the game
         obstacleColor = getRandomColor();
         coinColor = getRandomColor();
-        starColor = getRandomColor();
         obstacleGlow = Math.random() * 20;
         coinGlow = Math.random() * 20;
-        starGlow = Math.random() * 5;
         playerGlow = Math.random() * 20;
 
         // Start the game loop and show menu
