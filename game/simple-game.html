@@ -56,6 +56,7 @@
         let coins = [];
         let fragments = [];
         let glitchCoin = null;
+        let floatingTexts = [];
         let score = 0;
         let level = 1;
         let topScore = parseInt(localStorage.getItem('topScore')) || 0;
@@ -94,6 +95,40 @@
         // Colors for player transition
         const colorStart = '#0000FF'; // Blue
         const colorEnd = '#808080';   // Grey
+
+        // Player Skins System
+        const playerSkins = [
+            { name: "Blue Circle", draw: (x, y, size) => {
+                ctx.fillStyle = "blue";
+                ctx.beginPath();
+                ctx.arc(x, y, size/2, 0, Math.PI*2);
+                ctx.fill();
+            }},
+            { name: "Red Square", draw: (x, y, size) => {
+                ctx.fillStyle = "red";
+                ctx.fillRect(x-size/2, y-size/2, size, size);
+            }},
+            { name: "Neon Triangle", draw: (x, y, size) => {
+                ctx.fillStyle = "lime";
+                ctx.beginPath();
+                ctx.moveTo(x, y - size/2);
+                ctx.lineTo(x - size/2, y + size/2);
+                ctx.lineTo(x + size/2, y + size/2);
+                ctx.closePath();
+                ctx.fill();
+            }},
+            { name: "Golden Circle", draw: (x, y, size) => {
+                ctx.fillStyle = "gold";
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "gold";
+                ctx.beginPath();
+                ctx.arc(x, y, size/2, 0, Math.PI*2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+            }}
+        ];
+        let selectedSkin = 0;
 
         // Sound effect for coin collection
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -211,24 +246,14 @@
             });
         }
 
-        // Draw Player with Color Transition
+        // Draw Player with Selected Skin
         function drawPlayer() {
-            // Update player color
-            const t = player.colorProgress;
-
-            const interpolatedColor = interpolateColor(colorStart, colorEnd, t);
-            ctx.fillStyle = interpolatedColor;
-
-            ctx.shadowBlur = playerGlow;
-            ctx.shadowColor = interpolatedColor;
-
-            ctx.beginPath();
-            ctx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width / 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Reset shadow settings
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
+            // Use the selected skin to draw the player
+            playerSkins[selectedSkin].draw(
+                player.x + player.width/2,
+                player.y + player.height/2,
+                player.width
+            );
         }
 
         // Function to interpolate between two hex colors
@@ -287,6 +312,7 @@
                     player.y < obstacle.y + obstacle.height &&
                     player.y + player.height > obstacle.y
                 ) {
+                    screenShake();
                     isGameOver = true;
                 }
 
@@ -334,6 +360,14 @@
                 ) {
                     playCoinSound();
                     score++;
+
+                    // Add floating +1 effect
+                    floatingTexts.push({
+                        x: coin.x,
+                        y: coin.y,
+                        text: "+1",
+                        life: 40 // frames before disappearing
+                    });
 
                     // Update top score
                     if (score > topScore) {
@@ -390,12 +424,48 @@
             });
         }
 
+        // Draw Floating +1 Texts
+        function drawFloatingTexts() {
+            floatingTexts = floatingTexts.filter((t) => {
+                ctx.fillStyle = "white";
+                ctx.font = "bold 14px Arial";
+                ctx.globalAlpha = t.life / 40; // fade out
+                ctx.fillText(t.text, t.x, t.y);
+                ctx.globalAlpha = 1;
+                t.y -= 0.5;   // float upward
+                t.life--;
+                return t.life > 0;
+            });
+        }
+
+        // Screen Shake Effect
+        function screenShake(intensity = 5, duration = 300) {
+            let start = performance.now();
+            function shake(time) {
+                let elapsed = time - start;
+                if (elapsed < duration) {
+                    let dx = (Math.random() - 0.5) * intensity;
+                    let dy = (Math.random() - 0.5) * intensity;
+                    ctx.setTransform(1, 0, 0, 1, dx, dy);
+                    requestAnimationFrame(shake);
+                } else {
+                    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+                }
+            }
+            requestAnimationFrame(shake);
+        }
+
         // Draw Score and Level
         function drawScoreAndLevel() {
             ctx.fillStyle = 'white';
             ctx.font = '20px Arial';
             ctx.fillText(`Score: ${score}`, 10, 30); // Top-left corner
             ctx.fillText(`Level: ${level}`, canvas.width - 100, 30); // Top-right corner
+            
+            // Show current skin name and controls
+            ctx.font = '12px Arial';
+            ctx.fillText(`Skin: ${playerSkins[selectedSkin].name}`, 10, 50);
+            ctx.fillText(`Press 'C' to change skin`, 10, 65);
         }
 
         // Spawn Glitch Coin
@@ -530,6 +600,7 @@
             handleObstacles();
             handleCoins();
             drawFragments();
+            drawFloatingTexts();
             spawnGlitchCoin();
             handleGlitchCoin();
             drawGlitchEffect();
@@ -560,6 +631,7 @@
             obstacles = [];
             coins = [];
             fragments = [];
+            floatingTexts = [];
             glitchCoin = null;
             glitchActive = false;
             speed = Math.max(3, canvasWidth / 300);
@@ -599,6 +671,10 @@
             if (e.code === 'Space') {
                 e.preventDefault();
                 handleInteraction();
+            }
+            // Press 'C' to change skins during gameplay (for testing)
+            if (e.code === 'KeyC') {
+                selectedSkin = (selectedSkin + 1) % playerSkins.length;
             }
         });
 
