@@ -749,6 +749,10 @@
 
         // Menu System Functions
         function startGame() {
+            if (!window.parent.firebaseServices || !window.parent.auth) {
+                console.log("⚠️ Firebase not ready, but allowing game start");
+            }
+            
             document.getElementById("menuOverlay").style.display = "none";
             document.getElementById("pauseButton").style.display = "flex";
             document.getElementById("resumeButton").style.display = "none";
@@ -778,16 +782,17 @@
             setTimeout(() => notification.remove(), 2000);
         }
 
-        // Get Firestore instance from parent window's Firebase app
-        const db = window.parent.firebaseServices ? window.parent.firebaseServices.db : null;
-
         // Firebase Leaderboard Functions
         async function saveScoreToLeaderboard(score) {
             const user = window.parent.auth?.currentUser;
-            if (!user || !window.parent.firebaseServices || !db) return; // skip if not logged in or Firebase not available
+            const services = window.parent.firebaseServices;
+            if (!user || !services || !services.db) {
+                console.log("⚠️ Cannot save score: not logged in or Firebase not ready");
+                return;
+            }
 
             try {
-                const { doc, setDoc } = window.parent.firebaseServices;
+                const { doc, setDoc, db } = services;
 
                 await setDoc(doc(db, "leaderboard", user.uid), {
                     displayName: user.displayName,
@@ -795,7 +800,7 @@
                     timestamp: Date.now()
                 }, { merge: true });
 
-                console.log("✅ Score saved for", user.displayName, ":", score);
+                console.log("✅ Score saved:", score);
                 return true;
             } catch (error) {
                 console.error('Error saving score:', error);
@@ -805,13 +810,15 @@
 
 
         async function showLeaderboard() {
+            const services = window.parent.firebaseServices;
+            if (!services || !services.db) {
+                console.log("⚠️ Firebase not ready, try again later");
+                alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
+                return;
+            }
+
             try {
-                if (!window.parent.firebaseServices || !db) {
-                    alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
-                    return;
-                }
-                
-                const { collection, query, orderBy, limit, getDocs } = window.parent.firebaseServices;
+                const { collection, query, orderBy, limit, getDocs, db } = services;
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
@@ -867,7 +874,6 @@
         async function showGameOverOverlay() {
             const user = window.parent.auth?.currentUser;
             let msg = `<p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>`;
-            msg += `<p style="font-size: 1rem; margin-bottom: 20px; opacity: 0.8;">High Score: ${topScore}</p>`;
             
             if (user) {
                 // Auto-save score for logged-in users
@@ -877,29 +883,21 @@
                 msg += `<p style="color: #ffd700; margin-bottom: 20px;">🔑 Login above to save your score!</p>`;
             }
 
-            const gameOverHTML = `
+            document.getElementById("menuOverlay").innerHTML = `
                 <div style="text-align:center; color:white; padding:30px;">
                     <h1 style="color:#ff6b6b; font-size: 2.5rem; margin-bottom: 20px;">💥 Game Over!</h1>
                     ${msg}
                     <button onclick="playAgain()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🎮 Play Again</button>
                     <button onclick="showLeaderboard()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🏆 Leaderboard</button>
-                    <button onclick="backToMainMenu()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: rgba(255,255,255,0.2); color: white; transition: all 0.3s ease; min-width: 200px;">← Back to Menu</button>
                 </div>
             `;
-            
-            document.getElementById("menuOverlay").innerHTML = gameOverHTML;
             document.getElementById("menuOverlay").style.display = "block";
             document.getElementById("pauseButton").style.display = "none";
         }
         
-        // Game Over Action Functions
+        // Game Over Action Functions  
         function playAgain() {
-            document.getElementById("menuOverlay").style.display = "none";
-            document.getElementById("pauseButton").style.display = "flex";
-            isGameOver = false;
-            gameStarted = true;
-            paused = false;
-            restartGame();
+            location.reload();
         }
         
         function backToMainMenu() {
