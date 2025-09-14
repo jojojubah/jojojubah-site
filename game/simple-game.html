@@ -141,7 +141,7 @@
         // Import Firebase functions directly from Firebase CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } 
+        import { getFirestore, doc, setDoc, getDoc, getDocs, collection, query, orderBy, limit, runTransaction } 
             from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -866,22 +866,53 @@
             setTimeout(() => notification.remove(), 2000);
         }
 
-        // Firebase Leaderboard Functions
-        async function saveScoreToLeaderboard(score) {
-            const user = window.parent.auth?.currentUser; // use parent login state
+        // Firebase Leaderboard Functions - Add current high score tracking
+        let currentHighScore = 0;
+
+        async function loadHighScore() {
+            const user = window.parent.auth?.currentUser;
+            if (!user) return;
+            
+            try {
+                const userRef = doc(db, "leaderboard", user.uid);
+                const snapshot = await getDoc(userRef);
+                if (snapshot.exists()) {
+                    currentHighScore = snapshot.data().score;
+                    console.log("📊 Loaded existing high score:", currentHighScore);
+                }
+            } catch (error) {
+                console.error("❌ Error loading high score:", error);
+            }
+        }
+
+        async function saveScoreToLeaderboard(newScore) {
+            const user = window.parent.auth?.currentUser;
             if (!user) {
                 console.log("⚠️ Cannot save score: not logged in");
-                return;
+                return false;
             }
 
-            try {
-                await setDoc(doc(db, "leaderboard", user.uid), {
-                    displayName: user.displayName,
-                    score: Number(score),
-                    timestamp: Date.now()
-                }, { merge: true });
+            const userRef = doc(db, "leaderboard", user.uid);
 
-                console.log("✅ Score saved:", score);
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const userDoc = await transaction.get(userRef);
+                    const existingScore = userDoc.exists() ? userDoc.data().score : 0;
+                    
+                    if (newScore > existingScore) {
+                        transaction.set(userRef, {
+                            displayName: user.displayName,
+                            score: Number(newScore),
+                            timestamp: Date.now()
+                        }, { merge: true });
+                        
+                        currentHighScore = newScore;
+                        console.log(`✅ New high score saved: ${newScore} (previous: ${existingScore})`);
+                    } else {
+                        console.log(`📊 Score ${newScore} not saved (current high: ${existingScore})`);
+                    }
+                });
+                
                 return true;
             } catch (error) {
                 console.error("❌ Error saving score:", error);
@@ -947,6 +978,12 @@
         async function showGameOverOverlay() {
             const user = window.parent.auth?.currentUser;
             let msg = `<p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>`;
+            
+            // Show proper high score
+            let displayHighScore = Math.max(topScore, currentHighScore);
+            if (displayHighScore > 0) {
+                msg += `<p style="font-size: 1rem; margin-bottom: 20px; opacity: 0.8;">High Score: ${displayHighScore}</p>`;
+            }
             
             if (user) {
                 // Auto-save score for logged-in users
@@ -1041,6 +1078,19 @@
         
         // Make sure menu is visible on load
         document.getElementById("menuOverlay").style.display = "block";
+
+        // Load high score if user is already logged in
+        if (window.parent.auth?.currentUser) {
+            loadHighScore();
+        }
+
+        // Listen for parent auth state changes to load high score
+        setInterval(() => {
+            const user = window.parent.auth?.currentUser;
+            if (user && currentHighScore === 0) {
+                loadHighScore();
+            }
+        }, 1000);
 
         // Make functions globally accessible for onclick handlers
         window.startGame = startGame;
