@@ -137,11 +137,7 @@
         ⏸️
     </div>
 
-    <script type="module">
-        // Import Firebase Firestore (using v12.1.0)
-        import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } 
-            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
+    <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let canvasWidth = window.innerWidth > 800 ? 800 : window.innerWidth * 0.9;
@@ -787,10 +783,12 @@
 
         // Firebase Leaderboard Functions
         async function saveScoreToLeaderboard(score) {
-            const user = window.parent.auth.currentUser;
-            if (!user) return; // skip if not logged in
+            const user = window.parent.auth?.currentUser;
+            if (!user || !window.parent.firebaseServices || !db) return; // skip if not logged in or Firebase not available
 
             try {
+                const { doc, setDoc } = window.parent.firebaseServices;
+
                 await setDoc(doc(db, "leaderboard", user.uid), {
                     displayName: user.displayName,
                     score: score,
@@ -808,6 +806,12 @@
 
         async function showLeaderboard() {
             try {
+                if (!window.parent.firebaseServices || !db) {
+                    alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
+                    return;
+                }
+                
+                const { collection, query, orderBy, limit, getDocs } = window.parent.firebaseServices;
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
@@ -861,7 +865,7 @@
 
         // Game Over Screen with Dynamic Auth
         async function showGameOverOverlay() {
-            const user = window.parent.auth.currentUser;
+            const user = window.parent.auth?.currentUser;
             let msg = `<p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>`;
             msg += `<p style="font-size: 1rem; margin-bottom: 20px; opacity: 0.8;">High Score: ${topScore}</p>`;
             
