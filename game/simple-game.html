@@ -1032,6 +1032,15 @@
         
         // Make sure menu is visible on load
         document.getElementById("menuOverlay").style.display = "block";
+
+        // Make functions globally accessible for onclick handlers
+        window.startGame = startGame;
+        window.changeSkin = changeSkin;
+        window.showLeaderboard = showLeaderboard;
+        window.openPauseMenu = openPauseMenu;
+        window.resumeGame = resumeGame;
+        window.playAgain = playAgain;
+        window.backToMainMenu = backToMainMenu;
     </script>
 </body>
 </html>
