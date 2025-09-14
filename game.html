@@ -378,17 +378,7 @@
         // Make Firebase services available globally for the game iframe
         window.auth = auth;
         window.db = db;
-        window.firebaseServices = {
-            auth,
-            db,
-            doc,
-            setDoc,
-            getDocs,
-            collection,
-            query,
-            orderBy,
-            limit
-        };
+        window.firebaseServices = { auth, db };
 
         // Login with Google
         document.getElementById("loginBtn").addEventListener("click", async () => {
