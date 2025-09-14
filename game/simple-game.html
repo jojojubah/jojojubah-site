@@ -9,8 +9,8 @@
             display: block;
             margin: 0 auto;
             position: relative;
-            top: 25%;
-            transform: translateY(-25%);
+            top: 12.5%;
+            transform: translateY(-12.5%);
         }
         body {
             font-family: Arial, sans-serif;
@@ -126,7 +126,6 @@
         <button onclick="startGame()">🎮 Play</button>
         <button onclick="changeSkin()">🎨 Change Skin</button>
         <button onclick="showLeaderboard()">🏆 Leaderboard</button>
-        <button onclick="saveScoreToLeaderboard()" id="saveScoreButton" style="display: none;">💾 Save Score</button>
         <button onclick="resumeGame()" id="resumeButton" style="display: none;">▶️ Resume</button>
         <br>
         <img src="../favicon.png" alt="JojoJubah Labs" id="brandLogo" onclick="window.open('../index.html','_blank')">
@@ -671,19 +670,7 @@
             }
             
             if (isGameOver) {
-                // Show game over screen
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = '32px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('💥 Game Over!', canvas.width / 2, canvas.height / 2 - 40);
-                ctx.font = '20px Arial';
-                ctx.fillText(`Your Score: ${score}`, canvas.width / 2, canvas.height / 2);
-                ctx.font = '16px Arial';
-                ctx.fillText('Tap to return to menu', canvas.width / 2, canvas.height / 2 + 25);
-                ctx.fillText("Click 'Save Score' in menu to upload", canvas.width / 2, canvas.height / 2 + 45);
-                ctx.textAlign = 'left';
+                showGameOverScreen();
                 return;
             }
 
@@ -765,7 +752,6 @@
             document.getElementById("menuOverlay").style.display = "none";
             document.getElementById("pauseButton").style.display = "flex";
             document.getElementById("resumeButton").style.display = "none";
-            document.getElementById("saveScoreButton").style.display = "none";
             gameStarted = true;
             paused = false;
             restartGame();
@@ -826,20 +812,6 @@
             }
         }
 
-        async function saveScoreToLeaderboard() {
-            try {
-                const success = await loginAndSave(score);
-                if (success) {
-                    alert("✅ Score saved to leaderboard!");
-                    document.getElementById("saveScoreButton").style.display = "none";
-                } else {
-                    alert("⚠️ Please log in first to save your score.\nClick the login button on the main site.");
-                }
-            } catch (err) {
-                console.error('Save error:', err);
-                alert("⚠️ Error saving score. Make sure you're logged in.");
-            }
-        }
 
         async function showLeaderboard() {
             try {
@@ -901,6 +873,130 @@
             gameLoop();
         }
 
+        // Game Over Screen with Dynamic Auth
+        async function showGameOverScreen() {
+            // Show game over overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Check auth status for dynamic button
+            let isLoggedIn = false;
+            let authButtonText = '🔑 Login to Save Score';
+            let authButtonAction = 'loginAndSaveFromGameOver()';
+            
+            try {
+                if (window.parent.firebaseServices && window.parent.firebaseServices.auth.currentUser) {
+                    isLoggedIn = true;
+                    authButtonText = '💾 Save Score';
+                    authButtonAction = 'saveScoreFromGameOver()';
+                }
+            } catch (e) {
+                // Keep default login button
+            }
+            
+            // Create game over menu
+            const gameOverHTML = `
+                <div style="text-align: center; color: white; padding: 30px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b;">💥 Game Over!</h1>
+                    <p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>
+                    <p style="font-size: 1rem; margin-bottom: 30px; opacity: 0.8;">High Score: ${topScore}</p>
+                    
+                    <button onclick="playAgain()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🎮 Play Again</button>
+                    <button onclick="showLeaderboard()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🏆 Leaderboard</button>
+                    <button onclick="${authButtonAction}" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%); color: black; transition: all 0.3s ease; min-width: 200px;">${authButtonText}</button>
+                    <button onclick="backToMainMenu()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: rgba(255,255,255,0.2); color: white; transition: all 0.3s ease; min-width: 200px;">← Back to Menu</button>
+                </div>
+            `;
+            
+            document.getElementById("menuOverlay").innerHTML = gameOverHTML;
+            document.getElementById("menuOverlay").style.display = "block";
+            document.getElementById("pauseButton").style.display = "none";
+            
+            // Auto-save for logged-in users if score is better
+            if (isLoggedIn && score > 0) {
+                setTimeout(async () => {
+                    try {
+                        await loginAndSave(score);
+                        console.log('Score auto-saved for logged-in user');
+                    } catch (e) {
+                        console.log('Auto-save failed:', e);
+                    }
+                }, 500);
+            }
+        }
+        
+        // Game Over Action Functions
+        function playAgain() {
+            document.getElementById("menuOverlay").style.display = "none";
+            document.getElementById("pauseButton").style.display = "flex";
+            isGameOver = false;
+            gameStarted = true;
+            paused = false;
+            restartGame();
+        }
+        
+        function backToMainMenu() {
+            // Reset to main menu
+            const mainMenuHTML = `
+                <h1>₿itcoin Runner</h1>
+                <button onclick="startGame()">🎮 Play</button>
+                <button onclick="changeSkin()">🎨 Change Skin</button>
+                <button onclick="showLeaderboard()">🏆 Leaderboard</button>
+                <button onclick="resumeGame()" id="resumeButton" style="display: none;">▶️ Resume</button>
+                <br>
+                <img src="../favicon.png" alt="JojoJubah Labs" id="brandLogo" onclick="window.open('../index.html','_blank')">
+                <p style="font-size: 12px; margin-top: 10px; opacity: 0.8;">by JojoJubah Labs</p>
+            `;
+            document.getElementById("menuOverlay").innerHTML = mainMenuHTML;
+            document.getElementById("menuOverlay").style.display = "block";
+            document.getElementById("pauseButton").style.display = "none";
+            isGameOver = false;
+            gameStarted = false;
+            paused = false;
+        }
+        
+        async function loginAndSaveFromGameOver() {
+            try {
+                const success = await loginAndSave(score);
+                if (success) {
+                    // Update button to show success
+                    const button = event.target;
+                    button.textContent = '✅ Saved!';
+                    button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                    setTimeout(() => {
+                        button.textContent = '💾 Save Score';
+                        button.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff9500 100%)';
+                    }, 2000);
+                } else {
+                    alert("⚠️ Please log in first to save your score.\nClick the login button on the main site.");
+                }
+            } catch (err) {
+                console.error('Save error:', err);
+                alert("⚠️ Error saving score. Make sure you're logged in.");
+            }
+        }
+        
+        async function saveScoreFromGameOver() {
+            try {
+                const success = await loginAndSave(score);
+                if (success) {
+                    // Update button to show success
+                    const button = event.target;
+                    button.textContent = '✅ Saved!';
+                    button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                    setTimeout(() => {
+                        button.textContent = '💾 Save Score';
+                        button.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff9500 100%)';
+                    }, 2000);
+                } else {
+                    alert("⚠️ Error saving score.");
+                }
+            } catch (err) {
+                console.error('Save error:', err);
+                alert("⚠️ Error saving score.");
+            }
+        }
+
         // Start Game on Tap or Space
         function handleInteraction() {
             if (paused) {
@@ -911,13 +1007,7 @@
             
             if (!gameStarted || isGameOver) {
                 if (isGameOver) {
-                    // Show menu on game over with save score option
-                    document.getElementById("menuOverlay").style.display = "block";
-                    document.getElementById("pauseButton").style.display = "none";
-                    document.getElementById("saveScoreButton").style.display = "block";
-                    document.getElementById("resumeButton").style.display = "none";
-                    isGameOver = false;
-                    gameStarted = false;
+                    // Let the game over screen handle this
                     return;
                 }
             } else if (player.jumpsLeft > 0) {
