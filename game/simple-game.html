@@ -782,11 +782,13 @@
         async function loginAndSave(playerScore) {
             try {
                 // Check if Firebase services are available (from parent page)
-                if (!window.parent.firebaseServices) {
+                if (!window.parent.auth || !window.parent.db) {
                     throw new Error('Firebase not available');
                 }
                 
-                const { auth, db, doc, setDoc } = window.parent.firebaseServices;
+                const auth = window.parent.auth;
+                const db = window.parent.db;
+                const { doc, setDoc } = window.parent.firebaseServices;
                 
                 // Check if user is logged in, if not trigger login
                 if (!auth.currentUser) {
@@ -816,12 +818,13 @@
         async function showLeaderboard() {
             try {
                 // Check if Firebase services are available
-                if (!window.parent.firebaseServices) {
+                if (!window.parent.db || !window.parent.firebaseServices) {
                     alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard requires login on main site.`);
                     return;
                 }
                 
-                const { db, getDocs, collection, query, orderBy, limit } = window.parent.firebaseServices;
+                const { getDocs, collection, query, orderBy, limit } = window.parent.firebaseServices;
+                const db = window.parent.db;
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
@@ -885,7 +888,7 @@
             let authButtonAction = 'loginAndSaveFromGameOver()';
             
             try {
-                if (window.parent.firebaseServices && window.parent.firebaseServices.auth.currentUser) {
+                if (window.parent.auth && window.parent.auth.currentUser) {
                     isLoggedIn = true;
                     authButtonText = '💾 Save Score';
                     authButtonAction = 'saveScoreFromGameOver()';
@@ -918,6 +921,17 @@
                     try {
                         await loginAndSave(score);
                         console.log('Score auto-saved for logged-in user');
+                        
+                        // Update button text to show auto-save success
+                        setTimeout(() => {
+                            const buttons = document.querySelectorAll('#menuOverlay button');
+                            buttons.forEach(btn => {
+                                if (btn.textContent.includes('💾 Save Score')) {
+                                    btn.textContent = '✅ Auto-Saved!';
+                                    btn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                                }
+                            });
+                        }, 100);
                     } catch (e) {
                         console.log('Auto-save failed:', e);
                     }
@@ -968,11 +982,11 @@
                         button.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff9500 100%)';
                     }, 2000);
                 } else {
-                    alert("⚠️ Please log in first to save your score.\nClick the login button on the main site.");
+                    alert("⚠️ Please use the login button above the game to sign in first.");
                 }
             } catch (err) {
                 console.error('Save error:', err);
-                alert("⚠️ Error saving score. Make sure you're logged in.");
+                alert("⚠️ Please use the login button above the game to sign in first.");
             }
         }
         
