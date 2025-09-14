@@ -137,7 +137,11 @@
         ⏸️
     </div>
 
-    <script>
+    <script type="module">
+        // Import Firebase Firestore (using v12.1.0)
+        import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } 
+            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let canvasWidth = window.innerWidth > 800 ? 800 : window.innerWidth * 0.9;
@@ -670,7 +674,7 @@
             }
             
             if (isGameOver) {
-                showGameOverScreen();
+                showGameOverOverlay();
                 return;
             }
 
@@ -778,35 +782,22 @@
             setTimeout(() => notification.remove(), 2000);
         }
 
+        // Get Firestore instance from parent window's Firebase app
+        const db = window.parent.firebaseServices ? window.parent.firebaseServices.db : null;
+
         // Firebase Leaderboard Functions
-        async function loginAndSave(playerScore) {
+        async function saveScoreToLeaderboard(score) {
+            const user = window.parent.auth.currentUser;
+            if (!user) return; // skip if not logged in
+
             try {
-                // Check if Firebase services are available (from parent page)
-                if (!window.parent.auth || !window.parent.db) {
-                    throw new Error('Firebase not available');
-                }
-                
-                const auth = window.parent.auth;
-                const db = window.parent.db;
-                const { doc, setDoc } = window.parent.firebaseServices;
-                
-                // Check if user is logged in, if not trigger login
-                if (!auth.currentUser) {
-                    await window.parent.promptLogin();
-                }
-                
-                const user = auth.currentUser;
-                if (!user) {
-                    throw new Error('Login failed');
-                }
-                
-                // Save score to Firestore
                 await setDoc(doc(db, "leaderboard", user.uid), {
-                    displayName: user.displayName || 'Anonymous',
-                    score: playerScore,
+                    displayName: user.displayName,
+                    score: score,
                     timestamp: Date.now()
                 }, { merge: true });
-                
+
+                console.log("✅ Score saved:", score);
                 return true;
             } catch (error) {
                 console.error('Error saving score:', error);
@@ -817,38 +808,30 @@
 
         async function showLeaderboard() {
             try {
-                // Check if Firebase services are available
-                if (!window.parent.db || !window.parent.firebaseServices) {
-                    alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard requires login on main site.`);
-                    return;
-                }
-                
-                const { getDocs, collection, query, orderBy, limit } = window.parent.firebaseServices;
-                const db = window.parent.db;
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
-                let leaderboardHTML = '<div style="text-align: center; color: white; padding: 20px;">';
-                leaderboardHTML += '<h2 style="color: #ffd700; margin-bottom: 20px;">🏆 Top Players</h2>';
-                leaderboardHTML += '<ol style="list-style: none; padding: 0; font-size: 16px;">';
+                let leaderboardHTML = "<div style='text-align: center; color: white; padding: 30px;'>";
+                leaderboardHTML += "<h2 style='color: #ffd700; margin-bottom: 20px;'>🏆 Top Scores</h2>";
+                leaderboardHTML += "<ol style='list-style: none; padding: 0; font-size: 16px;'>";
                 
                 let rank = 1;
                 snap.forEach(doc => {
                     const data = doc.data();
                     const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
-                    leaderboardHTML += `<li style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    leaderboardHTML += `<li style='margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;'>
                         ${medal} ${data.displayName}: <strong>${data.score}</strong>
                     </li>`;
                     rank++;
                 });
                 
                 if (rank === 1) {
-                    leaderboardHTML += '<li style="margin: 20px 0; color: #ccc;">No scores yet - be the first!</li>';
+                    leaderboardHTML += "<li style='margin: 20px 0; color: #ccc;'>No scores yet - be the first!</li>";
                 }
                 
-                leaderboardHTML += '</ol>';
-                leaderboardHTML += '<button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer;">Back to Menu</button>';
-                leaderboardHTML += '</div>';
+                leaderboardHTML += "</ol>";
+                leaderboardHTML += "<button onclick='location.reload()' style='margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer;'>Back</button>";
+                leaderboardHTML += "</div>";
 
                 document.getElementById("menuOverlay").innerHTML = leaderboardHTML;
                 document.getElementById("menuOverlay").style.display = "block";
@@ -877,36 +860,25 @@
         }
 
         // Game Over Screen with Dynamic Auth
-        async function showGameOverScreen() {
-            // Show game over overlay
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        async function showGameOverOverlay() {
+            const user = window.parent.auth.currentUser;
+            let msg = `<p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>`;
+            msg += `<p style="font-size: 1rem; margin-bottom: 20px; opacity: 0.8;">High Score: ${topScore}</p>`;
             
-            // Check auth status for dynamic button
-            let isLoggedIn = false;
-            let authButtonText = '🔑 Login to Save Score';
-            let authButtonAction = 'loginAndSaveFromGameOver()';
-            
-            try {
-                if (window.parent.auth && window.parent.auth.currentUser) {
-                    isLoggedIn = true;
-                    authButtonText = '💾 Save Score';
-                    authButtonAction = 'saveScoreFromGameOver()';
-                }
-            } catch (e) {
-                // Keep default login button
+            if (user) {
+                // Auto-save score for logged-in users
+                await saveScoreToLeaderboard(score);
+                msg += `<p style="color: #28a745; margin-bottom: 20px;">✅ Saved as ${user.displayName}</p>`;
+            } else {
+                msg += `<p style="color: #ffd700; margin-bottom: 20px;">🔑 Login above to save your score!</p>`;
             }
-            
-            // Create game over menu
+
             const gameOverHTML = `
-                <div style="text-align: center; color: white; padding: 30px;">
-                    <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b;">💥 Game Over!</h1>
-                    <p style="font-size: 1.5rem; margin-bottom: 10px;">Your Score: <strong style="color: #ffd700;">${score}</strong></p>
-                    <p style="font-size: 1rem; margin-bottom: 30px; opacity: 0.8;">High Score: ${topScore}</p>
-                    
+                <div style="text-align:center; color:white; padding:30px;">
+                    <h1 style="color:#ff6b6b; font-size: 2.5rem; margin-bottom: 20px;">💥 Game Over!</h1>
+                    ${msg}
                     <button onclick="playAgain()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🎮 Play Again</button>
                     <button onclick="showLeaderboard()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: all 0.3s ease; min-width: 200px;">🏆 Leaderboard</button>
-                    <button onclick="${authButtonAction}" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%); color: black; transition: all 0.3s ease; min-width: 200px;">${authButtonText}</button>
                     <button onclick="backToMainMenu()" style="display: block; margin: 15px auto; padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; background: rgba(255,255,255,0.2); color: white; transition: all 0.3s ease; min-width: 200px;">← Back to Menu</button>
                 </div>
             `;
@@ -914,29 +886,6 @@
             document.getElementById("menuOverlay").innerHTML = gameOverHTML;
             document.getElementById("menuOverlay").style.display = "block";
             document.getElementById("pauseButton").style.display = "none";
-            
-            // Auto-save for logged-in users if score is better
-            if (isLoggedIn && score > 0) {
-                setTimeout(async () => {
-                    try {
-                        await loginAndSave(score);
-                        console.log('Score auto-saved for logged-in user');
-                        
-                        // Update button text to show auto-save success
-                        setTimeout(() => {
-                            const buttons = document.querySelectorAll('#menuOverlay button');
-                            buttons.forEach(btn => {
-                                if (btn.textContent.includes('💾 Save Score')) {
-                                    btn.textContent = '✅ Auto-Saved!';
-                                    btn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                                }
-                            });
-                        }, 100);
-                    } catch (e) {
-                        console.log('Auto-save failed:', e);
-                    }
-                }, 500);
-            }
         }
         
         // Game Over Action Functions
@@ -967,48 +916,6 @@
             isGameOver = false;
             gameStarted = false;
             paused = false;
-        }
-        
-        async function loginAndSaveFromGameOver() {
-            try {
-                const success = await loginAndSave(score);
-                if (success) {
-                    // Update button to show success
-                    const button = event.target;
-                    button.textContent = '✅ Saved!';
-                    button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                    setTimeout(() => {
-                        button.textContent = '💾 Save Score';
-                        button.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff9500 100%)';
-                    }, 2000);
-                } else {
-                    alert("⚠️ Please use the login button above the game to sign in first.");
-                }
-            } catch (err) {
-                console.error('Save error:', err);
-                alert("⚠️ Please use the login button above the game to sign in first.");
-            }
-        }
-        
-        async function saveScoreFromGameOver() {
-            try {
-                const success = await loginAndSave(score);
-                if (success) {
-                    // Update button to show success
-                    const button = event.target;
-                    button.textContent = '✅ Saved!';
-                    button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                    setTimeout(() => {
-                        button.textContent = '💾 Save Score';
-                        button.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff9500 100%)';
-                    }, 2000);
-                } else {
-                    alert("⚠️ Error saving score.");
-                }
-            } catch (err) {
-                console.error('Save error:', err);
-                alert("⚠️ Error saving score.");
-            }
         }
 
         // Start Game on Tap or Space
