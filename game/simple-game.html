@@ -21,6 +21,66 @@
             font-size: 18px;
             color: #fff;
         }
+
+        /* Menu Overlay Styling */
+        #menuOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 16px;
+            color: white;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        #menuOverlay h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #menuOverlay button {
+            display: block;
+            margin: 15px auto;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        #menuOverlay button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        #brandLogo {
+            margin-top: 20px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        #brandLogo:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -28,6 +88,18 @@
     <canvas id="gameCanvas"></canvas>
     <p style="color: white;">Tap or press SPACE to start. Double jump enabled! Avoid the dips and collect coins!</p>
     <p id="topScore">Top Score: 0</p>
+
+    <!-- Menu Overlay -->
+    <div id="menuOverlay">
+        <h1>₿itcoin Runner</h1>
+        <button onclick="startGame()">🎮 Play</button>
+        <button onclick="changeSkin()">🎨 Change Skin</button>
+        <button onclick="showLeaderboard()">🏆 Leaderboard</button>
+        <button onclick="togglePause()">⏸️ Pause</button>
+        <br>
+        <img src="../favicon.png" alt="JojoJubah Labs" id="brandLogo" onclick="window.open('../index.html','_blank')">
+        <p style="font-size: 12px; margin-top: 10px; opacity: 0.8;">by JojoJubah Labs</p>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -64,6 +136,7 @@
         let speed = Math.max(3, canvasWidth / 300);
         let gameStarted = false;
         let frameCount = 0;
+        let paused = false;
 
         let glitchActive = false;
         let glitchTimer = 0;
@@ -461,11 +534,6 @@
             ctx.font = '20px Arial';
             ctx.fillText(`Score: ${score}`, 10, 30); // Top-left corner
             ctx.fillText(`Level: ${level}`, canvas.width - 100, 30); // Top-right corner
-            
-            // Show current skin name and controls
-            ctx.font = '12px Arial';
-            ctx.fillText(`Skin: ${playerSkins[selectedSkin].name}`, 10, 50);
-            ctx.fillText(`Press 'C' to change skin`, 10, 65);
         }
 
         // Spawn Glitch Coin
@@ -562,6 +630,10 @@
 
         // Game Loop
         function gameLoop() {
+            if (paused) {
+                return; // Don't update game when paused
+            }
+            
             if (isGameOver) {
                 // Show game over screen
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -569,23 +641,15 @@
                 ctx.fillStyle = 'white';
                 ctx.font = '24px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2 - 20);
+                ctx.fillText('💥 Game Over!', canvas.width / 2, canvas.height / 2 - 20);
                 ctx.font = '16px Arial';
-                ctx.fillText('Press SPACE or tap to restart', canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillText('Tap to return to menu', canvas.width / 2, canvas.height / 2 + 20);
                 ctx.textAlign = 'left';
                 return;
             }
 
             if (!gameStarted) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = '24px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('₿itcoin Runner', canvas.width / 2, canvas.height / 2 - 20);
-                ctx.font = '16px Arial';
-                ctx.fillText('Press SPACE or tap to start', canvas.width / 2, canvas.height / 2 + 20);
-                ctx.textAlign = 'left';
+                // Don't show anything - menu overlay handles this
                 return;
             }
 
@@ -657,10 +721,73 @@
             gameLoop();
         }
 
+        // Menu System Functions
+        function startGame() {
+            document.getElementById("menuOverlay").style.display = "none";
+            gameStarted = true;
+            restartGame();
+        }
+
+        function changeSkin() {
+            selectedSkin = (selectedSkin + 1) % playerSkins.length;
+            // Show a temporary notification
+            const notification = document.createElement('div');
+            notification.textContent = `Skin: ${playerSkins[selectedSkin].name}`;
+            notification.style.cssText = `
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 20px;
+                z-index: 20;
+                font-size: 14px;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function showLeaderboard() {
+            alert(`🏆 High Score: ${topScore}\n\nLeaderboard coming soon!`);
+        }
+
+        function togglePause() {
+            if (!gameStarted) return;
+            
+            paused = !paused;
+            if (paused) {
+                // Show pause overlay
+                ctx.fillStyle = "rgba(0,0,0,0.7)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "white";
+                ctx.font = "36px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("⏸️ PAUSED", canvas.width/2, canvas.height/2 - 20);
+                ctx.font = "16px Arial";
+                ctx.fillText("Press SPACE or tap to resume", canvas.width/2, canvas.height/2 + 20);
+                ctx.textAlign = "left";
+            } else {
+                gameLoop();
+            }
+        }
+
         // Start Game on Tap or Space
         function handleInteraction() {
+            if (paused) {
+                togglePause();
+                return;
+            }
+            
             if (!gameStarted || isGameOver) {
-                restartGame();
+                if (isGameOver) {
+                    // Show menu on game over instead of auto-restart
+                    document.getElementById("menuOverlay").style.display = "block";
+                    isGameOver = false;
+                    gameStarted = false;
+                    return;
+                }
             } else if (player.jumpsLeft > 0) {
                 player.dy = player.jump;
                 player.jumpsLeft--;
@@ -671,10 +798,6 @@
             if (e.code === 'Space') {
                 e.preventDefault();
                 handleInteraction();
-            }
-            // Press 'C' to change skins during gameplay (for testing)
-            if (e.code === 'KeyC') {
-                selectedSkin = (selectedSkin + 1) % playerSkins.length;
             }
         });
 
@@ -699,7 +822,11 @@
         starGlow = Math.random() * 5;
         playerGlow = Math.random() * 20;
 
+        // Start the game loop and show menu
         gameLoop();
+        
+        // Make sure menu is visible on load
+        document.getElementById("menuOverlay").style.display = "block";
     </script>
 </body>
 </html>
