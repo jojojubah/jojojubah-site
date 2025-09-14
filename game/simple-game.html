@@ -9,8 +9,8 @@
             display: block;
             margin: 0 auto;
             position: relative;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 25%;
+            transform: translateY(-25%);
         }
         body {
             font-family: Arial, sans-serif;
@@ -126,6 +126,7 @@
         <button onclick="startGame()">🎮 Play</button>
         <button onclick="changeSkin()">🎨 Change Skin</button>
         <button onclick="showLeaderboard()">🏆 Leaderboard</button>
+        <button onclick="saveScoreToLeaderboard()" id="saveScoreButton" style="display: none;">💾 Save Score</button>
         <button onclick="resumeGame()" id="resumeButton" style="display: none;">▶️ Resume</button>
         <br>
         <img src="../favicon.png" alt="JojoJubah Labs" id="brandLogo" onclick="window.open('../index.html','_blank')">
@@ -674,11 +675,14 @@
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = 'white';
-                ctx.font = '24px Arial';
+                ctx.font = '32px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('💥 Game Over!', canvas.width / 2, canvas.height / 2 - 20);
+                ctx.fillText('💥 Game Over!', canvas.width / 2, canvas.height / 2 - 40);
+                ctx.font = '20px Arial';
+                ctx.fillText(`Your Score: ${score}`, canvas.width / 2, canvas.height / 2);
                 ctx.font = '16px Arial';
-                ctx.fillText('Tap to return to menu', canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillText('Tap to return to menu', canvas.width / 2, canvas.height / 2 + 25);
+                ctx.fillText("Click 'Save Score' in menu to upload", canvas.width / 2, canvas.height / 2 + 45);
                 ctx.textAlign = 'left';
                 return;
             }
@@ -761,6 +765,7 @@
             document.getElementById("menuOverlay").style.display = "none";
             document.getElementById("pauseButton").style.display = "flex";
             document.getElementById("resumeButton").style.display = "none";
+            document.getElementById("saveScoreButton").style.display = "none";
             gameStarted = true;
             paused = false;
             restartGame();
@@ -787,8 +792,96 @@
             setTimeout(() => notification.remove(), 2000);
         }
 
-        function showLeaderboard() {
-            alert(`🏆 High Score: ${topScore}\n\nLeaderboard coming soon!`);
+        // Firebase Leaderboard Functions
+        async function loginAndSave(playerScore) {
+            try {
+                // Check if Firebase services are available (from parent page)
+                if (!window.parent.firebaseServices) {
+                    throw new Error('Firebase not available');
+                }
+                
+                const { auth, db, doc, setDoc } = window.parent.firebaseServices;
+                
+                // Check if user is logged in, if not trigger login
+                if (!auth.currentUser) {
+                    await window.parent.promptLogin();
+                }
+                
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Login failed');
+                }
+                
+                // Save score to Firestore
+                await setDoc(doc(db, "leaderboard", user.uid), {
+                    displayName: user.displayName || 'Anonymous',
+                    score: playerScore,
+                    timestamp: Date.now()
+                }, { merge: true });
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving score:', error);
+                return false;
+            }
+        }
+
+        async function saveScoreToLeaderboard() {
+            try {
+                const success = await loginAndSave(score);
+                if (success) {
+                    alert("✅ Score saved to leaderboard!");
+                    document.getElementById("saveScoreButton").style.display = "none";
+                } else {
+                    alert("⚠️ Please log in first to save your score.\nClick the login button on the main site.");
+                }
+            } catch (err) {
+                console.error('Save error:', err);
+                alert("⚠️ Error saving score. Make sure you're logged in.");
+            }
+        }
+
+        async function showLeaderboard() {
+            try {
+                // Check if Firebase services are available
+                if (!window.parent.firebaseServices) {
+                    alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard requires login on main site.`);
+                    return;
+                }
+                
+                const { db, getDocs, collection, query, orderBy, limit } = window.parent.firebaseServices;
+                const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
+                const snap = await getDocs(q);
+
+                let leaderboardHTML = '<div style="text-align: center; color: white; padding: 20px;">';
+                leaderboardHTML += '<h2 style="color: #ffd700; margin-bottom: 20px;">🏆 Top Players</h2>';
+                leaderboardHTML += '<ol style="list-style: none; padding: 0; font-size: 16px;">';
+                
+                let rank = 1;
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
+                    leaderboardHTML += `<li style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        ${medal} ${data.displayName}: <strong>${data.score}</strong>
+                    </li>`;
+                    rank++;
+                });
+                
+                if (rank === 1) {
+                    leaderboardHTML += '<li style="margin: 20px 0; color: #ccc;">No scores yet - be the first!</li>';
+                }
+                
+                leaderboardHTML += '</ol>';
+                leaderboardHTML += '<button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer;">Back to Menu</button>';
+                leaderboardHTML += '</div>';
+
+                document.getElementById("menuOverlay").innerHTML = leaderboardHTML;
+                document.getElementById("menuOverlay").style.display = "block";
+                
+            } catch (error) {
+                console.error('Leaderboard error:', error);
+                alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
+            }
         }
 
         function openPauseMenu() {
@@ -818,9 +911,11 @@
             
             if (!gameStarted || isGameOver) {
                 if (isGameOver) {
-                    // Show menu on game over instead of auto-restart
+                    // Show menu on game over with save score option
                     document.getElementById("menuOverlay").style.display = "block";
                     document.getElementById("pauseButton").style.display = "none";
+                    document.getElementById("saveScoreButton").style.display = "block";
+                    document.getElementById("resumeButton").style.display = "none";
                     isGameOver = false;
                     gameStarted = false;
                     return;
