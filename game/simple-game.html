@@ -786,17 +786,18 @@
         async function saveScoreToLeaderboard(score) {
             const user = window.parent.auth?.currentUser;
             const services = window.parent.firebaseServices;
-            if (!user || !services || !services.db) {
+            if (!user || !services) {
                 console.log("⚠️ Cannot save score: not logged in or Firebase not ready");
                 return;
             }
 
             try {
-                const { doc, setDoc, db } = services;
+                const { doc, setDoc } = services;
+                const db = window.parent.db; // 🔑 use db directly, not from services
 
                 await setDoc(doc(db, "leaderboard", user.uid), {
                     displayName: user.displayName,
-                    score: score,
+                    score: Number(score), // ensure it's a number
                     timestamp: Date.now()
                 }, { merge: true });
 
@@ -811,14 +812,15 @@
 
         async function showLeaderboard() {
             const services = window.parent.firebaseServices;
-            if (!services || !services.db) {
+            if (!services || !window.parent.db) {
                 console.log("⚠️ Firebase not ready, try again later");
                 alert(`🏆 Local High Score: ${topScore}\n\nOnline leaderboard unavailable.`);
                 return;
             }
 
             try {
-                const { collection, query, orderBy, limit, getDocs, db } = services;
+                const { collection, query, orderBy, limit, getDocs } = services;
+                const db = window.parent.db; // 🔑 use db directly, not from services
                 const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10));
                 const snap = await getDocs(q);
 
