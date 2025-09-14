@@ -81,6 +81,33 @@
         #brandLogo:hover {
             transform: scale(1.1);
         }
+
+        /* In-Game Pause Button */
+        #pauseButton {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        #pauseButton:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -95,10 +122,15 @@
         <button onclick="startGame()">🎮 Play</button>
         <button onclick="changeSkin()">🎨 Change Skin</button>
         <button onclick="showLeaderboard()">🏆 Leaderboard</button>
-        <button onclick="togglePause()">⏸️ Pause</button>
+        <button onclick="resumeGame()" id="resumeButton" style="display: none;">▶️ Resume</button>
         <br>
         <img src="../favicon.png" alt="JojoJubah Labs" id="brandLogo" onclick="window.open('../index.html','_blank')">
         <p style="font-size: 12px; margin-top: 10px; opacity: 0.8;">by JojoJubah Labs</p>
+    </div>
+
+    <!-- In-Game Pause Button -->
+    <div id="pauseButton" onclick="openPauseMenu()" style="display: none;">
+        ⏸️
     </div>
 
     <script>
@@ -724,7 +756,10 @@
         // Menu System Functions
         function startGame() {
             document.getElementById("menuOverlay").style.display = "none";
+            document.getElementById("pauseButton").style.display = "flex";
+            document.getElementById("resumeButton").style.display = "none";
             gameStarted = true;
+            paused = false;
             restartGame();
         }
 
@@ -753,30 +788,28 @@
             alert(`🏆 High Score: ${topScore}\n\nLeaderboard coming soon!`);
         }
 
-        function togglePause() {
+        function openPauseMenu() {
             if (!gameStarted) return;
             
-            paused = !paused;
-            if (paused) {
-                // Show pause overlay
-                ctx.fillStyle = "rgba(0,0,0,0.7)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "white";
-                ctx.font = "36px Arial";
-                ctx.textAlign = "center";
-                ctx.fillText("⏸️ PAUSED", canvas.width/2, canvas.height/2 - 20);
-                ctx.font = "16px Arial";
-                ctx.fillText("Press SPACE or tap to resume", canvas.width/2, canvas.height/2 + 20);
-                ctx.textAlign = "left";
-            } else {
-                gameLoop();
-            }
+            paused = true;
+            document.getElementById("menuOverlay").style.display = "block";
+            document.getElementById("resumeButton").style.display = "block";
+            document.getElementById("pauseButton").style.display = "none";
+        }
+
+        function resumeGame() {
+            paused = false;
+            document.getElementById("menuOverlay").style.display = "none";
+            document.getElementById("resumeButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "flex";
+            gameLoop();
         }
 
         // Start Game on Tap or Space
         function handleInteraction() {
             if (paused) {
-                togglePause();
+                // When paused, space/tap should resume
+                resumeGame();
                 return;
             }
             
@@ -784,6 +817,7 @@
                 if (isGameOver) {
                     // Show menu on game over instead of auto-restart
                     document.getElementById("menuOverlay").style.display = "block";
+                    document.getElementById("pauseButton").style.display = "none";
                     isGameOver = false;
                     gameStarted = false;
                     return;
