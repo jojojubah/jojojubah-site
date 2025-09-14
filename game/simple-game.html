@@ -121,26 +121,12 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 1000px;   /* desktop cap */
             margin: 0 auto;
         }
 
         .game-container canvas {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 4 / 3; /* preserves shape */
             display: block;
             border: 1px solid black;
-        }
-
-        /* Mobile tweak – reduce purple padding */
-        @media (max-width: 768px) {
-            .game-container {
-                max-width: 95vw; /* expand to almost full width */
-            }
-            .game-container canvas {
-                width: 95vw;
-            }
         }
     </style>
 </head>
@@ -197,10 +183,10 @@
         // Dynamically size the canvas
         function resizeCanvas() {
             if (window.innerWidth < 768) {
-                canvas.width = window.innerWidth * 0.95;  // use ~95% of screen width on mobile
-                canvas.height = canvas.width * 0.75;      // keep 4:3 ratio
+                canvas.width = window.innerWidth * 0.9;  // use 90% of screen width on mobile - reduces purple padding
+                canvas.height = canvas.width * 0.75;     // keep 4:3 ratio
             } else {
-                canvas.width = 800;  // desktop default
+                canvas.width = 800;  // desktop default - restored to original size
                 canvas.height = 600;
             }
             // Update game variables that depend on canvas size
