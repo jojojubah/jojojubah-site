@@ -111,10 +111,7 @@
     </style>
 </head>
 <body>
-    <h1 style="color: white;">₿itcoin Runner</h1>
     <canvas id="gameCanvas"></canvas>
-    <p style="color: white;">Tap or press SPACE to start. Double jump enabled! Avoid the dips and collect coins!</p>
-    <p id="topScore">Top Score: 0</p>
 
     <!-- Menu Overlay -->
     <div id="menuOverlay">
@@ -478,7 +475,6 @@
                     if (score > topScore) {
                         topScore = score;
                         localStorage.setItem('topScore', topScore);
-                        document.getElementById('topScore').innerText = `Top Score: ${topScore}`;
                     }
 
                     // Level up and increase speed
@@ -844,8 +840,6 @@
             e.preventDefault();
             handleInteraction();
         });
-
-        document.getElementById('topScore').innerText = `Top Score: ${topScore}`;
 
         // Initialize the game
         obstacleColor = getRandomColor();
