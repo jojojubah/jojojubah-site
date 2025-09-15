@@ -116,6 +116,13 @@
             transform: scale(1.05);
         }
 
+        #gameCanvas {
+            display: block;
+            cursor: pointer;
+            touch-action: none;
+            pointer-events: auto;
+        }
+
     </style>
 </head>
 <body>
@@ -1078,13 +1085,26 @@
             }
         });
 
+        // Enhanced canvas event handling to ensure clicks work everywhere on canvas
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Touch detected on canvas');
             handleInteraction();
         });
 
         canvas.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Click detected on canvas');
+            handleInteraction();
+        });
+
+        // Also add mousedown for additional coverage
+        canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Mouse down detected on canvas');
             handleInteraction();
         });
 
