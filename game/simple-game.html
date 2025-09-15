@@ -116,24 +116,10 @@
             transform: scale(1.05);
         }
 
-        .game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .game-container canvas {
-            display: block;
-            border: 1px solid black;
-        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-    </div>
+    <canvas id="gameCanvas"></canvas>
 
     <!-- Menu Overlay -->
     <div id="menuOverlay">
@@ -177,29 +163,16 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Game Variables that need to be declared early
-        let groundHeight;
-        
-        // Dynamically size the canvas
-        function resizeCanvas() {
-            if (window.innerWidth < 768) {
-                canvas.width = window.innerWidth * 0.9;  // use 90% of screen width on mobile - reduces purple padding
-                canvas.height = canvas.width * 0.75;     // keep 4:3 ratio
-            } else {
-                canvas.width = 800;  // desktop default - restored to original size
-                canvas.height = 600;
-            }
-            // Update game variables that depend on canvas size
-            groundHeight = canvas.height - 50;
-            if (typeof player !== "undefined") {
-                player.y = groundHeight - player.height; // Update player position if it exists
-            }
-        }
+        let canvasWidth = window.innerWidth > 800 ? 800 : window.innerWidth * 0.9;
+        let canvasHeight = window.innerHeight > 600 ? 400 : window.innerHeight * 0.6;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
-        // Game Variables - Define player before resizeCanvas so it can be referenced
+        // Game Variables
+        const groundHeight = canvasHeight - 50;
         const player = {
             x: 50,
-            y: 0, // Will be set in resizeCanvas
+            y: groundHeight - 20,
             width: 20,
             height: 20,
             dy: 0,
@@ -210,10 +183,6 @@
             colorDirection: 1, // 1 for increasing, -1 for decreasing
         };
 
-        // Call on load + resize
-        resizeCanvas();
-        window.addEventListener("resize", resizeCanvas);
-
         let obstacles = [];
         let coins = [];
         let fragments = [];
@@ -223,7 +192,7 @@
         let level = 1;
         let topScore = parseInt(localStorage.getItem('topScore')) || 0;
         let isGameOver = false;
-        let speed = Math.max(3, canvas.width / 300);
+        let speed = Math.max(3, canvasWidth / 300);
         let gameStarted = false;
         let frameCount = 0;
         let paused = false;
@@ -238,8 +207,8 @@
         // HD-2D Parallax Stars for Background
         function makeStars(count, speed, blur, color) {
             return Array.from({ length: count }, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
+                x: Math.random() * canvasWidth,
+                y: Math.random() * canvasHeight,
                 size: Math.random() * 2 + 1,
                 speed: speed,
                 blur: blur,
@@ -353,14 +322,14 @@
                 ctx.restore();
 
                 star.x -= star.speed;
-                if (star.x < 0) star.x = canvas.width;
+                if (star.x < 0) star.x = canvasWidth;
             });
         }
 
         // Draw Background with HD-2D Effects
         function drawBackground() {
             // Original gradient sky colors restored
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
             gradient.addColorStop(0, '#0f0f5e'); // Original light blue
             gradient.addColorStop(1, '#01012c'); // Original dark blue
             ctx.fillStyle = gradient;
@@ -397,21 +366,21 @@
         // Draw Ground with HD-2D Soft Lighting
         function drawGround() {
             groundOffset -= speed;
-            if (groundOffset <= -canvas.width) groundOffset = 0;
+            if (groundOffset <= -canvasWidth) groundOffset = 0;
 
             // Base ground layer - solid moon gray
             ctx.fillStyle = '#444'; // Solid moon gray (restored original)
             for (let i = 0; i <= 1; i++) {
-                ctx.fillRect(groundOffset + i * canvas.width, groundHeight, canvas.width, canvas.height - groundHeight);
+                ctx.fillRect(groundOffset + i * canvasWidth, groundHeight, canvasWidth, canvasHeight - groundHeight);
             }
 
             // Add soft lighting gradient overlay
-            const lightingGradient = ctx.createLinearGradient(0, groundHeight, 0, canvas.height);
+            const lightingGradient = ctx.createLinearGradient(0, groundHeight, 0, canvasHeight);
             lightingGradient.addColorStop(0, 'rgba(255,255,255,0.1)');
             lightingGradient.addColorStop(1, 'rgba(0,0,0,0.8)');
             ctx.fillStyle = lightingGradient;
             for (let i = 0; i <= 1; i++) {
-                ctx.fillRect(groundOffset + i * canvas.width, groundHeight, canvas.width, canvas.height - groundHeight);
+                ctx.fillRect(groundOffset + i * canvasWidth, groundHeight, canvasWidth, canvasHeight - groundHeight);
             }
 
             // Draw ground objects
@@ -843,7 +812,7 @@
             floatingTexts = [];
             glitchCoin = null;
             glitchActive = false;
-            speed = Math.max(3, canvas.width / 300);
+            speed = Math.max(3, canvasWidth / 300);
             isGameOver = false;
             frameCount = 0;
             gameStarted = true;
