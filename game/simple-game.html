@@ -23,6 +23,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: none; /* prevent browser gestures interfering with taps */
         }
 
         #topScore {
@@ -1091,15 +1092,23 @@
             }
         });
 
-        // One unified input for tap/click anywhere on the canvas
-        canvas.addEventListener('pointerdown', (e) => {
-            // Don't trigger when the menu overlay is visible
-            const menu = document.getElementById('menuOverlay');
-            const isMenuVisible = menu && menu.style.display !== 'none';
-            if (isMenuVisible) return;
+        // One unified input for tap/click anywhere in the iframe (canvas + black padding)
+        document.addEventListener('pointerdown', (e) => {
+          // 1) If the menu overlay is visible, ignore all taps/clicks
+          const menu = document.getElementById('menuOverlay');
+          const isMenuVisible = menu && menu.style.display !== 'none';
+          if (isMenuVisible) return;
 
-            e.preventDefault();
-            handleInteraction();
+          // 2) Ignore clicks on UI controls (pause button, any <button>)
+          if (e.target.closest('#pauseButton')) return;
+          if (e.target.closest('button')) return;
+
+          // 3) Only react during active gameplay
+          if (!gameStarted || isGameOver || paused) return;
+
+          // 4) Jump (single source of truth)
+          e.preventDefault();
+          handleInteraction();
         }, { passive: false });
 
         // Initialize the game
