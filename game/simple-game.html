@@ -7,10 +7,11 @@
         canvas {
             border: 1px solid black;
             display: block;
-            margin: 0 auto;
-            position: relative;
-            top: 12.5%;
-            transform: translateY(-12.5%);
+            margin: 0 auto;     /* keep horizontal centering */
+            /* Remove the vertical shift: */
+            position: static;
+            top: auto;
+            transform: none;
         }
         body {
             font-family: Arial, sans-serif;
@@ -216,6 +217,7 @@
         let level = 1;
         let topScore = parseInt(localStorage.getItem('topScore')) || 0;
         let isGameOver = false;
+        let gameOverShown = false;
         let speed = Math.max(3, canvasWidth / 300);
         let gameStarted = false;
         let frameCount = 0;
@@ -782,7 +784,10 @@
             }
             
             if (isGameOver) {
-                showGameOverOverlay();
+                if (!gameOverShown) {
+                    gameOverShown = true;        // ✅ show it only once
+                    showGameOverOverlay();
+                }
                 return;
             }
 
@@ -838,6 +843,7 @@
             glitchActive = false;
             speed = Math.max(3, canvasWidth / 300);
             isGameOver = false;
+            gameOverShown = false;          // ✅ allow overlay next time
             frameCount = 0;
             gameStarted = true;
             groundObjects = [];
@@ -1085,28 +1091,16 @@
             }
         });
 
-        // Enhanced canvas event handling to ensure clicks work everywhere on canvas
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Touch detected on canvas');
-            handleInteraction();
-        });
+        // One unified input for tap/click anywhere on the canvas
+        canvas.addEventListener('pointerdown', (e) => {
+            // Don't trigger when the menu overlay is visible
+            const menu = document.getElementById('menuOverlay');
+            const isMenuVisible = menu && menu.style.display !== 'none';
+            if (isMenuVisible) return;
 
-        canvas.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            console.log('Click detected on canvas');
             handleInteraction();
-        });
-
-        // Also add mousedown for additional coverage
-        canvas.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Mouse down detected on canvas');
-            handleInteraction();
-        });
+        }, { passive: false });
 
         // Initialize the game
         obstacleColor = getRandomColor();
